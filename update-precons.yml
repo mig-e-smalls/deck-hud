@@ -1,0 +1,143 @@
+# Weekly job: downloads every Commander precon from MTGJSON and saves it to precons/ in this repo.
+# Netlify redeploys automatically after each update. Run it any time from the Actions tab.
+name: Update precons
+
+on:
+  schedule:
+    - cron: "17 10 * * 1"   # Mondays 10:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build precon files
+        run: |
+          cat > /tmp/build_precons.py <<'PY'
+          """Build precons/ for mtghud from MTGJSON's public deck data.
+
+          Writes precons/index.json (searchable list) and precons/decks/<file>.json
+          (one slim file per Commander precon: names, types, rules text, colors).
+          Runs weekly on GitHub; stdlib only.
+          """
+          import io, json, os, re, shutil, sys, tarfile, time, urllib.request, zipfile
+
+          BASE = "https://mtgjson.com/api/v5/"
+          OUT = sys.argv[1] if len(sys.argv) > 1 else "precons"
+          HEADERS = {"User-Agent": "mtghud-precon-builder (github actions)"}
+
+
+          def get(url):
+              req = urllib.request.Request(url, headers=HEADERS)
+              with urllib.request.urlopen(req, timeout=600) as r:
+                  return r.read()
+
+
+          def from_archive():
+              """Yield (fileName, json) from the all-decks archive, trying each format."""
+              for name in ("AllDeckFiles.tar.gz", "AllDeckFiles.zip"):
+                  try:
+                      blob = get(BASE + name)
+                  except Exception as e:  # try the next format
+                      print(f"skip {name}: {e}")
+                      continue
+                  print(f"downloaded {name}: {len(blob) // 1024} KB")
+                  if name.endswith(".tar.gz"):
+                      with tarfile.open(fileobj=io.BytesIO(blob), mode="r:gz") as t:
+                          for m in t.getmembers():
+                              if m.isfile() and m.name.endswith(".json"):
+                                  yield os.path.basename(m.name)[:-5], json.load(t.extractfile(m))
+                  else:
+                      with zipfile.ZipFile(io.BytesIO(blob)) as z:
+                          for n in z.namelist():
+                              if n.endswith(".json"):
+                                  yield os.path.basename(n)[:-5], json.loads(z.read(n))
+                  return
+              raise RuntimeError("no archive")
+
+
+          def from_files():
+              """Fallback: the deck list, then each Commander deck file one by one."""
+              lst = json.loads(get(BASE + "DeckList.json"))["data"]
+              for d in lst:
+                  if "commander" not in (d.get("type") or "").lower():
+                      continue
+                  try:
+                      yield d["fileName"], json.loads(get(BASE + "decks/" + d["fileName"] + ".json"))
+                      time.sleep(0.1)
+                  except Exception as e:
+                      print(f"failed {d['fileName']}: {e}")
+
+
+          def slim(c):
+              out = {"n": c.get("name", ""), "t": c.get("type", ""), "x": c.get("text", ""),
+                     "ci": c.get("colorIdentity") or []}
+              if (c.get("count") or 1) != 1:
+                  out["q"] = c["count"]
+              return out
+
+
+          def main():
+              try:
+                  source = list(from_archive())
+              except Exception as e:
+                  print(f"archive unavailable ({e}); fetching deck files one at a time")
+                  source = list(from_files())
+
+              tmp = OUT + ".tmp"
+              shutil.rmtree(tmp, ignore_errors=True)
+              os.makedirs(os.path.join(tmp, "decks"))
+              index = []
+              for file_name, j in source:
+                  d = j.get("data", j)
+                  if "commander" not in (d.get("type") or "").lower():
+                      continue
+                  safe = re.sub(r"[^A-Za-z0-9_\-]", "", file_name)
+                  if not safe:
+                      continue
+                  cmdrs = [slim(c) for c in (d.get("commander") or [])]
+                  cards, seen = [], {c["n"] for c in cmdrs}
+                  for c in (d.get("mainBoard") or []) + (d.get("sideBoard") or []):
+                      s = slim(c)
+                      if s["n"] and s["n"] not in seen:
+                          seen.add(s["n"])
+                          cards.append(s)
+                  if not cards:
+                      continue
+                  deck = {"name": d.get("name", safe), "code": d.get("code", ""), "date": d.get("releaseDate") or "",
+                          "commander": cmdrs, "cards": cards}
+                  with open(os.path.join(tmp, "decks", safe + ".json"), "w", encoding="utf-8") as f:
+                      json.dump(deck, f, ensure_ascii=False, separators=(",", ":"))
+                  ci = sorted({x for c in cmdrs for x in c["ci"]}, key="WUBRG".index) if cmdrs else []
+                  index.append({"f": safe, "n": deck["name"], "c": deck["code"], "d": deck["date"],
+                                "cm": [c["n"] for c in cmdrs], "ci": ci})
+
+              if len(index) < 50:  # something went wrong upstream: keep the last good files
+                  shutil.rmtree(tmp, ignore_errors=True)
+                  sys.exit(f"only {len(index)} Commander decks found; leaving {OUT}/ unchanged")
+
+              index.sort(key=lambda x: (x["d"], x["n"]), reverse=True)
+              with open(os.path.join(tmp, "index.json"), "w", encoding="utf-8") as f:
+                  json.dump({"updated": time.strftime("%Y-%m-%d"), "decks": index}, f, ensure_ascii=False, separators=(",", ":"))
+              shutil.rmtree(OUT, ignore_errors=True)
+              os.replace(tmp, OUT)
+              print(f"wrote {len(index)} Commander precons to {OUT}/")
+
+
+          if __name__ == "__main__":
+              main()
+          PY
+          python3 /tmp/build_precons.py precons
+
+      - name: Save changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add precons
+          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Update precons" && git push; fi
