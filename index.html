@@ -440,7 +440,7 @@ html{-webkit-text-size-adjust:100%}
   .zone.mine>.buffpanel:last-child{grid-column:1/-1}
   .zone>.tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-content:stretch}
   .zone>.tiles>.tile{height:100%}
-  .zone.theirs:has(#tablepanel[hidden])>.panel:first-child{grid-column:1/-1}
+  
 }
 @media (min-width:1180px){
   .zone{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -459,6 +459,44 @@ html{-webkit-text-size-adjust:100%}
   .zone.mine{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"turn turn turn" "cmdr cards cards" "crea fx fx" "buff fx fx" "togs togs togs" "tiles tiles tiles";align-items:stretch}
   .zone.mine>.buffpanel{align-self:start}
 }
+/* Battlefield mats */
+.fields{display:flex;flex-direction:column;gap:18px}
+.fieldnote{color:#c9d6e2;font-size:.92rem;margin:0}
+.fieldnote b{color:#fff}
+.mat{border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;color:#efe2c4;
+  background:var(--mat,radial-gradient(120% 80% at 50% 0%,#2b3640 0%,#151b20 70%)),#151b20;border:2px solid #0e0b08;box-shadow:0 0 0 3px #2a3036,0 0 0 4px var(--ring,#8ea3b5),0 8px 18px rgba(0,0,0,.5)}
+.mat.mine{opacity:.9}
+.mathead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mwho{display:flex;flex-direction:column;min-width:0}
+.mname{font-family:var(--display);font-weight:800;font-size:1.15rem}
+.mname em{font-style:normal;font-size:.75rem;color:#b6a483;margin-left:4px}
+.mdeck{font-size:.82rem;color:#b6a483;overflow-wrap:anywhere}
+.mstats{display:flex;align-items:center;gap:10px;text-align:right}
+.mlife{font-family:var(--display);font-weight:800;font-size:1.9rem;line-height:1;padding:4px 12px;border-radius:10px;background:linear-gradient(180deg,#f8eed6,#d2bd8f);color:#24190f;border:2px solid #2a221b;font-variant-numeric:tabular-nums}
+.mmeta{font-size:.78rem;color:#b6a483;line-height:1.3}
+.mrow{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.06)}
+.mlbl{font-family:var(--display);font-weight:700;font-size:.78rem;color:#b6a483}
+.mcards{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:thin}
+.mempty{font-size:.85rem;color:#8d7f66;padding:6px 0}
+.mc{flex:none;position:relative;width:78px;height:108px;border-radius:7px;border:2px solid #0e0b08;padding:4px;display:flex;flex-direction:column;gap:2px;
+  background:linear-gradient(180deg,#efe2c4 0 46%,var(--mcart,#8c7448) 46% 100%);box-shadow:0 2px 4px rgba(0,0,0,.5);color:#24190f}
+.mc .mcn{font-family:var(--display);font-weight:800;font-size:.66rem;line-height:1.15;max-height:2.35em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mc .mct{font-size:.58rem;color:#5b4730;font-family:var(--display);font-weight:700}
+.mc .mcpt{position:absolute;right:4px;bottom:4px;font-family:var(--display);font-weight:800;font-size:.72rem;padding:0 5px;border-radius:5px;background:#f8eed6;border:1px solid #2a221b}
+.mc .mcq{position:absolute;left:4px;bottom:4px;font-family:var(--display);font-weight:800;font-size:.8rem;color:#fff;text-shadow:0 1px 2px #000}
+.mc-commander{--mcart:#c9a65a;border-color:#3a2c14;box-shadow:0 0 0 2px #c9a65a,0 2px 4px rgba(0,0,0,.5)}
+.mc-creatures{--mcart:#6d5a43}.mc-vehicles{--mcart:#5f6b74}.mc-token{--mcart:#4f5d4a}
+.mc-mana{--mcart:#9a9488}.mc-artifacts{--mcart:#7b7f86}.mc-enchantments{--mcart:#7a6a8c}.mc-other{--mcart:#6a6a6a}
+.mc.tapped{transform:rotate(90deg);margin:0 15px;opacity:.8}
+.mfoot{display:flex;flex-wrap:wrap;gap:6px}
+.mpill{font-size:.78rem;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);color:#efe2c4}
+.mfx{display:flex;flex-direction:column;gap:2px;font-size:.88rem;border-top:1px solid rgba(255,255,255,.1);padding-top:8px}
+.mfx p{margin:0}
+.mfx .term{color:#f3e6c6}
+.notes .line span{font-size:.92rem}
+@media (min-width:1180px){.zone.theirs{grid-template-columns:minmax(0,2fr) minmax(0,1fr)!important}}
+.zone.theirs>.fields{grid-column:1/-1}
+@media (min-width:1180px){.zone.theirs>.fields{grid-column:1}.zone.theirs>.notes{grid-column:2}}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -760,7 +798,8 @@ function pushPresence(){
   if(j===lastPres)return;lastPres=j;
   tableRoom.me.set({...b,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{tableErr="Couldn't share your board. Check the database rules.";refreshTable();});
 }
-function refreshTable(){const el=document.getElementById("tablepanel");if(!el)return;
+function refreshTable(){const f=document.getElementById("fields");if(f)f.innerHTML=fieldsInner();
+  const el=document.getElementById("tablepanel");if(!el)return;
   const inGame=view==="hud"&&S.game;el.hidden=inGame&&!tableRoom;el.innerHTML=el.hidden?"":tableInner();}
 function tableInner(){
   const t=S.table||{};
@@ -818,6 +857,38 @@ async function addCard(){
   const saved=S.decks.find(x=>x.id===g.deck.id);if(saved){saved.cards=(saved.cards||[]).filter(c=>c.name!==entry.name);saved.cards.push(entry);}
   save();render();const i=document.getElementById("add-card");if(i)i.focus();
 }
+
+// Battlefield view: every other player's board laid out like a playmat. Peer data is untrusted, so everything is clipped and escaped.
+function fieldsInner(){
+  const peers=(tableRoom?peerList:[]).filter(p=>p.kind==="viewer"&&!p.sameTab&&p.presence&&p.presence.b&&typeof p.presence.b==="object");
+  if(peers.length)return peers.map(p=>matHtml(p.presence.b,false)).join("");
+  const code=(S.table&&S.table.code)||"";
+  return `<p class="fieldnote">${tableRoom?`Waiting for others to join table <b>${esc(code)}</b>.`:"Join a table from the home screen to see everyone else's battlefield here."} This is how your board looks to them:</p>${curBoard?matHtml(curBoard,true):""}`;
+}
+function matHtml(b,mine){
+  const str=(v,n)=>String(v??"").slice(0,n);
+  const colors=Array.isArray(b.colors)?b.colors.filter(c=>["W","U","B","R","G"].includes(c)):[];
+  const cards=(Array.isArray(b.cards)?b.cards:[]).slice(0,40).map(c=>Array.isArray(c)?{n:str(c[0],40),cat:str(c[1],14),pt:str(c[2],7),tap:!!c[3]}:{n:str(c,40).replace(/ \(commander\)$/,""),cat:/\(commander\)$/.test(str(c,60))?"Commander":"Other"});
+  const groups=(Array.isArray(b.groups)?b.groups:[]).slice(0,8).map(x=>({n:str(x[0],40).replace(/ tokens?$/i,""),q:Math.max(0,Math.min(999,parseInt(x[1],10)||0)),pt:str(x[2],7)}));
+  const isCre=c=>/^(Creatures|Vehicles|Commander)$/.test(c.cat);
+  const front=[...(b.cmdrOn&&b.cmdr?[{n:str(b.cmdr,40),cat:"Commander",pt:str(b.cmdrPt,7)}]:[]),...cards.filter(isCre)];
+  const back=cards.filter(c=>!isCre(c));
+  const label={Commander:"Commander",Creatures:"Creature",Vehicles:"Vehicle",Mana:"Mana",Artifacts:"Artifact",Enchantments:"Enchantment",Other:"Permanent"};
+  const mc=c=>`<div class="mc mc-${(c.cat||"Other").toLowerCase()}${c.tap?" tapped":""}" title="${esc(c.n)}"><span class="mcn">${esc(c.n)}</span><span class="mct">${label[c.cat]||"Permanent"}</span>${c.pt?`<span class="mcpt">${esc(c.pt)}</span>`:""}</div>`;
+  const tok=x=>`<div class="mc mc-token" title="${esc(x.n)} tokens"><span class="mcn">${esc(x.n)}</span><span class="mct">Token</span>${x.pt?`<span class="mcpt">${esc(x.pt)}</span>`:""}<span class="mcq">×${x.q}</span></div>`;
+  const row=(lbl,items,empty)=>`<div class="mrow"><span class="mlbl">${lbl}</span><div class="mcards">${items||`<span class="mempty">${empty}</span>`}</div></div>`;
+  const fx=(Array.isArray(b.fx)?b.fx:[]).slice(0,10).map(t=>str(t,110));
+  const mana=Array.isArray(b.mana)?b.mana.slice(0,2).map(v=>parseInt(v,10)||0):null;
+  return `<section class="mat${mine?" mine":""}" style="${styleVars(colors)}">
+    <div class="mathead"><div class="mwho"><span class="mname">${esc(str(b.nick||"Player",20))}${mine?" <em>you</em>":""}</span>
+      <span class="mdeck">${esc(str(b.deck,60))}${b.cmdr?" · "+esc(str(b.cmdr,60)):""}</span></div>
+      <div class="mstats"><span class="mlife" title="Life">${esc(str(b.life??"–",5))}</span><span class="mmeta">turn ${esc(str(b.turn??"–",4))}<br>${esc(str(b.power??0,5))} power</span></div></div>
+    ${row("Creatures",front.map(mc).join("")+groups.filter(x=>x.q>0).map(tok).join(""),"No creatures")}
+    ${row("Artifacts &amp; enchantments",back.map(mc).join(""),"Nothing out")}
+    <div class="mfoot">${mana?`<span class="mpill">Mana ${mana[0]} of ${mana[1]} open</span>`:""}${b.cmdr&&b.cmdrOn===false?`<span class="mpill">Commander in command zone</span>`:""}</div>
+    ${fx.length?`<div class="mfx">${fx.map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
+  </section>`;
+}
 function renderHud(){
   const g=S.game;
   // Games started on an older version keep a stale copy of the precon; refresh it so trackers match the current preset.
@@ -855,8 +926,8 @@ function renderHud(){
   const avail=g.sources.reduce((a,s)=>a+(s.n-s.used)*amtOf(s),0)+cardMana.reduce((a,c)=>a+(g.cardUsed[c.name]?0:c.mana),0);
   const total=g.sources.reduce((a,s)=>a+s.n*amtOf(s),0)+cardMana.reduce((a,c)=>a+c.mana,0);
   const addForm=(kind,ph,extra="")=>addOpen===kind?`<div class="addrow"><input type="text" id="add-${kind}" placeholder="${ph}">${extra}<button class="btn primary" data-addgo="${kind}">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button></div>`:"";
-  const watchHtml=`<section class="panel watch"><div class="spread"><span class="eyebrow">Watch the table</span><button class="link" data-addopen="watch">+ Add</button></div>
-    ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Other players' triggers you keep feeding, e.g. "Sam's commander draws when I cast a spell."</p>`}
+  const watchHtml=`<section class="panel watch notes"><div class="spread"><span class="eyebrow">Table notes</span><button class="link" data-addopen="watch">+ Add</button></div>
+    ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Reminders about other players' cards, e.g. "Sam's commander draws when I cast a spell."</p>`}
     ${addForm("watch","Whose card, and what sets it off")}</section>`;
   const fxHtml=`<section class="panel fx"><div class="spread"><span class="eyebrow">Effects in play</span><button class="link" data-addopen="fx">+ Add</button></div>
     ${inCards.filter(c=>c.fx).map(c=>`<div class="line"><span><b>${esc(c.name)}</b> ${gl(c.equip&&g.attach[c.name]?c.fx.replace(/^Equipped creature/,g.attach[c.name]):c.fx)}${c.plating&&g.attach[c.name]?` <em>about +${artifacts}/+0 now</em>`:""}</span><span></span></div>`).join("")}
@@ -888,7 +959,8 @@ function renderHud(){
   curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
     life:g.vals.life??null,turn:g.turn,power:pow,cnt,mana:[avail,total],
     groups:g.groups.filter(x=>x.n>0).slice(0,8).map(x=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`]),
-    cards:[...(d.cmdr&&g.cmdr.on?[d.cmdr+" (commander)"]:[]),...g.inplay].slice(0,24).map(n=>String(n).slice(0,40)),
+    cmdrOn:!!(d.cmdr&&g.cmdr.on),cmdrPt:String((cardInfo(d,d.cmdr)||{}).pt||"").slice(0,7),colors:(d.colors||[]).slice(0,5),
+    cards:g.inplay.slice(0,40).map(n=>{const c=cardInfo(d,n);return [String(n).slice(0,40),String(c.cat||"Other").slice(0,14),String(c.pt||"").slice(0,7),!!(c.mana&&g.cardUsed[n])];}),
     fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,10).map(t=>String(t).slice(0,110))};
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
@@ -925,8 +997,8 @@ function renderHud(){
   </div>
   <h2 class="zonehead theirs">Other players</h2>
   <div class="zone theirs">
+  <div class="fields" id="fields">${fieldsInner()}</div>
   ${watchHtml}
-  <section class="panel" id="tablepanel" ${tableRoom?"":"hidden"}>${tableRoom?tableInner():""}</section>
   </div>
   <div class="bar"><button class="btn" data-act="back">Decks</button><button class="btn primary" data-act="next">Pass turn</button></div>
   ${confirmReset?`<div class="confirm"><span>Reset every tracker and go back to turn 1?</span><div class="row"><button class="btn danger" data-act="doreset">Reset game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
@@ -1050,8 +1122,9 @@ function analyzeCard(c){
   const tok=text.match(/create (a|an|one|two|three|four|five|x|\d+) (?:tapped )?(\d+)\/(\d+) ((?:white|blue|black|red|green|colorless|and| )*)?([A-Z][A-Za-z' ]+?) (?:artifact )?creature tokens?/i);
   if(tok){const n=NUMW[tok[1].toLowerCase()]||parseInt(tok[1],10)||0;res.group={name:tok[5].trim()+" tokens",p:+tok[2],t:+tok[3]};if(n)res.make=n;}
   const cat=/vehicle/i.test(type)?"Vehicles":/creature/i.test(type)?"Creatures":mana?"Mana":/artifact/i.test(type)?"Artifacts":/enchantment/i.test(type)?"Enchantments":"Other";
-  if(rem.length||fx.length||mana||buff||res.group){
-    res.card={name,cat};
+  const f0=faces[0]||{},pw=c.power??f0.power,tg=c.toughness??f0.toughness;
+  if(true){
+    res.card={name,cat};if(pw!=null&&tg!=null)res.card.pt=pw+"/"+tg;
     if(rem.length)res.card.rem=rem.slice(0,3);
     if(fx.length)res.card.fx=fx.slice(0,2).join(" ").slice(0,200);
     if(mana)res.card.mana=mana;
@@ -1103,10 +1176,10 @@ async function importPrecon(f){
   try{
     let deck=null,cmdrs,main;
     try{const r=await fetch("precons/decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=await r.json();
-      const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[]});
+      const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[],power:c.p,toughness:c.tg});
       cmdrs=(deck.commander||[]).map(conv);main=(deck.cards||[]).map(conv);}
     catch(_){const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=(await r.json()).data;
-      const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[]});
+      const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[],power:c.power,toughness:c.toughness});
       cmdrs=(deck.commander||[]).map(conv);main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);}
     const seen=new Set(),all=[...cmdrs,...main].filter(c=>c.name&&!seen.has(c.name)&&seen.add(c.name));
     // Any nonland card that arrived without rules text gets it from Scryfall.
