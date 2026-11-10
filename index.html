@@ -715,8 +715,11 @@ function tileCounter(key,label,val,opts={}){
     <div class="steps">${steps.map(n=>`<button data-k="${esc(key)}" data-n="${n}" aria-label="${esc(label)} ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div></div>`;
 }
 // Opponents: their life, and commander damage your commander has dealt each of them.
+// Opponents still on their default name are numbered 1, 2, 3… in seat order; renamed ones keep their names.
+function renumberOpps(g){let n=0;g.opps.forEach(o=>{n++;if(/^Opponent( \d+)?$/.test(o.name))o.name="Opponent "+n;});}
 function oppsHtml(g,me){
   if(!g.opps)g.opps=[1,2,3].map(i=>({name:"Opponent "+i,life:40,cd:0}));
+  if(new Set(g.opps.map(o=>o.name)).size<g.opps.length)renumberOpps(g);
   g.dmgMode=g.dmgMode||"reg";
   const cm=g.dmgMode==="cmdr";
   return `<section class="panel opps lifepanel"><div class="spread"><span class="eyebrow">Life</span>
@@ -972,6 +975,20 @@ function parseList(text){
   }
   return [...out.values()];
 }
+// Find the commander in a pasted list: a "Commander" section (Moxfield / Arena export), a [Commander] tag (Archidekt),
+// a *CMDR* marker, or a last block of one or two cards set apart by a blank line (MTGO-style).
+function cmdrHints(text){
+  const lines=text.split(/\r?\n/),tagged=[],blocks=[[]];let inCmdr=false;
+  const nameOf=l=>{const m=l.trim().match(/^(?:(\d+)\s*x?\s+)?(.+?)(?:\s+\([A-Za-z0-9]+\).*|\s+\[[^\]]*\].*|\s+\*[A-Z]+\*.*|\s+#.*)?$/);return m?m[2].replace(/\s+\/\/?\s+.*/,"").trim():"";};
+  for(const raw of lines){const l=raw.trim();
+    if(!l){inCmdr=false;if(blocks[blocks.length-1].length)blocks.push([]);continue;}
+    if(/^(commanders?|commander zone)\s*:?$/i.test(l)){inCmdr=true;continue;}
+    if(/^(deck|mainboard|main|sideboard|maybeboard|companion)\s*:?$/i.test(l)||/^\/\//.test(l)){inCmdr=false;continue;}
+    if(inCmdr||/\[(commander)[^\]]*\]|\*cmdr\*|#!?commander/i.test(l))tagged.push(nameOf(l));
+    else blocks[blocks.length-1].push(nameOf(l));}
+  const last=blocks.filter(b=>b.length).pop()||[],total=blocks.reduce((a,b)=>a+b.length,0);
+  return {tagged:tagged.filter(Boolean),tail:last.length<=2&&total>last.length+20?last:[]};
+}
 async function scryfall(names,onProgress){
   const found=[],missing=[];
   for(let i=0;i<names.length;i+=75){
@@ -1068,9 +1085,13 @@ async function loadCatalog(){
   if(catState==="loading")return;
   try{const c=JSON.parse(localStorage.getItem("deckhud.catalog")||"null");if(c&&Date.now()-c.t<7*864e5){catalog=c.d;catState="ready";return render();}}catch(e){}
   catState="loading";render();
-  try{const r=await fetch(MTGJSON+"DeckList.json");if(!r.ok)throw 0;const j=await r.json();
-    catalog=(j.data||[]).filter(d=>/commander/i.test(d.type||"")).map(d=>({f:d.fileName,n:d.name,c:d.code,d:d.releaseDate||""}))
-      .sort((a,b)=>b.d.localeCompare(a.d));
+  try{
+    // 1) the copy on this site, built weekly by the GitHub job; 2) MTGJSON live.
+    try{const r=await fetch("precons/index.json",{cache:"no-cache"});if(!r.ok)throw 0;const j=await r.json();
+      catalog=(j.decks||[]).map(d=>({f:d.f,n:d.n,c:d.c,d:d.d||"",cm:d.cm||[],ci:d.ci||[],local:true}));if(!catalog.length)throw 0;}
+    catch(_){const r=await fetch(MTGJSON+"DeckList.json");if(!r.ok)throw 0;const j=await r.json();
+      catalog=(j.data||[]).filter(d=>/commander/i.test(d.type||"")).map(d=>({f:d.fileName,n:d.name,c:d.code,d:d.releaseDate||""}));}
+    catalog.sort((a,b)=>b.d.localeCompare(a.d));
     try{localStorage.setItem("deckhud.catalog",JSON.stringify({t:Date.now(),d:catalog}));}catch(e){}
     catState="ready";
   }catch(e){catState="error";catErr="Couldn't load the precon list. Check your connection and try again.";}
@@ -1079,10 +1100,20 @@ async function loadCatalog(){
 async function importPrecon(f){
   const meta=(catalog||[]).find(x=>x.f===f);if(!meta)return;
   catBusy=f;render();
-  try{const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;const deck=(await r.json()).data;
-    const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[]});
-    const cmdrs=(deck.commander||[]).map(conv),main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);
-    const seen=new Set(),all=[...cmdrs,...main].filter(c=>!seen.has(c.name)&&seen.add(c.name));
+  try{
+    let deck=null,cmdrs,main;
+    try{const r=await fetch("precons/decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=await r.json();
+      const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[]});
+      cmdrs=(deck.commander||[]).map(conv);main=(deck.cards||[]).map(conv);}
+    catch(_){const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=(await r.json()).data;
+      const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[]});
+      cmdrs=(deck.commander||[]).map(conv);main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);}
+    const seen=new Set(),all=[...cmdrs,...main].filter(c=>c.name&&!seen.has(c.name)&&seen.add(c.name));
+    // Any nonland card that arrived without rules text gets it from Scryfall.
+    const blank=all.filter(c=>!c.oracle_text&&!/\bland\b/i.test(c.type_line));
+    if(blank.length){try{const {found}=await scryfall(blank.map(c=>c.name));
+      found.forEach(fc=>{const t=all.find(c=>normName(c.name)===normName(fc.name));if(t){const fx=fc.card_faces&&!fc.oracle_text?fc.card_faces:[fc];
+        t.oracle_text=fx.map(x=>x.oracle_text||"").join("\n");t.type_line=fc.type_line||t.type_line;t.color_identity=fc.color_identity||t.color_identity;}});}catch(_){}}
     const cmdr=cmdrs[0]?cmdrs[0].name.split(" // ")[0]:"";
     const b=buildFromCards(all,{cmdr,colors:cmdrs.length?["W","U","B","R","G"].filter(x=>cmdrs.some(c=>c.color_identity.includes(x))):[]});
     const d={id:"m-"+f,name:deck.name||meta.n,set:meta.c+(meta.d?" ("+meta.d.slice(0,4)+")":""),cmdr,imported:true,
@@ -1096,10 +1127,10 @@ function catalogHtml(){
   if(catState==="loading")return `<p class="status">Loading the precon list…</p>`;
   if(catState==="error")return `<p class="status err">${esc(catErr)}</p><button class="btn" data-act="browse">Try again</button>`;
   const q=catQuery.trim().toLowerCase();
-  const hits=(catalog||[]).filter(d=>!q||d.n.toLowerCase().includes(q)||d.c.toLowerCase()===q).slice(0,q?60:24);
-  return `<input type="text" id="cat-q" placeholder="Search by deck name or set code" value="${esc(catQuery)}" aria-label="Search precons">
+  const hits=(catalog||[]).filter(d=>!q||d.n.toLowerCase().includes(q)||d.c.toLowerCase()===q||(d.cm||[]).some(n=>n.toLowerCase().includes(q))).slice(0,q?60:24);
+  return `<input type="text" id="cat-q" placeholder="Search by deck, commander, or set code" value="${esc(catQuery)}" aria-label="Search precons">
     ${catErr?`<p class="status err">${esc(catErr)}</p>`:""}
-    <div class="catlist">${hits.map(d=>`<button class="catrow" data-precon="${esc(d.f)}"${catBusy?" disabled":""}><span class="cn">${esc(d.n)}</span><span class="cm">${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?"Loading…":"Play"}</span></button>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
+    <div class="catlist">${hits.map(d=>`<button class="catrow" data-precon="${esc(d.f)}"${catBusy?" disabled":""}><span class="cn">${esc(d.n)}</span><span class="cm">${d.cm&&d.cm.length?esc(d.cm.join(" & "))+" · ":""}${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?"Loading…":"Play"}</span></button>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
     <p class="status">${q?"":"Newest first. Search to find older decks. "}Effects are read from each card's rules text automatically, so check unusual cards.</p>`;
 }
 
@@ -1110,8 +1141,14 @@ async function suggest(){
   aiStatus=`Looking up ${names.length} cards…`;render();
   try{
     const {found,missing}=await scryfall(names,(a,b)=>{const el=document.querySelector("#ai-box .status");if(el)el.textContent=`Looking up cards… ${a} of ${b}`;});
+    let picked="";
+    if(!draft.cmdr){const h=cmdrHints(draft.list||""),canLead=c=>/legendary.*creature|can be your commander/i.test((c.type_line||"")+" "+(c.oracle_text||""));
+      const pick=names=>found.filter(c=>names.some(n=>normName(n)===normName(c.name))&&canLead(c));
+      const hit=pick(h.tagged).length?pick(h.tagged):pick(h.tail);
+      if(hit.length){draft.cmdr=hit[0].name.split(" // ")[0];picked=hit.map(c=>c.name.split(" // ")[0]).join(" & ");
+        if(hit.length>1&&!(draft.colors||[]).length)draft.colors=["W","U","B","R","G"].filter(x=>hit.some(c=>(c.color_identity||[]).includes(x)));}}
     const b=buildFromCards(found,draft);Object.assign(draft,b);
-    aiStatus=`Found ${found.length} cards: ${draft.cards.length} with effects, ${draft.groups.length} token types.`+(missing.length?` Couldn't find: ${missing.slice(0,4).join(", ")}${missing.length>4?"…":""}.`:"")+" Adjust anything below.";
+    aiStatus=(picked?`Commander found: ${picked}. `:(!draft.cmdr?"No commander found in the list, so type it in the Commander field and import again. ":""))+`Found ${found.length} cards: ${draft.cards.length} with effects, ${draft.groups.length} token types.`+(missing.length?` Couldn't find: ${missing.slice(0,4).join(", ")}${missing.length>4?"…":""}.`:"")+" Adjust anything below.";
   }catch(e){aiStatus="Couldn't reach Scryfall. Check your connection and try again.";}
   render();
 }
@@ -1127,7 +1164,7 @@ app.addEventListener("click",e=>{
   if(ds.mode&&g){g.dmgMode=ds.mode;save();return render();}
   if(ds.opp!=null&&g){const o=g.opps[ds.opp],n=Number(ds.amt);g.last={i:Number(ds.opp),life:o.life,cd:o.cd};
     o.life+=n;if(n<0&&g.dmgMode==="cmdr")o.cd+=-n;save();return render();}
-  if(ds.delopp!=null&&g){if(g.opps.length>1){g.opps.splice(Number(ds.delopp),1);g.last=null;save();}return render();}
+  if(ds.delopp!=null&&g){if(g.opps.length>1){g.opps.splice(Number(ds.delopp),1);renumberOpps(g);g.last=null;save();}return render();}
   if(ds.k&&g){g.vals[ds.k]=(g.vals[ds.k]||0)+Number(ds.n);if(!ds.k.startsWith("life")&&g.vals[ds.k]<0)g.vals[ds.k]=0;save();return render();}
   if(ds.ph&&g){g.phase=ds.ph;save();return render();}
   if(ds.flag&&g){g.flags[ds.flag]=!g.flags[ds.flag];save();return render();}
@@ -1177,7 +1214,7 @@ app.addEventListener("click",e=>{
       if(!/^[a-z0-9]{3,12}$/.test(code)){tableErr="Use a code of 3 to 12 letters or numbers.";return refreshTable();}
       S.table={nick:nick||"Player",code};save();joinTable(code);return;}
     case "leavetable":leaveTable();S.table={...(S.table||{}),code:""};save();return refreshTable();
-    case "addopp":g.opps.push({name:"Opponent "+(g.opps.length+1),life:40,cd:0});save();break;
+    case "addopp":g.opps.push({name:"Opponent",life:40,cd:0});renumberOpps(g);save();break;
     case "undoopp":if(g.last&&g.opps[g.last.i]){g.opps[g.last.i].life=g.last.life;g.opps[g.last.i].cd=g.last.cd;}g.last=null;save();break;
     case "closeterm":termOpen=null;break;
     case "glossary":glossBack=view==="glossary"?glossBack:view;termOpen=null;view="glossary";window.scrollTo({top:0});break;
