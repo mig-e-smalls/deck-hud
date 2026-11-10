@@ -582,6 +582,20 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .cost{display:inline-flex;align-items:center;gap:3px;line-height:1}
 .cost .sym{width:1.4em;height:1.4em;font-size:.85em;margin:0}
 .gyact .btn .sym,.gyab .sym{margin-top:0}
+.decks .deck{cursor:default}
+.dfoot{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.btn.sm{padding:7px 12px;font-size:.9rem}
+.vgroup h2{display:flex;gap:8px;align-items:baseline;color:#f3e6c6}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.vcard{position:relative;display:flex;align-items:flex-end;min-height:64px;padding:8px 10px;border-radius:9px;text-align:left;overflow:hidden;
+  background:#efe2c4;color:#2b2016;border:2px solid #0e0b08;box-shadow:0 0 0 2px #3a2f24;font:inherit}
+.vcard .vart{position:absolute;inset:0;background-size:cover;background-position:center 30%;opacity:.9}
+.vcard .vart+.vname{color:#fff;text-shadow:0 1px 3px #000,0 0 8px rgba(0,0,0,.8)}
+.vcard .vname{position:relative;font-family:var(--display);font-weight:800;font-size:.92rem;line-height:1.2}
+.vcard .vq{position:absolute;top:6px;right:8px;font-family:var(--display);font-weight:800;font-size:.85rem;background:#f8eed6;color:#24190f;border:1px solid #2a221b;border-radius:5px;padding:0 5px}
+@media (hover:hover){.vcard:hover{filter:brightness(1.08)}}
+.v-deckview{max-width:1100px}
+.catrow .cg{display:flex;gap:6px;align-items:center}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -610,7 +624,84 @@ const MODS={
 
 // Starter precon library. Reminders are paraphrased; check them against your cards.
 const PRECONS=[
-  {id:"p-necron",colors:["B"],name:"Necron Dynasties",set:"Warhammer 40,000 Commander (2022)",cmdr:"Szarekh, the Silent King",
+  {id:"p-necron",list:`Commander:
+1 Szarekh, the Silent King
+Creatures:
+1 Anrakyr the Traveller
+1 Canoptek Scarab Swarm
+1 Canoptek Spyder
+1 Canoptek Tomb Sentinel
+1 Canoptek Wraith
+1 Chronomancer
+1 Cryptek
+1 Cryptothrall
+1 Flayed One
+1 Hexmark Destroyer
+1 Illuminor Szeras
+1 Imotekh the Stormlord
+1 Lokhust Heavy Destroyer
+1 Lychguard
+1 Necron Deathmark
+1 Necron Overlord
+1 Plasmancer
+1 Psychomancer
+1 Royal Warden
+1 Sautekh Immortal
+1 Shard of the Nightbringer
+1 Shard of the Void Dragon
+1 Skorpekh Destroyer
+1 Skorpekh Lord
+1 Technomancer
+1 Tomb Blade
+1 Trazyn the Infinite
+1 Triarch Praetorian
+1 Triarch Stalker
+Artifacts:
+1 Arcane Signet
+1 Caged Sun
+1 Commander's Sphere
+1 Convergence of Dominion
+1 Cranial Plating
+1 Endless Atlas
+1 Ghost Ark
+1 Gilded Lotus
+1 Hedron Archive
+1 Mask of Memory
+1 Mind Stone
+1 Mystic Forge
+1 Necron Monolith
+1 Night Scythe
+1 Resurrection Orb
+1 Sceptre of Eternal Glory
+1 Sculpting Steel
+1 Sol Ring
+1 Thought Vessel
+1 Unstable Obelisk
+1 Wayfarer's Bauble
+Enchantments:
+1 Biotransference
+1 Out of the Tombs
+1 The War in Heaven
+Instants:
+1 Darkness
+1 Defile
+1 Go for the Throat
+Sorceries:
+1 Beacon of Unrest
+1 Dread Return
+1 Living Death
+1 Mutilate
+1 Their Name Is Death
+1 Their Number Is Legion
+Lands:
+1 Barren Moor
+1 Desert of the Glorified
+1 Myriad Landscape
+1 Polluted Mire
+1 Reliquary Tower
+30 Swamp
+1 Tomb Fortress
+1 Vault of Whispers`,colors:["B"],name:"Necron Dynasties",set:"Warhammer 40,000 Commander (2022)",cmdr:"Szarekh, the Silent King",
    mods:["life","cmdr"],custom:[],groups:[{name:"Necron Warrior tokens",p:2,t:2},{name:"Insect tokens",p:1,t:1}],
    sources:[{name:"Lands",amt:1,n:1}],
    rem:[["combat","Szarekh attacks: mill 3. You may put an artifact creature or Vehicle milled this way into your hand."]],
@@ -809,6 +900,7 @@ function render(){
   if(view==="hud"&&S.game){renderHud();try{pushPresence();}catch(_){}}
   else if(view==="setup")renderSetup();
   else if(view==="glossary")renderGlossary();
+  else if(view==="deckview"&&deckView)renderDeckView();
   else renderHome();
   if(cardOpen)app.insertAdjacentHTML("beforeend",cardSheet());
   if(termOpen&&GL[termOpen])app.insertAdjacentHTML("beforeend",`<div class="sheet-bg" data-act="closeterm"></div>
@@ -834,11 +926,11 @@ function cardSheet(){
   const plain=faces.map(f=>f.oracle_text||"").join(" ").replace(/\([^)]*\)/g,"").replace(/\s+/g," ").toLowerCase();
   const live=c.fx.filter(t=>!plain.includes(String(t).replace(/\s+/g," ").toLowerCase().slice(0,60)));
   const img=imgOf(info,"normal");
-  const who=c.owner==="Player"||c.owner===((S.table&&S.table.nick)||"Player")?"Your":esc(c.owner)+"'s";
+  const who=c.label?esc(c.label)+" ·":c.owner==="Player"||c.owner===((S.table&&S.table.nick)||"Player")?"Your":esc(c.owner)+"'s";
   return `<div class="sheet-bg" data-act="closecard"></div><div class="cardsheet${img?" hasimg":""}" role="dialog" aria-modal="true" aria-label="${esc(c.n)}">
     ${img?`<div class="cs-img"><img src="${img}" alt="${esc(c.n)}" loading="lazy"></div>`:""}
     <div class="cs-body">
-      <span class="eyebrow">${who} ${c.cat==="Token"?"token":"card"}${c.q>1?` · ×${c.q} on the battlefield`:""}</span>
+      <span class="eyebrow">${c.label?"From "+esc(c.label):who+" "+(c.cat==="Token"?"token":"card")}${c.q>1?` · ×${c.q} on the battlefield`:""}</span>
       <div class="cshead"><h2>${esc(c.n)}</h2>${info&&info.mana_cost?`<span class="cost">${manaSyms(info.mana_cost)}</span>`:""}</div>
       <div class="cstype"><span>${esc(typeLine)}</span>${pt?`<span class="mcpt big">${esc(pt)}</span>`:""}</div>
       ${rules?`<div class="cstext">${rules}</div>`:c.loading?`<p class="status">Loading rules text…</p>`:""}
@@ -869,11 +961,11 @@ function renderGlossary(){
 function deckRow(d){
   const chips=d.mods.filter(m=>MODS[m]&&!["life","cmdr"].includes(m)).map(m=>`<span class="chip">${esc(MODS[m].label)}</span>`)
     .concat((d.custom||[]).map(c=>`<span class="chip">${esc(c)}</span>`)).join("");
-  return `<button class="deck" data-start="${esc(d.id)}" style="${styleVars(d.colors)}">
+  return `<div class="deck" style="${styleVars(d.colors)}">
     <span class="name"><span>${esc(d.name)}</span><span class="dpips">${pips(d.colors)}</span></span>
     <span class="meta">${esc(d.cmdr||"")}${d.set?" · "+esc(d.set):""}</span>
     <span class="chips">${chips}</span>
-    <span class="go">Play</span></button>`;
+    <span class="dfoot"><button class="btn ghost sm" data-viewdeck="${esc(d.id)}">View cards</button><button class="btn primary sm" data-start="${esc(d.id)}">Play</button></span></div>`;
 }
 function renderHome(){
   const mine=S.decks;
@@ -882,7 +974,7 @@ function renderHome(){
     <p class="muted">Pick a deck. Trackers and trigger reminders load for that deck only.</p><div class="row"><button class="link" data-act="glossary">Keyword glossary</button></div></header>
   <section class="panel tablehome" id="tablepanel">${tableInner()}</section>
   ${S.game?`<div class="confirm"><div class="spread"><span>Game in progress: <b>${esc(S.game.deck.name)}</b>, turn ${S.game.turn}</span>
-    <button class="btn primary" data-act="resume">Resume</button></div></div>`:""}
+    <div class="row">${confirmReset==="endhome"?`<button class="btn danger" data-act="doend">End game</button><button class="btn ghost" data-act="noreset">Cancel</button>`:`<button class="btn ghost" data-act="endhome">End game</button><button class="btn primary" data-act="resume">Resume</button>`}</div></div></div>`:""}
   <section class="field"><h2>All precons</h2><div id="catalog" class="field">${catalogHtml()}</div></section>
   <section class="field"><div class="spread"><h2>Hand-built precons</h2></div>
     <div class="decks">${PRECONS.map(deckRow).join("")}</div>
@@ -1036,6 +1128,7 @@ async function fetchArt(){
     if(!r.ok)throw 0;const j=await r.json();
     (j.data||[]).forEach(d=>{cardCache.set(d.name.toLowerCase(),d);cardCache.set(d.name.split(" // ")[0].toLowerCase(),d);});
     (j.not_found||[]).forEach(x=>cardCache.set(String(x.name).toLowerCase(),null));
+    if(view==="deckview"&&!cardOpen)render();
     refreshTable();if(view==="hud"&&!cardOpen&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))&&document.querySelector(".gypanel .gychip"))render();
     if(cardOpen&&!cardOpen.data){const d=cardCache.get(cardOpen.n.toLowerCase());if(d){cardOpen.data=d;cardOpen.loading=false;render();}}
   }catch(_){artOff=true;}
@@ -1085,6 +1178,43 @@ function matHtml(b,mine){
     <div class="mfoot">${mana?`<span class="mpill">Mana ${mana[0]} of ${mana[1]} open</span>`:""}${b.cmdr&&b.cmdrOn===false?`<span class="mpill">Commander in command zone</span>`:""}</div>
     ${fx.length?`<div class="mfx"><span class="mlbl">Effects (${fx.length})</span>${fx.map(t=>{const m=t.match(/^([^:]{2,40}): (.+)$/);return m?`<p><b>${esc(m[1])}</b> ${gl(m[2])}</p>`:`<p>${gl(t)}</p>`;}).join("")}</div>`:""}
   </section>`;
+}
+
+// Deck viewer: every card in a deck, grouped by type. Tap a card to read it.
+let deckView=null;
+const VIEW_ORDER=["Commander","Creatures","Planeswalkers","Artifacts","Enchantments","Instants","Sorceries","Battles","Lands","Other"];
+function deckEntries(d){
+  const out=[];let sec="";
+  String(d.list||"").split(/\r?\n/).forEach(raw=>{const l=raw.trim();if(!l)return;
+    const h=l.match(/^([A-Za-z ]+):$/);if(h){sec=h[1].trim();return;}
+    const m=l.match(/^(\d+)\s*x?\s+(.+?)(?:\s+\([A-Za-z0-9]+\).*|\s+\[[^\]]*\].*|\s+\*[A-Z]+\*.*)?$/);
+    const n=(m?m[2]:l).replace(/\s+\/\/?\s+.*/,"").trim();if(n&&!/^(deck|sideboard|mainboard|maybeboard)$/i.test(n))out.push({n,q:m?+m[1]:1,sec});});
+  if(!out.length){[...(d.cmdr?[d.cmdr]:[]),...cardList(d)].forEach(n=>out.push({n,q:1,sec:""}));}
+  const seen=new Map();out.forEach(e=>{const k=e.n.toLowerCase();if(seen.has(k))seen.get(k).q+=e.q;else seen.set(k,e);});
+  return [...seen.values()];
+}
+function viewCat(d,e){
+  if(d.cmdr&&isCmdr(d,e.n))return "Commander";
+  const sec=VIEW_ORDER.find(k=>k.toLowerCase()===String(e.sec).toLowerCase());if(sec)return sec;
+  const cc=cardCache.get(e.n.toLowerCase());const t=cc&&(cc.type_line||"");
+  if(t){for(const [re,k] of [[/creature/i,"Creatures"],[/planeswalker/i,"Planeswalkers"],[/land/i,"Lands"],[/instant/i,"Instants"],[/sorcery/i,"Sorceries"],[/battle/i,"Battles"],[/artifact/i,"Artifacts"],[/enchantment/i,"Enchantments"]])if(re.test(t))return k;}
+  const c=cardInfo(d,e.n),cat=c&&c.cat;
+  return {Creatures:"Creatures",Vehicles:"Artifacts",Mana:"Artifacts",Artifacts:"Artifacts",Enchantments:"Enchantments"}[cat]||(/^(swamp|island|forest|mountain|plains|wastes)$/i.test(e.n)?"Lands":"Other");
+}
+function openDeckView(d,back){deckView={d,back:back||view};view="deckview";window.scrollTo({top:0});render();}
+function renderDeckView(){
+  const {d}=deckView;const es=deckEntries(d);mcInfo={};
+  es.forEach(e=>{if(!cardCache.has(e.n.toLowerCase())&&standaloneArt)wantArt(e.n);});
+  const groups=VIEW_ORDER.map(k=>[k,es.filter(e=>viewCat(d,e)===k)]).filter(([k,a])=>a.length);
+  const total=es.reduce((a,e)=>a+e.q,0);
+  const tile=e=>{const id="v"+(++mcSeq);mcInfo[id]={n:e.n,cat:"Card",pt:"",q:0,owner:d.name,fx:[],label:d.name};
+    const art=imgOf(cardCache.get(e.n.toLowerCase()),"art_crop");
+    return `<button class="vcard" data-mcid="${id}">${art?`<span class="vart" style="background-image:url('${art}')"></span>`:""}<span class="vname">${esc(e.n)}</span>${e.q>1?`<span class="vq">×${e.q}</span>`:""}</button>`;};
+  app.innerHTML=`<header class="field"><span class="eyebrow">${esc(d.set||"Deck")}</span><h1>${esc(d.name)}</h1>
+    <p class="muted">${d.cmdr?esc(d.cmdr)+" · ":""}${total} cards</p>
+    <div class="row"><button class="btn" data-act="closedeck">Back</button>${d.id&&allDecks().some(x=>x.id===d.id)?`<button class="btn primary" data-start="${esc(d.id)}">Play this deck</button>`:d._f?`<button class="btn primary" data-precon="${esc(d._f)}">Play this deck</button>`:""}</div></header>
+    ${groups.map(([k,a])=>`<section class="field vgroup"><h2>${k} <span class="muted">${a.reduce((s,e)=>s+e.q,0)}</span></h2><div class="vgrid">${a.map(tile).join("")}</div></section>`).join("")}
+    <p class="note">Tap a card to read it.</p>`;
 }
 function renderHud(){
   const g=S.game;
@@ -1209,8 +1339,9 @@ function renderHud(){
   ${watchHtml}
   </div>
   <div class="bar"><button class="btn" data-act="back">Decks</button><button class="btn primary" data-act="next">Pass turn</button></div>
-  ${confirmReset?`<div class="confirm"><span>Reset every tracker and go back to turn 1?</span><div class="row"><button class="btn danger" data-act="doreset">Reset game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
-   :`<div class="row"><button class="btn ghost" data-act="reset">New game</button><button class="btn ghost" data-act="glossary">Glossary</button></div>`}`;
+  ${confirmReset==="end"?`<div class="confirm"><span>End this game? Your saved decks stay, but this game's life, board and turn are cleared.</span><div class="row"><button class="btn danger" data-act="doend">End game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
+   :confirmReset?`<div class="confirm"><span>Restart ${esc(d.name)} from turn 1 with fresh life and an empty board?</span><div class="row"><button class="btn danger" data-act="doreset">Restart game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
+   :`<div class="row"><button class="btn ghost" data-act="reset">Restart game</button><button class="btn ghost" data-act="endgame">End game</button><button class="btn ghost" data-act="glossary">Glossary</button></div>`}`;
 }
 
 function renderSetup(){
@@ -1380,7 +1511,7 @@ async function loadCatalog(){
   }catch(e){catState="error";catErr="Couldn't load the precon list. Check your connection and try again.";}
   render();
 }
-async function importPrecon(f){
+async function importPrecon(f,viewOnly){
   const meta=(catalog||[]).find(x=>x.f===f);if(!meta)return;
   catBusy=f;render();
   try{
@@ -1401,6 +1532,7 @@ async function importPrecon(f){
     const b=buildFromCards(all,{cmdr,colors:cmdrs.length?["W","U","B","R","G"].filter(x=>cmdrs.some(c=>c.color_identity.includes(x))):[]});
     const d={id:"m-"+f,name:deck.name||meta.n,set:meta.c+(meta.d?" ("+meta.d.slice(0,4)+")":""),cmdr,imported:true,
       list:all.map(c=>"1 "+c.name).join("\n"),custom:[],...b};
+    if(viewOnly){catBusy=null;d._f=f;openDeckView(d,"home");return;}
     const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.unshift(d);save();
     catBusy=null;startGame(d);
   }catch(e){catBusy=null;catErr="Couldn't load that deck. Try again in a moment.";render();}
@@ -1413,7 +1545,7 @@ function catalogHtml(){
   const hits=(catalog||[]).filter(d=>!q||d.n.toLowerCase().includes(q)||d.c.toLowerCase()===q||(d.cm||[]).some(n=>n.toLowerCase().includes(q))).slice(0,q?60:24);
   return `<input type="text" id="cat-q" placeholder="Search by deck, commander, or set code" value="${esc(catQuery)}" aria-label="Search precons">
     ${catErr?`<p class="status err">${esc(catErr)}</p>`:""}
-    <div class="catlist">${hits.map(d=>`<button class="catrow" data-precon="${esc(d.f)}"${catBusy?" disabled":""}><span class="cn">${esc(d.n)}</span><span class="cm">${d.cm&&d.cm.length?esc(d.cm.join(" & "))+" · ":""}${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?"Loading…":"Play"}</span></button>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
+    <div class="catlist">${hits.map(d=>`<div class="catrow"><span class="cn">${esc(d.n)}</span><span class="cm">${d.cm&&d.cm.length?esc(d.cm.join(" & "))+" · ":""}${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?`<span class="status">Loading…</span>`:`<button class="btn ghost sm" data-catview="${esc(d.f)}"${catBusy?" disabled":""}>Cards</button><button class="btn primary sm" data-precon="${esc(d.f)}"${catBusy?" disabled":""}>Play</button>`}</span></div>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
     <p class="status">${q?"":"Newest first. Search to find older decks. "}Effects are read from each card's rules text automatically, so check unusual cards.</p>`;
 }
 
@@ -1443,6 +1575,8 @@ app.addEventListener("click",e=>{
   const term=e.target.closest(".term");if(term){e.stopPropagation();termOpen=term.dataset.term;return render();}
   const b=e.target.closest("button")||e.target.closest("[data-done],[data-act]");if(!b)return;
   const g=S.game,ds=b.dataset;
+  if(ds.viewdeck){const d=allDecks().find(x=>x.id===ds.viewdeck);if(d)openDeckView(d,"home");return;}
+  if(ds.catview){catErr="";importPrecon(ds.catview,true);return;}
   if(ds.precon){catErr="";importPrecon(ds.precon);return;}
   if(ds.start){const d=allDecks().find(x=>x.id===ds.start);if(d)startGame(d);return;}
   if(ds.edit){const d=S.decks.find(x=>x.id===ds.edit);draft={...JSON.parse(JSON.stringify(d)),existing:true};aiStatus="";view="setup";return render();}
@@ -1495,7 +1629,11 @@ app.addEventListener("click",e=>{
   if(ds.delrem!=null){syncDraft();draft.rem.splice(Number(ds.delrem),1);return render();}
   if(ds.color&&view==="setup"){syncDraft();const c=ds.color,cs=draft.colors||[];draft.colors=["W","U","B","R","G"].filter(x=>x===c?!cs.includes(x):cs.includes(x));return render();}
   switch(ds.act){
-    case "resume":view="hud";wake();break;
+    case "resume":confirmReset=false;view="hud";wake();break;
+    case "endgame":confirmReset="end";break;
+    case "endhome":confirmReset="endhome";break;
+    case "doend":confirmReset=false;S.game=null;cardOpen=null;save();view="home";window.scrollTo({top:0});break;
+    case "closedeck":view=deckView&&deckView.back==="home"?"home":(deckView&&deckView.back)||"home";deckView=null;window.scrollTo({top:0});break;
     case "new":draft={id:"u-"+Date.now(),colors:[],name:"",cmdr:"",mods:["life","cmdr"],custom:[],rem:[],list:""};aiStatus="";view="setup";break;
     case "cancel":view="home";break;
     case "back":view="home";confirmReset=false;break;
