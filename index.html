@@ -424,6 +424,68 @@ html{-webkit-text-size-adjust:100%}
 .v-hud>*{margin-bottom:0!important}
 .zone{display:flex;flex-direction:column;gap:18px}
 .zonehead{font-family:var(--display);font-weight:800;font-size:1.2rem;color:#f3e6c6;margin:8px 0 -4px;padding-bottom:6px;border-bottom:1px solid #4a3d2f}
+.otk{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(0,0,0,.18);font-size:.82rem}
+.tkrow{display:flex;align-items:center;gap:8px}.tkrow.hot b,.mepoison.hot b{color:#a3261c}
+.tkbtns{display:inline-flex;gap:4px}.tkbtns button{min-width:30px;padding:2px 8px;border-radius:8px;border:1px solid rgba(0,0,0,.35);background:rgba(255,255,255,.5);color:inherit;font:inherit;font-weight:700;cursor:pointer}
+.mepoison{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:.9rem}
+.meout{margin:6px 0 0;font-weight:700;color:#a3261c}
+.ocds{display:flex;flex-direction:column;gap:2px}
+.link.sm{font-size:.8rem}
+.stp.ctr{margin-left:4px}.card .stp.ctr{flex:none}
+.mcctr{position:absolute;left:3px;bottom:3px;padding:0 5px;border-radius:8px;background:#2e6b3a;color:#fff;font:700 .7rem/1.5 var(--display)}
+.mat.active{box-shadow:0 0 0 3px #0e0b08,0 0 0 6px #f0c75e,0 10px 24px rgba(0,0,0,.55)!important}
+.mroles{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.mrole{padding:1px 8px;border-radius:999px;background:rgba(240,199,94,.2);border:1px solid rgba(240,199,94,.6);color:#f3e6c4;font-size:.72rem;font-weight:700}
+.mrole.turn{background:#f0c75e;color:#221803}.mrole.poison{background:rgba(120,190,90,.22);border-color:rgba(120,190,90,.7)}
+.panel.shared{column-span:all}
+.shturn{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.06)}
+.shturn.on{background:rgba(240,199,94,.35)}
+.seats-ed{margin-top:8px}.seats-ed ol{margin:4px 0 0;padding-left:24px}
+.seats-ed li{padding:3px 0}.seats-ed li>span:first-child{display:inline-block;min-width:9em}.seats-ed li.on{font-weight:700}
+.seats-ed em{font-size:.8em;opacity:.7}.seats-ed .tkbtns button:disabled{opacity:.3;cursor:default}
+.shroles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px;margin-top:8px}
+.shrole{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid rgba(0,0,0,.15)}
+.shrole.on{border-color:#b98a1e;background:rgba(240,199,94,.22)}
+.sess{margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,.18);display:flex;flex-direction:column;gap:8px}
+.sess.off{flex-direction:row;justify-content:space-between;align-items:center;font-size:.9rem}
+.sstand{width:100%;border-collapse:collapse;font-size:.95rem}.sstand th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;opacity:.7;padding:2px 6px}
+.panel .sstand,.panel .sstand th,.panel .sstand td{color:#2b2016}
+.sstand td{padding:5px 6px;border-top:1px solid rgba(0,0,0,.12)}.sstand tr.lead td{background:rgba(240,199,94,.25)}.sstand tr.away{opacity:.6}.sstand em{font-size:.8em}
+.sstand td.tkbtns{text-align:right;display:table-cell;white-space:nowrap}
+.slast,.snext,.spick{margin:0;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.06)}
+.snext{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(240,199,94,.35)}
+.spick{display:flex;flex-direction:column;gap:6px}.spick .row{flex-wrap:wrap}
+.sline ol{margin:4px 0 6px;padding-left:22px}.sline li{padding:2px 0}.sline .x{vertical-align:middle}
+.srule{display:block;margin-top:8px;font-size:.88rem}
+.tvbreak{align-items:center;justify-content:center}
+.tvboard{min-width:min(680px,90%);padding:28px 36px;border-radius:20px;background:rgba(0,0,0,.4);border:1px solid rgba(233,220,184,.3);color:#f3e6c4;text-align:center}
+.tvboard h1{font-size:3rem;margin:6px 0 16px;color:#f0c75e}.tvboard .eyebrow{color:#cdbb8c}
+.tvboard .sstand{font-size:1.5rem;color:#f3e6c4}.tvboard .sstand td{border-color:rgba(233,220,184,.2);padding:10px 12px}.tvboard .sstand th{color:#cdbb8c}
+.tvboard .sstand tr.lead td{background:rgba(240,199,94,.18)}
+.tvup{font-size:1.4rem;margin:18px 0 4px}.tvline{margin:6px 0 0;color:#cdbb8c;font-size:1.1rem}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.modebtn{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.25);background:rgba(255,255,255,.35);color:#2b2016;font:inherit;cursor:pointer}
+.modebtn b{font-family:var(--display)}.modebtn span{font-size:.85rem;opacity:.8}
+.modebtn[aria-pressed="true"]{border-color:#8a6212;background:rgba(240,199,94,.4);box-shadow:inset 0 0 0 1px #8a6212}
+.simpanel{column-span:all}.simnums{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.simnum{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:12px;background:rgba(0,0,0,.06)}
+.simnum b{font-family:var(--display);font-size:1.7rem}
+.simacts{flex-wrap:wrap;margin-top:10px}
+.dighand{margin-top:10px}.hcards{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.hcard{padding:8px 10px;border-radius:9px;border:1px solid rgba(0,0,0,.35);border-left:5px solid #7b6a4a;background:#fbf4e1;color:#2b2016;font:600 .88rem var(--body,inherit);cursor:pointer;text-align:left}
+.hcard.hk-land{border-left-color:#3d7a4a}.hcard.hk-spell{border-left-color:#2a5d8a}
+.hcard.on{background:#f0d58a;box-shadow:0 0 0 2px #8a6212}
+.digact,.diglook,.digfind{margin-top:10px;padding:10px;border-radius:12px;background:rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px}
+.digact .row,.lrow .row{flex-wrap:wrap;gap:6px}
+.lrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-top:1px solid rgba(0,0,0,.1)}
+.lrow[hidden]{display:none}
+.flist{max-height:260px;overflow-y:auto}
+.ctltag{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;font-size:.72rem;font-weight:700;background:#a3261c;color:#fff;vertical-align:middle}
+.ctltag.mine{background:#2a5d8a}
+.cs-ctl{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px 0}
+.tvstate{font-size:1rem;color:#f0c75e;font-weight:700}
+.t .opt{font-weight:400;opacity:.7;font-size:.85em}
+.cdfix{margin-left:6px;padding:1px 7px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit;font-size:.8rem;cursor:pointer;opacity:.8}
 .zonehead.theirs{color:#c9d6e2;border-bottom-color:#3d4a55}
 .zone.theirs .panel{--ring:#8ea3b5;--namebar:linear-gradient(180deg,#dfe7ee 0%,#b9c7d3 100%)}
 @media (min-width:760px){
@@ -449,14 +511,14 @@ html{-webkit-text-size-adjust:100%}
 }
 /* Board areas: cards and effects get the most room, buffs stay compact */
 @media (min-width:760px){
-  .zone.mine{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "togs togs" "tiles tiles"}
-  .zone.mine>.turnlist{grid-area:turn}.zone.mine>.cmdr{grid-area:cmdr}.zone.mine>.cardspanel{grid-area:cards}
+  .zone.mine{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"field field" "turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "togs togs" "tiles tiles"}
+  .zone.mine>.mybf{grid-area:field}.zone.mine>.turnlist{grid-area:turn}.zone.mine>.cmdr{grid-area:cmdr}.zone.mine>.cardspanel{grid-area:cards}
   .zone.mine>.fx{grid-area:fx}.zone.mine>.creapanel{grid-area:crea}.zone.mine>.buffpanel{grid-area:buff;grid-column:auto!important}
   .zone.mine>.toggles.wide{grid-area:togs}.zone.mine>.tiles{grid-area:tiles}
   .zone.mine>.cardspanel,.zone.mine>.fx{min-height:180px}
 }
 @media (min-width:1180px){
-  .zone.mine{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"turn turn turn" "cmdr cards cards" "crea fx fx" "buff fx fx" "togs togs togs" "tiles tiles tiles";align-items:stretch}
+  .zone.mine{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"field field field" "turn turn turn" "cmdr cards cards" "crea fx fx" "buff fx fx" "togs togs togs" "tiles tiles tiles";align-items:stretch}
   .zone.mine>.buffpanel{align-self:start}
 }
 /* Battlefield mats */
@@ -488,6 +550,12 @@ html{-webkit-text-size-adjust:100%}
 .mc-creatures{--mcart:#6d5a43}.mc-vehicles{--mcart:#5f6b74}.mc-token{--mcart:#4f5d4a}
 .mc-mana{--mcart:#9a9488}.mc-artifacts{--mcart:#7b7f86}.mc-enchantments{--mcart:#7a6a8c}.mc-other{--mcart:#6a6a6a}
 .mc.tapped{transform:rotate(90deg);margin:0 15px;opacity:.8}
+.mcinfo{position:absolute;top:3px;right:3px;z-index:2;width:18px;height:18px;border-radius:50%;background:rgba(14,11,8,.78);color:#f3e6c4;font:700 .72rem/18px var(--display);text-align:center;cursor:pointer}
+.mc.tapped .mcinfo{transform:rotate(-90deg)}
+.mcinfo.inl{position:static;display:inline-block;vertical-align:middle;cursor:default}
+.mybf .mat{box-shadow:0 0 0 2px #0e0b08,0 0 0 3px var(--ring,#8ea3b5);opacity:1}
+.mybf .mat .mathead,.mybf .mat .mzones,.mybf .mat .mfoot,.mybf .mat .mfx{display:none}
+.mybf .mcards{padding:14px 6px 16px}
 .mfoot{display:flex;flex-wrap:wrap;gap:6px}
 .mpill{font-size:.78rem;padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);color:#efe2c4}
 .mfx{display:flex;flex-direction:column;gap:2px;font-size:.88rem;border-top:1px solid rgba(255,255,255,.1);padding-top:8px}
@@ -535,8 +603,8 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .mzones{display:flex;gap:6px;flex-wrap:wrap}
 .zpill{cursor:pointer;font:inherit;font-size:.8rem}
 .zpill.on{background:#c9a65a;color:#23190d;border-color:#c9a65a}
-@media (min-width:760px){.zone.mine{grid-template-areas:"turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "gy gy" "togs togs" "tiles tiles"}.zone.mine>.gypanel{grid-area:gy}}
-@media (min-width:1180px){.zone.mine{grid-template-areas:"turn turn turn" "cmdr cards cards" "crea fx fx" "buff gy gy" "togs togs togs" "tiles tiles tiles"}}
+@media (min-width:760px){.zone.mine{grid-template-areas:"field field" "turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "gy gy" "togs togs" "tiles tiles"}.zone.mine>.gypanel{grid-area:gy}}
+@media (min-width:1180px){.zone.mine{grid-template-areas:"field field field" "turn turn turn" "cmdr cards cards" "crea fx fx" "buff gy gy" "togs togs togs" "tiles tiles tiles"}}
 .addrow{position:relative}
 .sugg{grid-column:1/-1;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,.25)}
 .sugg[hidden],.sugg:empty{display:none}
@@ -598,9 +666,84 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .catrow .cg{display:flex;gap:6px;align-items:center}
 .decks .deck .btn.ghost{color:#2b2016;border-color:#a88d5c;background:transparent}
 .decks .deck .btn.ghost:hover{background:rgba(0,0,0,.05)}
+.roomseg{align-self:flex-start}
+.tjoin.three{grid-template-columns:1fr 1fr}
+.tjoin.three .btn{grid-column:1/-1}
+.tjoin:not(.three) .btn{grid-column:1/-1}
+@media (min-width:760px){.tjoin.three{grid-template-columns:1fr 1fr 1fr auto}.tjoin.three .btn{grid-column:auto}.tjoin:not(.three){grid-template-columns:1fr 1fr auto}.tjoin:not(.three) .btn{grid-column:auto}}
+.keyrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--sunk);border-radius:8px;padding:8px 10px}
+.keyrow b{font-family:var(--display);font-size:1.15rem;letter-spacing:.06em;margin-left:6px}
+#invite-text{font-size:.9rem}
+/* Tutorial */
+.tour-spot{position:fixed;z-index:40;border-radius:14px;box-shadow:0 0 0 3px #ecd08a,0 0 0 9999px rgba(8,6,4,.72);pointer-events:none;transition:all .25s ease}
+.tour-tip{position:fixed;z-index:41;background:#efe2c4;color:#2b2016;border:2px solid #0e0b08;border-radius:12px;padding:14px;box-shadow:0 0 0 3px #3a2f24,0 0 0 4px #c9a65a,0 16px 40px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:6px}
+.tour-tip h3{margin:0;font-family:var(--display);font-weight:800;font-size:1.15rem}
+.tour-tip p{margin:0;line-height:1.45}
+.tour-tip .eyebrow{color:#7a4f12}
+.tour-tip .btn{background:#e0cea4;color:#2b2016;border-color:#a88d5c}
+.tour-tip .btn.primary{background:var(--gilt);color:#23190d;border-color:#4a3a1f}
+.tour-tip .btn.ghost{background:transparent}
+.tour-tip .row{justify-content:flex-end;margin-top:4px}
+.tourcall{display:flex;justify-content:space-between;align-items:center;gap:10px}
+@media (prefers-reduced-motion:reduce){.tour-spot{transition:none}}
+/* Footer and bug report */
+.appfoot{margin-top:28px;padding-top:14px;border-top:1px solid #3a2f24;display:flex;flex-direction:column;gap:6px;font-size:.78rem;color:#8d7f66;line-height:1.45}
+.appfoot p{margin:0;max-width:75ch}
+.appfoot a{color:#b6a483}
+.appfoot .link{font-size:.9rem;color:var(--accent)}
+.bugsheet textarea,.bugsheet input[type=text]{background:#f7eed8;color:#2b2016}
+.bugsheet label.t{color:#2b2016}
+.bugsheet .check{background:transparent;border:0;padding:0;color:#2b2016}
+/* Table view: a tabletop seen from above. Seats face the middle, like players around a real table. */
+.v-tv{max-width:none!important;padding:8px max(16px,env(safe-area-inset-left,0px))}
+.tvhead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tvhead h1{margin:0;font-size:2rem}
+.tvexit{position:fixed;top:10px;right:14px;z-index:5;opacity:.55}
+.tvexit:hover{opacity:1}
+.tvtable{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:28px;
+  background:radial-gradient(130% 90% at 50% 50%,#1f3a2c 0%,#152a20 55%,#0d1a14 100%);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.6),inset 0 0 60px rgba(0,0,0,.55),0 0 0 10px #4a2f1b,0 0 0 12px #2a1a0e,0 0 0 13px #6b4628,0 14px 40px rgba(0,0,0,.6)}
+.tvtable::before{content:"";position:absolute;inset:0;pointer-events:none}
+.seats{display:flex;gap:14px;align-items:stretch}
+.seats>.mat{flex:1 1 0;min-width:0}
+.seats.far>.mat{flex-direction:column-reverse}
+.seats .mat .mathead{order:9}
+.v-tv .mat{font-size:1.05rem;box-shadow:0 0 0 3px #0e0b08,0 0 0 4px var(--ring,#8ea3b5),0 10px 24px rgba(0,0,0,.55)}
+.v-tv .mat .mfx{display:none}
+.v-tv .mlife{font-size:2.6rem}
+.v-tv .mname{font-size:1.5rem}
+.v-tv .mc{width:92px;height:128px}
+.v-tv .mc .mcn{font-size:.74rem}
+.tvcenter{display:flex;align-items:center;justify-content:center;gap:14px;color:#e9dcb8;flex:none}
+.tvcenter::before,.tvcenter::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(233,220,184,.35),transparent)}
+.tvmedal{display:flex;flex-direction:column;align-items:center;padding:8px 26px;border-radius:999px;background:rgba(0,0,0,.35);border:1px solid rgba(233,220,184,.3)}
+.tvmedal .eyebrow{color:#cdbb8c}
+.tvmedal b{font-family:var(--display);font-size:1.5rem;letter-spacing:.02em}
+.tvempty{color:#e9dcb8;text-align:center;padding:40px 10px}
+.zonehead.theirs{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.zonehead .btn{font-size:.85rem}
+@media (max-width:899px){.seats{flex-direction:column}.seats.far>.mat{flex-direction:column}.seats.far{flex-direction:column-reverse}}
+@media (min-width:900px){
+  html:has(.v-tv .tvtable),body:has(.v-tv .tvtable){overflow:hidden;height:100dvh}
+  .v-tv{height:100dvh;box-sizing:border-box;display:flex!important;flex-direction:column;padding:22px}
+  .tvwrap{flex:1;min-height:0;display:flex}
+  .tvtable{flex:1;min-height:0;position:relative}
+  .seats{flex:1 1 0;min-height:0}
+  .seats>.mat{min-height:0;overflow:hidden;gap:8px}
+  .seats .mathead,.seats .mzones,.seats .mfoot{flex:none}
+  .seats .mrow{flex:1 1 0;min-height:0;overflow:hidden;padding-top:6px;padding-bottom:6px}
+  .seats .mrow{flex-direction:row;align-items:stretch;gap:10px}
+  .seats .mrow .mlbl{font-size:.72rem;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;margin:0;flex:none;opacity:.7}
+  .seats .mrow{container-type:size}
+  .seats .mcards{flex:1;min-width:0;display:flex;flex-wrap:nowrap;align-items:center;gap:8px;overflow:hidden;padding:0}
+  .seats .mc{height:min(150px,calc(100cqh - 2px))!important;width:calc(min(150px,calc(100cqh - 2px)) * .716)!important;flex:0 1 auto;min-width:30px}
+  .seats .mzones{flex-wrap:wrap}
+  .v-tv .mc{width:76px;height:104px}
+}
 </style>
 
 <div class="wrap" id="app"></div>
+<form name="bug-report" data-netlify="true" netlify-honeypot="bot-field" hidden><input name="bot-field"><textarea name="message"></textarea><input name="contact"><input name="context"></form>
 
 <script>
 const PHASES=[["up","Upkeep"],["draw","Draw"],["m1","Main 1"],["combat","Combat"],["m2","Main 2"],["end","End"]];
@@ -805,7 +948,7 @@ let termOpen=null,glossBack="home";
 const KEY="deckhud.v1";
 let S={decks:[],game:null};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function save(){if(location.hash==="#tv")return;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 let view="home", draft=null, confirmReset=false, sampleFn=null, aiStatus="";
 const app=document.getElementById("app");
@@ -823,10 +966,15 @@ function deckReminders(d){
 // Every card that can be marked in play: rich card entries first, then cards named only on custom reminders.
 // The commander lives in the Commander panel, never in Cards in play. Match loosely: "Szarekh" = "Szarekh, the Silent King".
 const normName=n=>String(n||"").toLowerCase().split(" // ")[0].replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
-function isCmdr(d,name){const a=normName(name),b=normName(d&&d.cmdr);if(!a||!b)return false;
+function isCmdr(d,name){return cmdrMatch(name,d&&d.cmdr)||cmdrMatch(name,d&&d.cmdr2);}
+function cmdrMatch(name,cm){const a=normName(name),b=normName(cm);if(!a||!b)return false;
   return a===b||(b.length>5&&(" "+a+" ").includes(" "+b+" "))||a.startsWith(b+" ")||b.startsWith(a+" ")||a.split(" ")[0]===b&&b.length>3||b.split(" ")[0]===a&&a.length>3||a.replace(/ the .*/,"")===b.replace(/ the .*/,"");}
 function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deckReminders(d).map(r=>r.card).filter(Boolean)])].filter(n=>!isCmdr(d,n));}
 function cardInfo(d,name){return (d.cards||[]).find(c=>c.name===name)||{name};}
+// Power/toughness: what the deck stores, else what Scryfall has told this device before (kept in S.pt).
+function ptOf(d,name){const c=cardInfo(d,name);if(c&&c.pt)return String(c.pt);return (S.pt&&S.pt[baseName(name).toLowerCase()])||"";}
+function learnPT(cards){let ch=false;S.pt=S.pt||{};(cards||[]).forEach(c=>{if(!c)return;const f=c.power!=null?c:(c.card_faces&&c.card_faces[0])||{};if(f.power==null||f.toughness==null)return;
+  const k=String(c.name||"").split(" // ")[0].toLowerCase(),v=(f.power+"/"+f.toughness).slice(0,7);if(k&&S.pt[k]!==v){S.pt[k]=v;ch=true;}});if(ch)save();return ch;}
 // What a card does on the battlefield, in one line: its static and triggered abilities, without reminder text
 // or abilities that only work from hand or graveyard (cycling, flashback, unearth…).
 const OFFFIELD=/\b(?:[a-z]*cycling|flashback|unearth|embalm|eternalize|escape|encore|foretell|madness|evoke|dash|retrace|scavenge|transmute|disturb|blitz|ninjutsu|kicker|multikicker|buyback|morph|megamorph|disguise|channel|plot|aftermath|jump-start|overload|emerge|spectacle|surge|prowl|replicate|entwine|bestow)\b[\s—-]*(?:\{[^}]+\})+[^.]*?(?=\s+[A-Z]|$)/gi;
@@ -849,6 +997,112 @@ function gyAbility(d,name){
 }
 function cardSummary(c){const bits=[];if(c.mana)bits.push("taps for "+c.mana);if(c.buff)bits.push("team "+sgn(c.buff.p)+"/"+sgn(c.buff.t));
   const f=fxText(c);if(f)bits.push(f);return bits.join(" · ");}
+// Play modes. "ar": physical cards, the app tracks what helps. "sim": physical cards, the app mirrors the whole game.
+// "digital": no physical cards; the app holds the deck (Phase 4).
+const MODES=[["ar","AR companion","Real cards. Track only what helps."],["sim","Full sim, real cards","Real cards. Log every draw and play."],["digital","Full sim, no cards","The app shuffles, deals and holds your hand."]];
+const modeOf=g=>(g&&g.mode)||"ar";
+const baseName=n=>String(n||"").replace(/ \((?:copy(?: \d+)?|theirs)\)$/,"");
+function deckSize(d){if(d.imported&&!d.qfix)return 99-(d.cmdr2?1:0);const n=deckEntries(d).filter(e=>!isCmdr(d,e.n)).reduce((a,e)=>a+e.q,0);return n>=40?n:99-(d.cmdr2?1:0);}
+// Precons saved before card counts were stored get their list re-downloaded, then the game switches to no-cards.
+async function fetchPreconCards(f){let cmdrs,main;
+  try{const r=await fetch("precons/decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;const deck=await r.json();
+    const conv=c=>({name:c.n,type_line:c.t||"",q:c.q||1});cmdrs=(deck.commander||[]).map(conv);main=(deck.cards||[]).map(conv);}
+  catch(_){const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;const deck=(await r.json()).data;
+    const conv=c=>({name:c.name,type_line:c.type||"",q:c.count||1});cmdrs=(deck.commander||[]).map(conv);main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);}
+  const seen=new Set(),all=[...cmdrs,...main].filter(c=>c.name&&!seen.has(c.name)&&seen.add(c.name));
+  return {list:all.map(c=>(cmdrs.includes(c)?1:Math.max(1,Math.min(99,c.q||1)))+" "+c.name).join("\n"),kinds:kindsOf(all)};}
+async function repairImport(g){const d=g.deck;if(!d.imported||d.qfix||!/^m-/.test(d.id))return;
+  try{const fix=await fetchPreconCards(d.id.slice(2));const sv=S.decks.find(x=>x.id===d.id);
+    [d,sv].forEach(x=>{if(x){x.list=fix.list;x.kinds=fix.kinds;x.qfix=true;}});
+    if(S.game===g&&g.wantDigital&&g.turn===1&&!g.inplay.length&&!g.gy.length){delete g._sec;g.mode="digital";delete g.wantDigital;
+      if(digInit(g))g.simNote="This precon's card list was updated, so the app has shuffled and dealt your hand.";else g.mode="sim";}
+    save();if(view==="hud")render();}
+  catch(_){if(S.game===g){g.simNote="Couldn't update this precon's card list (no connection). Add it again from Browse all Commander precons to play without cards. For now this game uses Full sim with real cards.";save();if(view==="hud")render();}}}
+function simInit(g){if(g.mode==="digital"){if(digInit(g))return;g.mode="sim";
+    if(g.deck.imported&&!g.deck.qfix&&/^m-/.test(g.deck.id)){g.wantDigital=true;g.hand=7;g.lib=92-(g.deck.cmdr2?1:0);simLands(g);g.simNote="Updating this precon's card list so the app can shuffle it…";repairImport(g);return;}g.simNote=g.deck.imported?"This precon was saved before the app stored card counts. Add it again from Browse all Commander precons to play without cards. For now this game uses Full sim with real cards.":"This deck has no full card list, so the app can't shuffle it. Import a decklist to play without cards. For now this game uses Full sim with real cards.";}
+  g.hand=7;g.lib=Math.max(0,deckSize(g.deck)-7);simLands(g);}
+// In the sim modes every land is logged as it's played, so the land count starts at zero.
+function simLands(g){const l=g.sources.find(x=>/^lands?$/i.test(x.name));if(l){l.n=0;l.used=0;}}
+// ---- Full sim without cards. The library order and your hand stay on this device; only the counts are shared.
+let digSel=-1,digLook=0,digFind=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const r=new Uint32Array(1);(window.crypto&&crypto.getRandomValues)?crypto.getRandomValues(r):(r[0]=Math.random()*4294967296);const j=r[0]%(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function digDeck(d){const out=[];deckEntries(d).forEach(e=>{if(isCmdr(d,e.n))return;for(let i=0;i<Math.min(e.q,99);i++)out.push(e.n);});return out;}
+function digSync(g){g.hand=g.handCards.length;g.lib=g.libCards.length;}
+function digInit(g){const all=digDeck(g.deck);if(all.length<40||(g.deck.imported&&!g.deck.qfix))return false;g.libCards=shuffle(all);g.handCards=g.libCards.splice(0,7);digSync(g);digSel=-1;digLook=0;digFind=false;simLands(g);digPrefetch(g);return true;}
+// What kind of card is this? Uses the decklist's section headers, then anything Scryfall has told us, then basic land names.
+// Remember which cards are lands (L) or one-shot spells (S), from full card data, so a deck can be played without cards.
+function kindsOf(cards){const k={};cards.forEach(c=>{const t=c.type_line||"",n=String(c.name||"").split(" // ")[0];if(/\bland\b/i.test(t)&&!/creature/i.test(t))k[n]="L";else if(/instant|sorcery/i.test(t))k[n]="S";});return k;}
+async function digPrefetch(g){const d=g.deck;if(d.kinds||artOff)return;const names=[...new Set(digDeck(d))];
+  try{const {found}=await scryfall(names);if(S.game!==g)return;d.kinds=kindsOf(found);found.forEach(c=>cardCache.set(String(c.name).split(" // ")[0].toLowerCase(),c));
+    const sv=S.decks.find(x=>x.id===d.id);if(sv)sv.kinds=d.kinds;save();if(view==="hud")render();}catch(_){}}
+function digKind(g,n){const d=g.deck;if(d.kinds&&d.kinds[n])return d.kinds[n]==="L"?"land":"spell";g._sec=g._sec||Object.fromEntries(deckEntries(d).map(e=>[e.n,e.sec]));const k=viewCat(d,{n,sec:g._sec[n]||""});
+  return k==="Lands"?"land":(k==="Instants"||k==="Sorceries")?"spell":"perm";}
+function digPlay(g,n){const k=digKind(g,n);
+  if(k==="land"){const l=g.sources.find(x=>/^lands?$/i.test(x.name));if(l)l.n++;else g.sources.unshift({name:"Lands",amt:1,n:1,used:0});g.lands=g.lands||[];g.lands.push(n);return "Land played: "+n+". It's added to your mana.";}
+  if(k==="spell"){g.gy.push(n);return n+" cast. It's in your graveyard.";}
+  if(!cardList(g.deck).includes(n)){const cat={Creatures:"Creatures",Artifacts:"Artifacts",Enchantments:"Enchantments"}[viewCat(g.deck,{n,sec:(g._sec||{})[n]||""})]||"Other";g.deck.cards=g.deck.cards||[];g.deck.cards.push({name:n,cat,added:true});}
+  let nm=n;if(g.inplay.includes(nm)){let i=2;while(g.inplay.includes(n+" (copy "+i+")"))i++;nm=n+" (copy "+i+")";const c=cardInfo(g.deck,n);g.deck.cards.push({...c,name:nm,added:true,tmp:true});}
+  g.inplay.push(nm);return n+" is on the battlefield.";}
+function digitalHtml(g){const hand=g.handCards||[],lib=g.libCards||[];
+  const chip=(n,i)=>{const k=digKind(g,n);return `<button class="hcard hk-${k}${digSel===i?" on":""}" data-dig="sel" data-i="${i}" aria-pressed="${digSel===i}">${esc(n)}</button>`;};
+  const sel=digSel>=0&&digSel<hand.length?hand[digSel]:null,kind=sel?digKind(g,sel):"";
+  const reg=n=>{const id="m"+(++mcSeq);mcInfo[id]={mine:true,n,cat:"Other",pt:"",q:1,owner:(S.table&&S.table.nick)||"Player",fx:[]};return id;};
+  const top=lib.slice(0,Math.min(digLook,lib.length));
+  return `<div class="dighand"><span class="eyebrow">Your hand · only you see this</span>
+      <div class="hcards">${hand.length?hand.map(chip).join(""):`<p class="none">Your hand is empty.</p>`}</div>
+      ${sel?`<div class="digact"><span><b>${esc(sel)}</b></span><div class="row"><button class="btn primary" data-dig="play">${kind==="land"?"Play land":kind==="spell"?"Cast (to graveyard)":"Play to battlefield"}</button><button class="btn" data-dig="discard">Discard</button><button class="btn" data-dig="top">Library top</button><button class="btn" data-dig="bottom">Library bottom</button><button class="btn ghost" data-mcid="${reg(sel)}">Read card</button></div></div>`:""}</div>
+    <div class="row simacts"><button class="btn primary" data-dig="draw">Draw</button><button class="btn" data-dig="mill">Mill 1</button><button class="btn" data-dig="look">Look at top ${digLook?digLook+1:1}</button><button class="btn" data-dig="find">${digFind?"Close search":"Search library"}</button><button class="btn" data-dig="shuffle">Shuffle</button>${g.turn===1?`<button class="btn ghost" data-dig="mull">Mulligan</button>`:""}</div>
+    ${digLook?`<div class="diglook"><span class="eyebrow">Top ${top.length} of your library · only you see this</span>${top.map((n,i)=>`<div class="lrow"><span>${i+1}. ${esc(n)}</span><span class="row"><button class="btn sm" data-dig="ltohand" data-i="${i}">Hand</button><button class="btn sm" data-dig="ltobottom" data-i="${i}">Bottom</button><button class="btn sm" data-dig="ltogy" data-i="${i}">Graveyard</button>${i>0?`<button class="btn sm" data-dig="lup" data-i="${i}" aria-label="Move ${esc(n)} up">↑</button>`:""}</span></div>`).join("")}<button class="btn ghost sm" data-dig="lookdone">Done looking</button></div>`:""}
+    ${digFind?`<div class="digfind"><input type="text" id="dig-q" placeholder="Type a card name" autocomplete="off" aria-label="Search your library"><div class="flist" id="dig-list">${[...new Set(lib)].sort().map(n=>`<div class="lrow" data-fname="${esc(n.toLowerCase())}"><span>${esc(n)}</span><span class="row"><button class="btn sm" data-dig="ftohand" data-name="${esc(n)}">Hand</button><button class="btn sm" data-dig="ftoplay" data-name="${esc(n)}">Battlefield</button><button class="btn sm" data-dig="ftogy" data-name="${esc(n)}">Graveyard</button></span></div>`).join("")}</div><p class="status">Taking a card shuffles your library afterwards.</p></div>`:""}
+    <p class="status">${g.simNote?esc(g.simNote):"Tap a card in your hand to play it. Other players only see how many cards you hold."}</p>`;}
+function digAct(g,ds){const a=ds.dig,H=g.handCards,L=g.libCards;g.simNote="";
+  const out=i=>H.splice(i,1)[0];
+  if(a==="sel"){const i=Number(ds.i);digSel=digSel===i?-1:i;return;}
+  if(a==="draw"){if(!L.length)g.simNote="Your library is empty. A player who has to draw from an empty library loses.";else{H.push(L.shift());g.simNote="You drew "+H[H.length-1]+".";}}
+  else if(a==="mill"){if(!L.length)g.simNote="Your library is empty.";else{const n=L.shift();g.gy.push(n);g.simNote="Milled "+n+".";}}
+  else if(a==="shuffle"){shuffle(L);digLook=0;g.simNote="Library shuffled.";}
+  else if(a==="mull"){L.push(...H.splice(0));shuffle(L);H.push(...L.splice(0,7));digSel=-1;g.simNote="New hand of 7. For a real mulligan, put one card on the bottom for each mulligan you've taken.";}
+  else if(a==="look"){digLook=Math.min(L.length,digLook+1);digFind=false;}
+  else if(a==="lookdone"){digLook=0;}
+  else if(a==="find"){digFind=!digFind;digLook=0;}
+  else if(digSel>=0&&digSel<H.length&&["play","discard","top","bottom"].includes(a)){const n=out(digSel);digSel=-1;
+    if(a==="play")g.simNote=digPlay(g,n);if(a==="discard"){g.gy.push(n);g.simNote="Discarded "+n+".";}
+    if(a==="top"){L.unshift(n);g.simNote="Put on top of your library.";}if(a==="bottom"){L.push(n);g.simNote="Put on the bottom of your library.";}}
+  else if(a[0]==="l"&&ds.i!=null){const i=Number(ds.i);if(i>=0&&i<L.length){
+    if(a==="lup"&&i>0){[L[i-1],L[i]]=[L[i],L[i-1]];}
+    else{const n=L.splice(i,1)[0];if(a==="ltohand")H.push(n);if(a==="ltobottom")L.push(n);if(a==="ltogy")g.gy.push(n);digLook=Math.max(0,digLook-1);}}}
+  else if(a[0]==="f"&&ds.name){const i=L.indexOf(ds.name);if(i>=0){const n=L.splice(i,1)[0];
+    if(a==="ftohand"){H.push(n);g.simNote=n+" is in your hand. Library shuffled.";}
+    if(a==="ftoplay")g.simNote=digPlay(g,n)+" Library shuffled.";
+    if(a==="ftogy"){g.gy.push(n);g.simNote=n+" is in your graveyard. Library shuffled.";}
+    shuffle(L);digFind=false;}}
+  digSync(g);}
+function setMode(g,m){if(!g||modeOf(g)===m)return;g.mode=m;if(m==="sim"&&g.hand==null){g.hand=7;g.lib=Math.max(0,deckSize(g.deck)-7);}}
+// Look a card up by name and build its tracker entry. Falls back to the little we know.
+async function cardEntry(name,fb){let entry=null;
+  try{const r=await fetch("https://api.scryfall.com/cards/named?exact="+encodeURIComponent(name));
+    if(r.ok){const c=await r.json();cardCache.set(name.toLowerCase(),c);const a=analyzeCard(c);entry=a.card||{name:c.name.split(" // ")[0],cat:/creature/i.test(c.type_line||"")?"Creatures":/artifact/i.test(c.type_line||"")?"Artifacts":/enchantment/i.test(c.type_line||"")?"Enchantments":"Other"};}}catch(_){}
+  return entry||{name,cat:(fb&&fb.cat)||"Other",pt:(fb&&fb.pt)||""};}
+// Cards other players control or copied. `took` and `dead` ride along on your shared board so the owner's phone can react.
+let ctlBusy="";
+async function takeCard(c,copy){const g=S.game;if(!g||!c)return;ctlBusy=copy?"Copying…":"Taking control…";render();
+  const e=await cardEntry(c.n,c);let name=copy?c.n+" (copy)":c.n;
+  if(g.inplay.includes(name)||(!copy&&cardList(g.deck).includes(name)))name=copy?c.n+" (copy "+(g.inplay.filter(x=>baseName(x)===c.n).length+1)+")":c.n+" (theirs)";
+  g.deck.cards=(g.deck.cards||[]).filter(x=>x.name!==name);g.deck.cards.push({...e,name,added:true,tmp:true});
+  g.inplay.push(name);
+  if(copy){g.copies=g.copies||{};g.copies[name]=1;}else{g.took=g.took||{};g.took[name]={o:c.oid,n:c.n,nick:c.owner};}
+  ctlBusy="";cardOpen=null;save();render();}
+function dropTmp(g,name){g.inplay=g.inplay.filter(x=>x!==name);g.deck.cards=(g.deck.cards||[]).filter(x=>!(x.name===name&&x.tmp));
+  if(g.attach)delete g.attach[name];if(g.cardUsed)delete g.cardUsed[name];if(g.ctr)delete g.ctr[name];if(g.took)delete g.took[name];if(g.copies)delete g.copies[name];}
+// Which of my cards someone else controls right now: {cardName: theirNick}.
+function ctlMap(){const out={};if(!tableRoom)return out;tablePeers().forEach(p=>{if(p.peer===uid)return;const t=p.presence.b.took;
+  (Array.isArray(t)?t:[]).forEach(x=>{if(Array.isArray(x)&&x[1]===uid)out[String(x[0]).slice(0,40)]=String(p.presence.b.nick||"Player").slice(0,20);});});return out;}
+// A card of mine that died or was exiled while someone else controlled it lands in my graveyard or exile.
+function syncDead(g){if(!g||!tableRoom)return false;let ch=false;g.seenDead=g.seenDead||{};
+  tablePeers().forEach(p=>{if(p.peer===uid)return;(Array.isArray(p.presence.b.dead)?p.presence.b.dead:[]).forEach(x=>{if(!Array.isArray(x)||x[1]!==uid)return;const id=p.peer+":"+x[3];if(g.seenDead[id])return;g.seenDead[id]=1;
+    const n=String(x[0]).slice(0,40),z=x[2]==="ex"?"ex":"gy";if(g.inplay.includes(n)){g.inplay=g.inplay.filter(k=>k!==n);if(g.cardUsed)delete g.cardUsed[n];if(g.ctr)delete g.ctr[n];if(g.attach)delete g.attach[n];g[z].push(n);ch=true;}});});
+  if(ch)save();return ch;}
+let ctlSig="";
 let pickOpen=false,leaveOpen=null,gySel=null;const standaloneArt=true;
 function startGame(d){
   const vals={},flags={};
@@ -864,12 +1118,17 @@ function startGame(d){
   const watch=[...(carry.watch||d.watch||[])];
   const groups=(d.groups||[]).map(x=>({name:x.name,p:x.p,t:x.t,n:0,c:0}));
   S.game={deck:JSON.parse(JSON.stringify(d)),turn:1,phase:"up",vals,flags,sources,watch,effects:[],groups,buff:{p:0,t:0},tbuff:{p:0,t:0}};
+  S.game.mode=S.mode==="sim"||S.mode==="digital"?S.mode:"ar";if(S.game.mode!=="ar")simInit(S.game);
+  const sx=sessOf();if(sx){S.game.sessN=Number(sx.n)||1;if(sx.brk)sessWrite({...sx,brk:null});}
   save();view="hud";wake();render();
+  if(!tourSeen("hud"))setTimeout(()=>{if(view==="hud"&&!tour)startTour("hud");},500);
 }
 function keepCarry(){const g=S.game;if(!g)return;S.carry=S.carry||{};
   S.carry[g.deck.id]={sources:g.sources.map(({name,amt,n})=>({name,amt,n})),watch:g.watch};}
-function untap(g){g.sources.forEach(s=>s.used=0);g.cardUsed={};g.effects=g.effects.filter(e=>e.dur!=="turn");if(g.tbuff)g.tbuff={p:0,t:0};}
+function untap(g){g.sources.forEach(s=>s.used=0);g.cardUsed={};if(g.cmdr)g.cmdr.tap=false;if(g.cmdr2)g.cmdr2.tap=false;(g.groups||[]).forEach(x=>x.tap=0);g.effects=g.effects.filter(e=>e.dur!=="turn");if(g.tbuff)g.tbuff={p:0,t:0};}
 const sgn=n=>(n>=0?"+":"−")+Math.abs(n);
+// "3/3" with two +1/+1 counters reads "5/5". Stars and odd values pass through untouched.
+function ptPlus(pt,n){const m=String(pt||"").match(/^(\d+|\*)\/(\d+|\*)$/);if(!m||!n)return pt||"";const f=x=>x==="*"?x:String(+x+n);return f(m[1])+"/"+f(m[2]);}
 let addOpen=null; // which inline add form is open on the HUD: "src" | "fx" | "watch"
 let lock=null;
 async function wake(){try{if(navigator.wakeLock&&!lock){lock=await navigator.wakeLock.request("screen");lock.addEventListener("release",()=>lock=null);}}catch(e){}}
@@ -901,10 +1160,14 @@ function render(){
   applyTheme(view==="hud"&&S.game?S.game.deck.colors:view==="setup"&&draft?draft.colors:null);
   if(view==="hud"&&S.game){renderHud();try{pushPresence();}catch(_){}}
   else if(view==="setup")renderSetup();
+  else if(view==="tv")renderTV();
   else if(view==="glossary")renderGlossary();
   else if(view==="deckview"&&deckView)renderDeckView();
   else renderHome();
+  if(view!=="tv")app.insertAdjacentHTML("beforeend",footerHtml());
+  if(bugOpen)app.insertAdjacentHTML("beforeend",bugSheet());
   if(cardOpen)app.insertAdjacentHTML("beforeend",cardSheet());
+  if(tour)setTimeout(()=>drawTour(false),0);
   if(termOpen&&GL[termOpen])app.insertAdjacentHTML("beforeend",`<div class="sheet-bg" data-act="closeterm"></div>
     <div class="sheet" role="dialog" aria-label="${esc(GL[termOpen].t)}"><span class="eyebrow">Glossary</span><h2>${esc(GL[termOpen].t)}</h2><p>${esc(GL[termOpen].d)}</p>
     <div class="row"><button class="btn primary" data-act="closeterm">Got it</button><button class="btn ghost" data-act="glossary">Full glossary</button></div></div>`);
@@ -939,16 +1202,17 @@ function cardSheet(){
       ${live.length||(!rules&&c.fx.length)?`<div class="csfx"><span class="mlbl">In play now</span>${(rules?live:c.fx).map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
       ${!rules&&!c.loading&&!c.fx.length&&c.cat!=="Token"?`<p class="status">Full rules text isn't available here.</p>`:""}
     </div>
-    <div class="cs-foot"><button class="btn primary" data-act="closecard">Close</button>${c.cat==="Token"?"":`<a class="btn ghost" href="https://scryfall.com/search?q=${encodeURIComponent('!"'+c.n+'"')}" target="_blank" rel="noopener">Open on Scryfall</a>`}</div>
+    ${c.oid&&c.oid!==uid&&!tvMode&&S.game&&modeOf(S.game)!=="ar"&&c.cat!=="Token"&&view==="hud"?`<div class="cs-ctl">${ctlBusy?`<span class="status">${ctlBusy}</span>`:`<button class="btn" data-ctlact="take">Take control</button><button class="btn" data-ctlact="copy">Copy it</button>`}</div>`:""}
+    <div class="cs-foot"><button class="btn primary" data-act="closecard">Close</button>${c.cat==="Token"?"":`<a class="btn ghost" href="https://scryfall.com/search?q=${encodeURIComponent('!"'+baseName(c.n)+'"')}" target="_blank" rel="noopener">Open on Scryfall</a>`}</div>
   </div>`;
 }
 async function openCard(id){
   const m=mcInfo[id];if(!m)return;
   cardOpen={...m,data:null,loading:m.cat!=="Token"};render();
   if(m.cat==="Token")return;
-  const key=m.n.toLowerCase();
+  const key=baseName(m.n).toLowerCase();
   try{let data=cardCache.get(key);
-    if(!data){if(artOff)throw 0;const r=await fetch("https://api.scryfall.com/cards/named?exact="+encodeURIComponent(m.n));if(!r.ok)throw 0;data=await r.json();cardCache.set(key,data);}
+    if(!data){if(artOff)throw 0;const r=await fetch("https://api.scryfall.com/cards/named?exact="+encodeURIComponent(baseName(m.n)));if(!r.ok)throw 0;data=await r.json();cardCache.set(key,data);}
     if(cardOpen&&cardOpen.n===m.n){cardOpen.data=data;cardOpen.loading=false;render();}
   }catch(_){if(cardOpen&&cardOpen.n===m.n){cardOpen.loading=false;render();}}
 }
@@ -973,10 +1237,13 @@ function renderHome(){
   const mine=S.decks;
   app.innerHTML=`
   <header class="field"><h1>Deck HUD</h1><div class="wubrg" aria-hidden="true"><i style="background:#f4efd6"></i><i style="background:#2f6fa8"></i><i style="background:#2a2420"></i><i style="background:#c0432f"></i><i style="background:#2f7a48"></i></div>
-    <p class="muted">Pick a deck. Trackers and trigger reminders load for that deck only.</p><div class="row"><button class="link" data-act="glossary">Keyword glossary</button></div></header>
+    <p class="muted">Pick a deck. Trackers and trigger reminders load for that deck only.</p><div class="row"><button class="link" data-act="glossary">Keyword glossary</button><button class="link" data-act="tour">Tutorial</button></div></header>
+  ${tourSeen("home")?"":`<div class="confirm tourcall"><span>New here? Take a one-minute tour of the app.</span><span class="row"><button class="btn ghost sm" data-act="tourno">No thanks</button><button class="btn primary sm" data-act="tour">Start tour</button></span></div>`}
   <section class="panel tablehome" id="tablepanel">${tableInner()}</section>
   ${S.game?`<div class="confirm"><div class="spread"><span>Game in progress: <b>${esc(S.game.deck.name)}</b>, turn ${S.game.turn}</span>
     <div class="row">${confirmReset==="endhome"?`<button class="btn danger" data-act="doend">End game</button><button class="btn ghost" data-act="noreset">Cancel</button>`:`<button class="btn ghost" data-act="endhome">End game</button><button class="btn primary" data-act="resume">Resume</button>`}</div></div></div>`:""}
+  <section class="panel modepick"><div class="spread"><span class="eyebrow">How you're playing</span><span class="mana">Applies to the next game you start</span></div>
+    <div class="modes" role="group" aria-label="Play mode">${MODES.map(([k,t,dsc])=>`<button class="modebtn" data-setmode="${k}" aria-pressed="${(S.mode||"ar")===k}"><b>${t}</b><span>${dsc}</span></button>`).join("")}</div></section>
   <section class="field"><h2>All precons</h2><div id="catalog" class="field">${catalogHtml()}</div></section>
   <section class="field"><div class="spread"><h2>Hand-built precons</h2></div>
     <div class="decks">${PRECONS.map(deckRow).join("")}</div>
@@ -996,35 +1263,107 @@ function tileCounter(key,label,val,opts={}){
 }
 // Opponents: their life, and commander damage your commander has dealt each of them.
 // Opponents still on their default name are numbered 1, 2, 3… in seat order; renamed ones keep their names.
+// Every change to an opponent is remembered (last 30), so Undo can step back as far as needed.
+function pushOppHist(g,i,o){g.hist=g.hist||[];g.hist.push({i,life:o.life,cd:o.cd||0,cd2:o.cd2||0,tk:o.tk||0,tk2:o.tk2||0,me:g.vals.life});if(g.hist.length>30)g.hist.shift();g.last=null;}
 function renumberOpps(g){let n=0;g.opps.forEach(o=>{n++;if(/^Opponent( \d+)?$/.test(o.name))o.name="Opponent "+n;});}
 function oppsHtml(g,me){
   if(!g.opps)g.opps=[1,2,3].map(i=>({name:"Opponent "+i,life:40,cd:0}));
   if(new Set(g.opps.map(o=>o.name)).size<g.opps.length)renumberOpps(g);
   g.dmgMode=g.dmgMode||"reg";
-  const cm=g.dmgMode==="cmdr";
+  const d=g.deck,two=!!d.cmdr2;if(!two&&g.dmgMode==="cmdr2")g.dmgMode="cmdr";
+  const cm=g.dmgMode!=="reg";
+  const short=n=>esc(String(n||"").split(/[ ,]/)[0]);
+  const poison=g.vals.poison||0,taken=g.opps.reduce((a,o)=>Math.max(a,o.tk||0,o.tk2||0),0);
+  const others=tableRoom?peerList.filter(p=>p.kind==="viewer"&&!p.sameTab&&p.presence&&p.presence.b):[];
+  const tkRow=(i,k,v,l)=>`<span class="tkrow${v>=15?" hot":""}"><span>${l} → you <b>${v}</b>/21</span><span class="tkbtns"><button data-tk="${i}" data-tkk="${k}" data-n="-1" aria-label="Take back 1 commander damage you took">−</button><button data-tk="${i}" data-tkk="${k}" data-n="1" aria-label="You took 1 commander damage">+1</button></span></span>`;
+  const cdTxt=(o,i,k,lbl)=>{const v=o[k]||0;return `<span class="ocd${v>=15?" hot":""}" title="Commander damage you dealt">${lbl} ${v}/21${v>0?` <button class="cdfix" data-cdfix="${i}" data-cdk="${k}" aria-label="Take back 1 commander damage from ${esc(o.name)}" title="Take back 1 commander damage (gives the life back)">−1</button>`:""}</span>`;};
   return `<section class="panel opps lifepanel"><div class="spread"><span class="eyebrow">Life</span>
-    <div class="seg" role="group" aria-label="Damage type to opponents"><button data-mode="reg" aria-pressed="${!cm}">Regular</button><button data-mode="cmdr" aria-pressed="${cm}">Commander</button></div></div>
-    <p class="status">Opponent damage: ${cm?"also counts toward 21 commander damage.":"lowers life only."}${g.last?` <button class="link" data-act="undoopp">Undo last</button>`:""}</p>
+    <div class="seg" role="group" aria-label="Damage type to opponents"><button data-mode="reg" aria-pressed="${!cm}">Regular</button>${two?`<button data-mode="cmdr" aria-pressed="${g.dmgMode==="cmdr"}">${short(d.cmdr)}</button><button data-mode="cmdr2" aria-pressed="${g.dmgMode==="cmdr2"}">${short(d.cmdr2)}</button>`:`<button data-mode="cmdr" aria-pressed="${cm}">Commander</button>`}</div></div>
+    <p class="status">Opponent damage: ${cm?`also counts toward 21 commander damage${two?" from "+short(g.dmgMode==="cmdr2"?d.cmdr2:d.cmdr):""}; +1 takes one back.`:"lowers life only."}${(g.hist&&g.hist.length)||g.last?` <button class="link" data-act="undoopp">Undo</button>`:""}${others.length?` <button class="link" data-act="oppsfromroom">Use room players</button>`:""}</p>
     <div class="hub">
-    ${me!=null?(()=>{const warn=me<=0;return `<div class="me${warn?" dead":""}"><div class="metop"><span class="mename">You</span><span class="melife">${me}</span></div>
-      <div class="steps mesteps">${[-5,-1,1,5].map(n=>`<button data-k="life" data-n="${n}" aria-label="Your life ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div></div>`;})():""}
-    ${g.opps.map((o,i)=>{const dead=o.life<=0||o.cd>=21;return `<div class="opp${dead?" dead":""}">
+    ${me!=null?(()=>{const out=me<=0||poison>=10||taken>=21;const why=me<=0?"out of life":poison>=10?"10 poison":taken>=21?"21 commander damage":"";return `<div class="me${out?" dead":""}"><div class="metop"><span class="mename">You</span><span class="melife">${me}</span></div>
+      <div class="steps mesteps">${[-5,-1,1,5].map(n=>`<button data-k="life" data-n="${n}" aria-label="Your life ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div>
+      <div class="mepoison${poison>=7?" hot":""}"><span>${gl("Poison")} <b>${poison}</b>/10</span><span class="tkbtns"><button data-k="poison" data-n="-1" aria-label="One less poison">−</button><button data-k="poison" data-n="1" aria-label="One more poison">+1</button></span></div>
+      ${out?`<p class="meout">You're out: ${why}.</p>`:""}</div>`;})():""}
+    ${g.opps.map((o,i)=>{const dead=o.life<=0||(o.cd||0)>=21||(o.cd2||0)>=21;return `<div class="opp${dead?" dead":""}">
       <div class="otop"><input type="text" id="opp-${i}" class="oname" data-oppname="${i}" value="${esc(o.name)}" aria-label="Opponent name">
         <span class="olife">${o.life}</span><button class="x" data-delopp="${i}" aria-label="Remove ${esc(o.name)}">×</button></div>
-      <div class="obot"><span class="ocd${o.cd>=15?" hot":""}" title="Commander damage">${gl("Cmdr dmg")} ${o.cd}/21${dead?" · out":""}</span>
-        <div class="odmg"><button data-opp="${i}" data-amt="-5">−5</button><button data-opp="${i}" data-amt="-1">−1</button><button data-opp="${i}" data-amt="1" class="heal">+1</button></div></div></div>`;}).join("")}
+      <div class="obot"><span class="ocds">${two?cdTxt(o,i,"cd",short(d.cmdr))+cdTxt(o,i,"cd2",short(d.cmdr2)):cdTxt(o,i,"cd",gl("Cmdr dmg"))}${dead?`<span class="ocd">out</span>`:""}</span>
+        <div class="odmg"><button data-opp="${i}" data-amt="-5">−5</button><button data-opp="${i}" data-amt="-1">−1</button><button data-opp="${i}" data-amt="1" class="heal">+1</button></div></div>
+      <div class="otk">${tkRow(i,"tk",o.tk||0,o.partner?"Their 1st":"Their cmdr")}${o.partner?tkRow(i,"tk2",o.tk2||0,"Their 2nd"):""}
+        <button class="link sm" data-oppart="${i}">${o.partner?"Remove 2nd commander":"+ 2nd commander (partners)"}</button></div></div>`;}).join("")}
     </div>
     ${g.opps.length<5?`<button class="link" data-act="addopp">+ Opponent</button>`:""}</section>`;
 }
 // Live table: each phone writes a summary of its own board to Firebase; everyone at the same code reads them all.
+let tblState={},joinedAt=0;
+// Turn order around the table: the order players joined the room.
+// Turn order around the table: the order the room has set, then the order players joined.
+function seatIds(){const o=tblState.order;return (Array.isArray(o)?o:Object.values(o||{})).filter(x=>typeof x==="string");}
+function seatOrder(list){const ids=seatIds(),pos=p=>{const i=ids.indexOf(p.peer);return i<0?1e6:i;};
+  return list.slice().sort((a,b)=>(pos(a)-pos(b))||((Number(a.presence.b.j)||0)-(Number(b.presence.b.j)||0))||String(a.peer).localeCompare(String(b.peer)));}
+function moveSeat(id,dir){const ids=seatOrder(tablePeers()).map(p=>p.peer),i=ids.indexOf(id),j=i+dir;if(i<0||j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];setTbl({order:ids});}
+function tablePeers(){return tableRoom?peerList.filter(p=>p.kind==="viewer"&&p.presence&&p.presence.b&&typeof p.presence.b==="object"):[];}
+function peerNick(id){const p=tablePeers().find(x=>x.peer===id);return p?String(p.presence.b.nick||"Player").slice(0,20):"";}
+function rolesOf(id){return [tblState.monarch===id&&"Monarch",tblState.initiative===id&&"Initiative"].filter(Boolean);}
+// Shared table state (whose turn, monarch, initiative, day/night, session) lives at tables/{code}/state.
+function setTbl(patch){if(!tableRoom||!tableRoom.st||tvMode)return;Object.assign(tblState,patch);
+  tableRoom.st.update(patch).catch(()=>{tableErr="Couldn't update the shared table. Publish the latest database rules (README step 3).";refreshTable();});}
+function onTblState(){pushPresence();
+  const typing=document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if(view==="hud"&&!typing)render();else refreshTable();}
+// ---- Sessions: one table, several games. Score, waiting line and game number live in the shared table state.
+let sessPick=null; // result being recorded on this phone: {w:<winner id>}
+const sessOf=()=>(tblState.sess&&typeof tblState.sess==="object"&&tblState.sess.on)?tblState.sess:null;
+const sessLine=x=>Array.isArray(x.line)?x.line.filter(n=>typeof n==="string"):Object.values(x.line||{}).filter(n=>typeof n==="string");
+function sessRows(x){const sc=x.scores||{},rows=new Map();
+  seatOrder(tablePeers()).forEach(p=>rows.set(p.peer,{id:p.peer,nick:String(p.presence.b.nick||"Player").slice(0,20),here:true,pts:0,wins:0}));
+  Object.entries(sc).forEach(([id,v])=>{if(!v||typeof v!=="object")return;const r=rows.get(id)||{id,nick:String(v.nick||"Player").slice(0,20),here:false};r.pts=Number(v.pts)||0;r.wins=Number(v.wins)||0;rows.set(id,r);});
+  return [...rows.values()].sort((a,b)=>b.pts-a.pts||b.wins-a.wins||a.nick.localeCompare(b.nick));}
+function sessWrite(x){setTbl({sess:JSON.parse(JSON.stringify(x))});}
+function sessStandings(x,edit){const rows=sessRows(x);return `<table class="sstand"><thead><tr><th>Player</th><th>Wins</th><th>Points</th>${edit?"<th></th>":""}</tr></thead><tbody>${rows.map((r,i)=>`<tr class="${i===0&&r.pts>0?"lead":""}${r.here?"":" away"}"><td>${esc(r.nick)}${r.here?"":" <em>away</em>"}</td><td>${r.wins}</td><td><b>${r.pts}</b></td>${edit?`<td class="tkbtns"><button data-sess="pt" data-id="${esc(r.id)}" data-n="-1" aria-label="Take a point from ${esc(r.nick)}">−</button><button data-sess="pt" data-id="${esc(r.id)}" data-n="1" aria-label="Give ${esc(r.nick)} a point">+1</button></td>`:""}</tr>`).join("")}</tbody></table>`;}
+function sessHtml(g){const x=sessOf();
+  if(!x)return `<div class="sess off"><span>Playing several games? A session keeps score and a waiting line.</span><button class="btn sm" data-sess="start">Start a session</button></div>`;
+  const line=sessLine(x),ps=seatOrder(tablePeers()),n=Number(x.n)||1,stale=g&&(g.sessN||1)<n,rule=x.rule==="winner"?"winner":"first";
+  const who=id=>esc(peerNick(id)||((x.scores||{})[id]||{}).nick||"Player");
+  return `<div class="sess"><div class="spread"><span class="eyebrow">Session · game ${n}</span><button class="link sm" data-sess="end">End session</button></div>
+    ${x.last?`<p class="slast">Game ${Number(x.last.n)||n-1}: <b>${esc(String(x.last.w||"").slice(0,20))}</b> won.${x.last.i?` <b>${esc(String(x.last.i).slice(0,20))}</b> is in${x.last.o?` for ${esc(String(x.last.o).slice(0,20))}`:""}.`:""}</p>`:""}
+    ${stale?`<div class="snext"><span>Game ${n-1} is over. Start game ${n} with a fresh board; the score carries over.</span><button class="btn primary sm" data-sess="fresh">Start game ${n}</button></div>`:""}
+    ${sessStandings(x,true)}
+    ${sessPick?(sessPick.w?`<div class="spick"><span>${line.length?`<b>${esc(line[0])}</b> is next in line. Who sits out?`:""}</span><div class="row">${ps.map(p=>`<button class="btn sm${(rule==="winner"&&p.peer===sessPick.w)?" primary":""}" data-sess="out" data-id="${esc(p.peer)}">${who(p.peer)}</button>`).join("")}<button class="btn ghost sm" data-sess="out" data-id="">Nobody</button><button class="btn ghost sm" data-sess="cancel">Cancel</button></div></div>`
+      :`<div class="spick"><span>Who won game ${n}?</span><div class="row">${ps.map(p=>`<button class="btn sm" data-sess="win" data-id="${esc(p.peer)}">${who(p.peer)}</button>`).join("")}<button class="btn ghost sm" data-sess="cancel">Cancel</button></div></div>`)
+      :`<button class="btn primary sm" data-sess="record">Record game ${n} result</button>`}
+    <div class="sline"><span class="eyebrow">Waiting line</span>${line.length?`<ol>${line.map((nm,i)=>`<li>${esc(nm)} <button class="x" data-sess="delline" data-i="${i}" aria-label="Remove ${esc(nm)} from the line">×</button></li>`).join("")}</ol>`:`<p class="none">Nobody waiting.</p>`}
+      <div class="tjoin"><input type="text" id="sess-name" placeholder="Add a name" maxlength="20" aria-label="Name to add to the waiting line"><button class="btn sm" data-sess="addline">Add</button></div>
+      <label class="srule">Who gives up their seat: <select id="sess-rule" data-sessrule aria-label="Rotation rule"><option value="first"${rule==="first"?" selected":""}>First player knocked out</option><option value="winner"${rule==="winner"?" selected":""}>The winner</option></select></label></div></div>`;}
+function sessAct(ds){const g=S.game,x=sessOf(),a=ds.sess;
+  if(a==="start"){sessWrite({on:true,n:1,rule:"first"});if(g)g.sessN=1;save();return;}
+  if(!x)return;const n=Number(x.n)||1,line=sessLine(x);
+  if(a==="end"){sessPick=null;setTbl({sess:null});return;}
+  if(a==="record"){sessPick={};return;}
+  if(a==="cancel"){sessPick=null;return;}
+  if(a==="win"){sessPick={w:ds.id};if(!line.length)return sessCommit(x,"");return;}
+  if(a==="out"){return sessCommit(x,ds.id||"");}
+  if(a==="pt"){const sc={...(x.scores||{})},cur=sc[ds.id]||{nick:peerNick(ds.id)||"Player",pts:0,wins:0};sc[ds.id]={...cur,pts:Math.max(0,(Number(cur.pts)||0)+Number(ds.n))};sessWrite({...x,scores:sc});return;}
+  if(a==="addline"){const i=document.getElementById("sess-name"),nm=i?i.value.trim().slice(0,20):"";if(nm&&line.length<12)sessWrite({...x,line:[...line,nm]});return;}
+  if(a==="delline"){sessWrite({...x,line:line.filter((_,i)=>i!==Number(ds.i))});return;}
+  if(a==="fresh"&&g){const d=allDecks().find(k=>k.id===g.deck.id)||g.deck;keepCarry();startGame(d);S.game.sessN=n;save();return;}
+}
+function sessCommit(x,outId){const n=Number(x.n)||1,line=sessLine(x),w=sessPick&&sessPick.w;sessPick=null;if(!w)return;
+  const sc={...(x.scores||{})},cur=sc[w]||{pts:0,wins:0};sc[w]={nick:peerNick(w)||cur.nick||"Player",pts:(Number(cur.pts)||0)+1,wins:(Number(cur.wins)||0)+1};
+  const outN=outId?(peerNick(outId)||"Player"):"",inN=outId&&line.length?line[0]:"";
+  const nl=inN?[...line.slice(1),outN]:line;
+  // A finished game also clears whose turn it is and who holds monarch, initiative and day/night.
+  setTbl({sess:JSON.parse(JSON.stringify({...x,n:n+1,scores:sc,line:nl,last:{n,w:sc[w].nick,o:inN?outN:"",i:inN},brk:true})),turn:null,monarch:null,initiative:null,dn:0});}
 let fbErr="",fbDb=null,uid=null,tableRoom=null,roomState="loading",peerList=[],openPeers=new Set(),lastPres=null,curBoard=null,tableErr="";
 const STALE_MS=6*60*60*1000;
 async function joinTable(code){
   tableErr="";
   try{leaveTable();
     const ref=fbDb.ref("tables/"+code+"/players"),me=ref.child(uid);
-    await me.onDisconnect().remove();
-    tableRoom={ref,me};
+    if(!tvMode)await me.onDisconnect().remove();
+    tableRoom={ref,me,st:fbDb.ref("tables/"+code+"/state")};joinedAt=Date.now();tblState={};
+    tableRoom.st.on("value",snap=>{tblState=snap.val()||{};onTblState();},()=>{});
     ref.on("value",snap=>{const v=snap.val()||{},now=Date.now();
       peerList=Object.entries(v).filter(([k,b])=>b&&typeof b==="object"&&(!b.t||now-b.t<STALE_MS))
         .map(([k,b])=>({peer:k,sameTab:k===uid,kind:"viewer",presence:{b}}));refreshTable();},
@@ -1033,16 +1372,32 @@ async function joinTable(code){
   }catch(e){tableRoom=null;tableErr="Couldn't join that table. Check your connection and try again.";}
   refreshTable();
 }
-function leaveTable(){if(!tableRoom)return;try{tableRoom.ref.off();tableRoom.me.onDisconnect().cancel();tableRoom.me.remove();}catch(e){}tableRoom=null;peerList=[];}
+function leaveTable(){if(!tableRoom)return;try{tableRoom.st&&tableRoom.st.off();tblState={};tableRoom.ref.off();tableRoom.me.onDisconnect().cancel();tableRoom.me.remove();}catch(e){}tableRoom=null;peerList=[];}
 function pushPresence(){
-  if(!tableRoom||!curBoard)return;
-  const b={...curBoard,nick:(S.table&&S.table.nick)||"Player"};const j=JSON.stringify(b);
+  if(tvMode||!tableRoom||!curBoard)return;
+  const b={...curBoard,nick:(S.table&&S.table.nick)||"Player",j:joinedAt,act:!!(tblState.turn&&tblState.turn===uid),roles:rolesOf(uid)};const j=JSON.stringify(b);
   if(j===lastPres)return;lastPres=j;
   tableRoom.me.set({...b,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{tableErr="Couldn't share your board. Check the database rules.";refreshTable();});
 }
-function refreshTable(){const f=document.getElementById("fields");if(f)f.innerHTML=fieldsInner();
+function refreshTable(){if(view==="tv"){const g=document.getElementById("tvgrid");if(g&&tableRoom){mcInfo={};g.innerHTML=tvInner();}else render();return;}
+  if(view==="hud"&&S.game){const sig=JSON.stringify(ctlMap()),dead=syncDead(S.game);
+    if((sig!==ctlSig||dead)&&!(document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName))){ctlSig=sig;return render();}}
+  const f=document.getElementById("fields");if(f)f.innerHTML=fieldsInner();
   const el=document.getElementById("tablepanel");if(!el)return;
   const inGame=view==="hud"&&S.game;el.hidden=inGame&&!tableRoom;el.innerHTML=el.hidden?"":tableInner();}
+// Private rooms: a room name plus a secret key. Both are hashed into the table address, so the name alone can't find it.
+let tblMode="join";const KEYCH="abcdefghjkmnpqrstuvwxyz23456789";
+const genKey=()=>{const a=new Uint32Array(8);(window.crypto||{}).getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*1e9);return [...a].map(x=>KEYCH[x%KEYCH.length]).join("");};
+const normKey=k=>String(k||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const fmtKey=k=>{k=normKey(k);return k.length>4?k.slice(0,4)+"-"+k.slice(4):k;};
+async function roomCode(room,key){
+  const msg="mtghud|"+String(room).trim().toLowerCase()+"|"+normKey(key);
+  try{const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));return "r"+[...new Uint8Array(h)].slice(0,16).map(b=>b.toString(16).padStart(2,"0")).join("");}
+  catch(_){let h1=0x811c9dc5,h2=0x1000193;for(const ch of msg){h1=Math.imul(h1^ch.charCodeAt(0),16777619)>>>0;h2=Math.imul(h2+ch.charCodeAt(0),2654435761)>>>0;}return "r"+h1.toString(16)+h2.toString(16);}
+}
+function inviteText(){const t=S.table||{};const link=INVITE_LINKS?location.origin+location.pathname+"#room="+encodeURIComponent(t.room)+"&key="+normKey(t.key):"";
+  return `Join my mtghud room\nRoom: ${t.room}\nKey: ${fmtKey(t.key)}${link?"\n"+link:""}`;}
+let copied=false,inviteShow=false;const INVITE_LINKS=true;
 function tableInner(){
   const t=S.table||{};
   if(roomState==="off")return `<span class="eyebrow">Table</span><p class="none">Table sharing is off. Whoever hosts this app can turn it on by adding a free Firebase project (README, step 3).</p>`;
@@ -1052,12 +1407,14 @@ function tableInner(){
       :/network/.test(fbErr)?"The device couldn't reach Firebase. Check the connection, or turn off ad or tracker blockers for this site."
       :"Couldn't connect to the table service. Check your connection, then reload.";
     return `<span class="eyebrow">Table</span><p class="none">${esc(hint)}</p><p class="status">Error code: ${esc(fbErr)}</p>`;}
-  if(!tableRoom)return `<div class="spread"><span class="eyebrow">Join a table</span><span class="mana">See everyone's board live</span></div>
-    <p class="status">Everyone opens Deck HUD on their phone and joins the same code. Each person shares their own board.</p>
-    <div class="tjoin"><input type="text" id="tbl-nick" placeholder="Your name" value="${esc(t.nick||"")}" maxlength="20" aria-label="Your name">
-    <input type="text" id="tbl-code" placeholder="Table code" value="${esc(t.code||"")}" maxlength="12" aria-label="Table code" autocapitalize="off">
-    <button class="btn primary" data-act="jointable"${roomState!=="ready"?" disabled":""}>Join</button><button class="btn ghost" data-act="newtable">New code</button></div>
-    ${tableErr?`<p class="status err">${esc(tableErr)}</p>`:""}`;
+  if(!tableRoom){const c=tblMode==="create";return `<div class="spread"><span class="eyebrow">Private room</span><span class="mana">See everyone's board live</span></div>
+    <div class="seg roomseg" role="group" aria-label="Room"><button data-tblmode="join" aria-pressed="${!c}">Join a room</button><button data-tblmode="create" aria-pressed="${c}">Create a room</button></div>
+    <p class="status">${c?"Name your room and the app makes a secret key. Share both with your group.":"Enter the room name and key your host shared."}</p>
+    <div class="tjoin${c?"":" three"}"><input type="text" id="tbl-nick" placeholder="Your name" value="${esc(t.nick||"")}" maxlength="20" aria-label="Your name">
+    <input type="text" id="tbl-room" placeholder="Room name, e.g. Friday Night" value="${esc(t.room||"")}" maxlength="24" aria-label="Room name">
+    ${c?"":`<input type="text" id="tbl-key" placeholder="Key, e.g. k7pq-3xz9" value="${esc(t.key?fmtKey(t.key):"")}" maxlength="12" aria-label="Room key" autocapitalize="off" autocomplete="off">`}
+    <button class="btn primary" data-act="${c?"createroom":"joinroom"}"${roomState!=="ready"?" disabled":""}>${c?"Create room":"Join room"}</button></div>
+    ${tableErr?`<p class="status err">${esc(tableErr)}</p>`:""}`;}
   const ps=peerList.filter(p=>p.kind==="viewer"&&p.presence&&p.presence.b&&typeof p.presence.b==="object");
   const others=ps.filter(p=>!p.sameTab);
   const row=p=>{const b=p.presence.b,me=p.sameTab,open=!me&&openPeers.has(p.peer);
@@ -1071,15 +1428,21 @@ function tableInner(){
         <div><span class="eyebrow">Cards in play</span>${cards.length?`<p>${cards.map(c=>esc(String(c))).join(" · ")}</p>`:`<p class="none">None marked.</p>`}</div>
         <div><span class="eyebrow">Effects</span>${fx.length?fx.map(f=>`<p class="pfx">${gl(String(f))}</p>`).join(""):`<p class="none">None.</p>`}</div>
         ${Array.isArray(b.mana)?`<p class="status">Mana open: ${esc(String(b.mana[0]))} of ${esc(String(b.mana[1]))}</p>`:""}</div>`:""}</div>`;};
-  return `<div class="spread"><span class="eyebrow">Table · ${esc(t.code||"")}</span><button class="link" data-act="leavetable">Leave</button></div>
+  return `<div class="spread"><span class="eyebrow">Private room · ${esc(t.room||"")}</span><button class="link" data-act="leavetable">Leave</button></div>
+    <div class="keyrow"><span>Key <b>${esc(fmtKey(t.key))}</b></span><span class="row"><button class="btn sm" data-act="opentv">Table view</button>${INVITE_LINKS&&navigator.share?`<button class="btn primary sm" data-act="shareinvite">Invite</button>`:""}<button class="btn sm" data-act="copyinvite">${copied?"Copied":"Copy invite"}</button></span></div>
+    ${inviteShow?`<textarea id="invite-text" readonly rows="4" aria-label="Invite">${esc(inviteText())}</textarea>`:""}
     ${ps.map(row).join("")}
-    ${others.length?"":`<p class="none">Waiting for others. Have them join code <b>${esc(t.code||"")}</b>.</p>`}`;
+    ${others.length?"":`<p class="none">Waiting for others. Share the room name and key with your group.</p>`}`;
 }
+// Invite links (#room=…&key=…) open straight to the join form, filled in.
+try{const h=new URLSearchParams(location.hash.slice(1));if(h.get("room")&&h.get("key")){
+  if(tableRoom)leaveTable();S.table={nick:(S.table||{}).nick||"",room:h.get("room").slice(0,24),key:normKey(h.get("key")),code:""};tblMode="join";save();
+  history.replaceState(null,"",location.pathname);view="home";render();}}catch(_){}
 (async()=>{const cfg=window.FIREBASE_CONFIG||{};
   if(!cfg.apiKey||!window.firebase){roomState="off";refreshTable();return;}
   try{firebase.initializeApp(cfg);const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;fbDb=firebase.database();}
   catch(e){roomState="error";fbErr=(e&&(e.code||e.message))||"unknown";console.error("Firebase:",e);refreshTable();return;}
-  roomState="ready";if(S.table&&S.table.code)joinTable(S.table.code);else refreshTable();})();
+  roomState="ready";if(S.table&&S.table.code&&S.table.room)joinTable(S.table.code);else refreshTable();})();
 // Card search: your deck's cards first (instant), then Scryfall's autocomplete across every card (when reachable).
 let suggTimer=null,suggSeq=0,suggOff=false;
 function deckNames(){const g=S.game;if(!g)return [];const d=g.deck;return [...new Set([...cardList(d),...(d.cmdr?[d.cmdr]:[]),...g.gy,...g.ex])];}
@@ -1112,7 +1475,7 @@ async function addCard(){
   if(!entry){entry={name,cat:"Other"};if(!addStatus||addStatus==="Adding…")addStatus="";}else if(addStatus==="Adding…")addStatus="";
   entry={...entry,added:true};
   g.deck.cards=(g.deck.cards||[]).filter(c=>c.name!==entry.name);g.deck.cards.push(entry);
-  if(!g.inplay.includes(entry.name))g.inplay.push(entry.name);
+  if(!g.inplay.includes(entry.name)){g.inplay.push(entry.name);if(modeOf(g)==="sim")g.hand=Math.max(0,(g.hand||0)-1);}
   const saved=S.decks.find(x=>x.id===g.deck.id);if(saved){saved.cards=(saved.cards||[]).filter(c=>c.name!==entry.name);saved.cards.push(entry);}
   save();render();const i=document.getElementById("add-card");if(i)i.focus();
 }
@@ -1121,7 +1484,7 @@ let focusPeer=null;const zonesOpen={};
 // Battlefield view: every other player's board laid out like a playmat. Peer data is untrusted, so everything is clipped and escaped.
 let mcInfo={},mcSeq=0,cardOpen=null;const cardCache=new Map();
 let artOff=false,artTimer=null;const artWant=new Set();
-const imgOf=(d,kind)=>{const f=d&&(d.image_uris||(d.card_faces&&d.card_faces[0]&&d.card_faces[0].image_uris));const u=f&&f[kind];return typeof u==="string"&&/^https:\/\/cards\.scryfall\.io\//.test(u)?u:"";};
+const imgOf=(d,kind)=>{const f=d&&(d.image_uris||(d.card_faces&&d.card_faces[0]&&d.card_faces[0].image_uris));const u=f&&f[kind];return typeof u==="string"&&/^https:\/\/cards\.scryfall\.io\/[^\s\'"()<>]+$/.test(u)?u:"";};
 function wantArt(name){const k=name.toLowerCase();if(artOff||!name||cardCache.has(k))return;artWant.add(name);clearTimeout(artTimer);artTimer=setTimeout(fetchArt,250);}
 async function fetchArt(){
   const names=[...artWant].slice(0,75);artWant.clear();if(!names.length)return;
@@ -1129,12 +1492,14 @@ async function fetchArt(){
     if(!r.ok)throw 0;const j=await r.json();
     (j.data||[]).forEach(d=>{cardCache.set(d.name.toLowerCase(),d);cardCache.set(d.name.split(" // ")[0].toLowerCase(),d);});
     (j.not_found||[]).forEach(x=>cardCache.set(String(x.name).toLowerCase(),null));
+    const newPT=learnPT(j.data);
     if(view==="deckview"&&!cardOpen)render();
+    if(newPT&&view==="hud"&&!cardOpen&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))){render();return;}
     refreshTable();if(view==="hud"&&!cardOpen&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))&&document.querySelector(".gypanel .gychip"))render();
     if(cardOpen&&!cardOpen.data){const d=cardCache.get(cardOpen.n.toLowerCase());if(d){cardOpen.data=d;cardOpen.loading=false;render();}}
   }catch(_){artOff=true;}
 }
-function fieldsInner(){mcInfo={};
+function fieldsInner(){mcInfo=Object.fromEntries(Object.entries(mcInfo).filter(([,v])=>v.mine));
   const peers=(tableRoom?peerList:[]).filter(p=>p.kind==="viewer"&&!p.sameTab&&p.presence&&p.presence.b&&typeof p.presence.b==="object");
   if(peers.length){
     if(focusPeer&&!peers.some(p=>p.peer===focusPeer))focusPeer=null;
@@ -1142,41 +1507,53 @@ function fieldsInner(){mcInfo={};
       <span class="pcn">${esc(String(b.nick||"Player").slice(0,20))}</span><span class="pcs"><b>${esc(String(b.life??"–").slice(0,5))}</b> life · ${esc(String(b.power??0).slice(0,5))} power</span></button>`;};
     const strip=`<div class="pstrip" role="group" aria-label="Show a player's board"><button class="pchip all${focusPeer?"":" on"}" data-fpeer="all" aria-pressed="${!focusPeer}"><span class="pcn">All players</span><span class="pcs">${peers.length} at the table</span></button>${peers.map(chip).join("")}</div>`;
     const shown=focusPeer?peers.filter(p=>p.peer===focusPeer):peers;
-    return strip+shown.map(p=>matHtml(p.presence.b,false)).join("");
+    return strip+shown.map(p=>matHtml(p.presence.b,false,false,false,p.peer)).join("");
   }
   const code=(S.table&&S.table.code)||"";
-  return `<p class="fieldnote">${tableRoom?`Waiting for others to join table <b>${esc(code)}</b>.`:"Join a table from the home screen to see everyone else's battlefield here."} This is how your board looks to them:</p>${curBoard?matHtml(curBoard,true):""}`;
+  return `<p class="fieldnote">${tableRoom?`Waiting for others to join room <b>${esc((S.table&&S.table.room)||"")}</b>.`:"Join a table from the home screen to see everyone else's battlefield here."} This is how your board looks to them:</p>${curBoard?matHtml(curBoard,true):""}`;
 }
-function matHtml(b,mine){
+function matHtml(b,mine,tv,tapme,oid){
   const str=(v,n)=>String(v??"").slice(0,n);
   const colors=Array.isArray(b.colors)?b.colors.filter(c=>["W","U","B","R","G"].includes(c)):[];
-  const cards=(Array.isArray(b.cards)?b.cards:[]).slice(0,40).map(c=>Array.isArray(c)?{n:str(c[0],40),cat:str(c[1],14),pt:str(c[2],7),tap:!!c[3]}:{n:str(c,40).replace(/ \(commander\)$/,""),cat:/\(commander\)$/.test(str(c,60))?"Commander":"Other"});
-  const groups=(Array.isArray(b.groups)?b.groups:[]).slice(0,8).map(x=>({n:str(x[0],40).replace(/ tokens?$/i,""),q:Math.max(0,Math.min(999,parseInt(x[1],10)||0)),pt:str(x[2],7)}));
+  const cards=(Array.isArray(b.cards)?b.cards:[]).slice(0,40).map(c=>Array.isArray(c)?{n:str(c[0],40),cat:str(c[1],14),pt:str(c[2],7),tap:!!c[3],ctr:Math.max(0,Math.min(99,parseInt(c[4],10)||0))}:{n:str(c,40).replace(/ \(commander\)$/,""),cat:/\(commander\)$/.test(str(c,60))?"Commander":"Other"});
+  const groups=(Array.isArray(b.groups)?b.groups:[]).slice(0,8).flatMap(x=>{const q=Math.max(0,Math.min(999,parseInt(x[1],10)||0)),t=Math.max(0,Math.min(q,parseInt(x[3],10)||0)),gi=parseInt(x[4],10);
+    const base={n:str(x[0],40).replace(/ tokens?$/i,""),pt:str(x[2],7),gi};
+    // A token stack splits into an untapped pile and a tapped pile, like real tokens on a table.
+    return [...(q-t>0?[{...base,q:q-t,tap:false}]:[]),...(t>0?[{...base,q:t,tap:true}]:[])];});
   const isCre=c=>/^(Creatures|Vehicles|Commander)$/.test(c.cat);
-  const front=[...(b.cmdrOn&&b.cmdr?[{n:str(b.cmdr,40),cat:"Commander",pt:str(b.cmdrPt,7)}]:[]),...cards.filter(isCre)];
+  const front=[...(b.cmdrOn&&b.cmdr?[{n:str(b.cmdr,40),cat:"Commander",pt:str(b.cmdrPt,7),tap:!!b.cmdrTap,ctr:parseInt(b.cmdrCtr,10)||0}]:[]),
+    ...(b.cmdr2On&&b.cmdr2?[{n:str(b.cmdr2,40),cat:"Commander",pt:str(b.cmdr2Pt,7),tap:!!b.cmdr2Tap,ctr:parseInt(b.cmdr2Ctr,10)||0,k2:true}]:[]),...cards.filter(isCre)];
   const back=cards.filter(c=>!isCre(c));
   const label={Commander:"Commander",Creatures:"Creature",Vehicles:"Vehicle",Mana:"Mana",Artifacts:"Artifact",Enchantments:"Enchantment",Other:"Permanent"};
   const fxAll=(Array.isArray(b.fx)?b.fx:[]).slice(0,30).map(t=>str(t,320));
-  const reg=(c,token)=>{const id="m"+(++mcSeq);mcInfo[id]={n:c.n,cat:token?"Token":c.cat,pt:c.pt,q:c.q,owner:str(b.nick||"Player",20),
+  const reg=(c,token)=>{const id="m"+(++mcSeq);mcInfo[id]={mine:!!tapme,oid:oid||"",n:c.n,cat:token?"Token":c.cat,pt:c.pt,q:c.q,owner:str(b.nick||"Player",20),
     fx:fxAll.filter(t=>t.toLowerCase().startsWith(c.n.toLowerCase()+":")).map(t=>t.slice(c.n.length+1).trim())};return id;};
-  const artOf=n=>{const d=cardCache.get(n.toLowerCase());if(d===undefined)wantArt(n);const u=imgOf(d,"art_crop");return u?`<span class="mcart" style="background-image:url('${u}')"></span>`:"";};
-  const mc=c=>`<button class="mc mc-${(c.cat||"Other").toLowerCase()}${c.tap?" tapped":""}" data-mcid="${reg(c)}" title="${esc(c.n)}" aria-label="Read ${esc(c.n)}">${artOf(c.n)}<span class="mcn">${esc(c.n)}</span><span class="mct">${label[c.cat]||"Permanent"}</span>${c.pt?`<span class="mcpt">${esc(c.pt)}</span>`:""}</button>`;
-  const tok=x=>`<button class="mc mc-token" data-mcid="${reg(x,true)}" title="${esc(x.n)} tokens" aria-label="Read ${esc(x.n)} token"><span class="mcn">${esc(x.n)}</span><span class="mct">Token</span>${x.pt?`<span class="mcpt">${esc(x.pt)}</span>`:""}<span class="mcq">×${x.q}</span></button>`;
+  const artOf=n0=>{const n=baseName(n0);const d=cardCache.get(n.toLowerCase());if(d===undefined)wantArt(n);const u=imgOf(d,"art_crop");return u?`<span class="mcart" style="background-image:url('${u}')"></span>`:"";};
+  // On your own battlefield a card taps and untaps; the small "i" opens the card reader instead.
+  const tapAttr=(key,name,tapped)=>`data-mytap="${esc(key)}" aria-pressed="${tapped}" aria-label="${tapped?"Untap":"Tap"} ${esc(name)}"`;
+  const info=id=>`<span class="mcinfo" data-mcid="${id}" role="button" aria-label="Read card">i</span>`;
+  const mc=c=>{const id=reg(c),key=c.cat==="Commander"?(c.k2?"cmdr2":"cmdr"):"card:"+c.n;return `<button class="mc mc-${(c.cat||"Other").toLowerCase()}${c.tap?" tapped":""}" ${tapme?tapAttr(key,c.n,!!c.tap):`data-mcid="${id}" aria-label="Read ${esc(c.n)}"`} title="${esc(c.n)}">${tapme?info(id):""}${artOf(c.n)}<span class="mcn">${esc(c.n)}</span><span class="mct">${label[c.cat]||"Permanent"}</span>${c.pt?`<span class="mcpt">${esc(c.pt)}</span>`:""}${c.ctr>0?`<span class="mcctr" title="+1/+1 counters">+${c.ctr}</span>`:""}</button>`;};
+  const tok=x=>{const id=reg(x,true);return `<button class="mc mc-token${x.tap?" tapped":""}" ${tapme&&!isNaN(x.gi)?tapAttr((x.tap?"grpT:":"grpU:")+x.gi,"one "+x.n,x.tap):`data-mcid="${id}" aria-label="Read ${esc(x.n)} token"`} title="${esc(x.n)} tokens${x.tap?", tapped":""}">${tapme?info(id):""}<span class="mcn">${esc(x.n)}</span><span class="mct">Token${x.tap?" · tapped":""}</span>${x.pt?`<span class="mcpt">${esc(x.pt)}</span>`:""}<span class="mcq">×${x.q}</span></button>`;};
   const row=(lbl,items,empty)=>`<div class="mrow"><span class="mlbl">${lbl}</span><div class="mcards">${items||`<span class="mempty">${empty}</span>`}</div></div>`;
   const fx=(Array.isArray(b.fx)?b.fx:[]).slice(0,30).map(t=>str(t,320));
   const mana=Array.isArray(b.mana)?b.mana.slice(0,2).map(v=>parseInt(v,10)||0):null;
-  return `<section class="mat${mine?" mine":""}" style="${styleVars(colors)}">
+  const hl=b.hand!=null&&b.lib!=null?`<span class="mpill">Hand ${Math.max(0,parseInt(b.hand,10)||0)}</span><span class="mpill">Library ${Math.max(0,parseInt(b.lib,10)||0)}</span>`:"";
+  const footPills=`${hl}${mana?`<span class="mpill">Mana ${mana[0]} of ${mana[1]} open</span>`:""}${b.cmdr&&b.cmdrOn===false?`<span class="mpill">Commander in command zone</span>`:""}`;
+  const roles=(Array.isArray(b.roles)?b.roles:[]).filter(r=>r==="Monarch"||r==="Initiative");
+  const poison=Math.max(0,Math.min(99,parseInt(b.poison,10)||0));
+  return `<section class="mat${mine?" mine":""}${b.act?" active":""}" style="${styleVars(colors)}">
     <div class="mathead"><div class="mwho"><span class="mname">${esc(str(b.nick||"Player",20))}${mine?" <em>you</em>":""}</span>
-      <span class="mdeck">${esc(str(b.deck,60))}${b.cmdr?" · "+esc(str(b.cmdr,60)):""}</span></div>
+      <span class="mdeck">${esc(str(b.deck,60))}${b.cmdr?" · "+esc(str(b.cmdr,60)):""}${b.cmdr2?" & "+esc(str(b.cmdr2,60)):""}</span>
+      ${b.act||roles.length||poison?`<span class="mroles">${b.act?`<span class="mrole turn">Their turn</span>`:""}${roles.map(r=>`<span class="mrole">${r}</span>`).join("")}${poison?`<span class="mrole poison">${poison} poison</span>`:""}</span>`:""}</div>
       <div class="mstats"><span class="mlife" title="Life">${esc(str(b.life??"–",5))}</span><span class="mmeta">turn ${esc(str(b.turn??"–",4))}<br>${esc(str(b.power??0,5))} power</span></div></div>
     ${row("Creatures",front.map(mc).join("")+groups.filter(x=>x.q>0).map(tok).join(""),"No creatures")}
-    ${row("Artifacts &amp; enchantments",back.map(mc).join(""),"Nothing out")}
+    ${row(tv?"Other":"Artifacts &amp; enchantments",back.map(mc).join(""),"Nothing out")}
     ${(()=>{const gy=(Array.isArray(b.gy)?b.gy:[]).slice(-40).map(n=>str(n,40)),ex=(Array.isArray(b.ex)?b.ex:[]).slice(-40).map(n=>str(n,40));
       const key=str(b.nick,20)+"|"+(mine?"me":"x"),open=zonesOpen[key]||"";
       const pill=(z,lbl,arr)=>`<button class="mpill zpill${open===z?" on":""}" data-zone="${esc(key)}|${z}" aria-pressed="${open===z}">${lbl} ${arr.length}</button>`;
       const list=open==="gy"?gy:open==="ex"?ex:null;
-      return `<div class="mzones">${pill("gy","Graveyard",gy)}${pill("ex","Exile",ex)}</div>${list?row(open==="gy"?"Graveyard":"Exile",list.slice().reverse().map(n=>mc({n,cat:"Other"})).join(""),"Empty"):""}`;})()}
-    <div class="mfoot">${mana?`<span class="mpill">Mana ${mana[0]} of ${mana[1]} open</span>`:""}${b.cmdr&&b.cmdrOn===false?`<span class="mpill">Commander in command zone</span>`:""}</div>
+      return `<div class="mzones">${pill("gy","Graveyard",gy)}${pill("ex","Exile",ex)}${tv?footPills:""}</div>${list?row(open==="gy"?"Graveyard":"Exile",list.slice().reverse().map(n=>mc({n,cat:"Other"})).join(""),"Empty"):""}`;})()}
+    ${tv?"":`<div class="mfoot">${footPills}</div>`}
     ${fx.length?`<div class="mfx"><span class="mlbl">Effects (${fx.length})</span>${fx.map(t=>{const m=t.match(/^([^:]{2,40}): (.+)$/);return m?`<p><b>${esc(m[1])}</b> ${gl(m[2])}</p>`:`<p>${gl(t)}</p>`;}).join("")}</div>`:""}
   </section>`;
 }
@@ -1217,6 +1594,121 @@ function renderDeckView(){
     ${groups.map(([k,a])=>`<section class="field vgroup"><h2>${k} <span class="muted">${a.reduce((s,e)=>s+e.q,0)}</span></h2><div class="vgrid">${a.map(tile).join("")}</div></section>`).join("")}
     <p class="note">Tap a card to read it.</p>`;
 }
+
+// Tutorial: a short spotlight tour of the screen you're on. Steps whose part isn't on screen are skipped.
+const TOURS={
+  home:[
+    ["#tablepanel","Play together","Create a private room, or join one with its name and key. Everyone at the room sees each other's board live."],
+    [".modepick","Three ways to play","AR companion is for real cards and tracks only what helps. Full sim logs every draw and play. No cards lets the app shuffle and hold your hand."],
+    ["#catalog","Every official precon","Search all Commander precons by deck or commander. Tap Cards to look through a deck, or Play to start with it."],
+    [".decks .deck","Your decks","Built-in and saved decks live here. View cards to browse a deck, Edit to change your own, and Play to start a game."],
+    ["[data-act=new]","Bring your own deck","Paste a list from Moxfield or Archidekt. The app reads every card, finds your commander, and sets up trackers."],
+    ["[data-act=glossary]","Keyword glossary","Any underlined keyword in the app is tappable. This opens the full list of plain-language definitions."]],
+  hud:[
+    [".hudhead","Turn bar","Your deck and turn. Pass turn untaps your mana, clears this-turn effects, and resets your checklist."],
+    [".lifepanel","Health hub","Your life and every opponent's. Switch to Commander before dealing commander damage so it counts toward 21."],
+    [".vitals>.panel:not(.lifepanel)","Mana","Tap a coin when you spend that mana. Add mana rocks or extra sources with + Mana source."],
+    [".turnlist","This turn","Triggers to remember this turn, in order. Check each one off as you handle it."],
+    [".panel.shared","The shared table","Everyone in the room sees this: whose turn it is, who holds Monarch and Initiative, Day or Night, and the session score."],
+    [".simpanel","Hand and library","In the full sim modes, this tracks your hand and library. Draw, play lands and cast spells from here."],
+    [".mybf","Your battlefield","Everything you have in play, laid out like your side of the table. Tap a card to tap it, so other players see it turned sideways."],
+    [".panel.cmdr","Commander","Tap Cast when your commander enters the battlefield. The app tracks commander tax for you."],
+    [".cardspanel","Cards in play","Put cards onto the battlefield here. Search by name, or browse by type. Each card's effects, mana and reminders switch on by themselves."],
+    [".panel.fx","Effects in play","What your cards are doing right now. Underlined keywords explain themselves when tapped."],
+    [".creapanel","Creatures","Token stacks and creature groups with live power and toughness, including team buffs."],
+    [".gypanel","Graveyard and exile","When a card leaves play, tap × and choose where it went. Bring cards back from here."],
+    ["#fields","Other players","Everyone else's battlefield. Tap a player to focus on them, or tap any card to read it."]]
+};
+let tour=null;
+function startTour(name){const steps=TOURS[name].filter(s=>document.querySelector(s[0]));if(!steps.length)return;tour={steps,i:0};try{localStorage.setItem("deckhud.tour."+name,"1");}catch(_){}drawTour(true);}
+function endTour(){tour=null;document.querySelectorAll(".tour-spot,.tour-tip").forEach(e=>e.remove());}
+function drawTour(scroll){
+  document.querySelectorAll(".tour-spot,.tour-tip").forEach(e=>e.remove());if(!tour)return;
+  const [sel,title,text]=tour.steps[tour.i];const el=document.querySelector(sel);if(!el){return tourStep(1);}
+  if(scroll)el.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  const mine=tour;const place=()=>{if(!tour||tour!==mine||!el.isConnected)return;const r=el.getBoundingClientRect(),pad=6;
+    let spot=document.querySelector(".tour-spot");if(!spot){spot=document.createElement("div");spot.className="tour-spot";document.body.appendChild(spot);}
+    Object.assign(spot.style,{top:(r.top-pad)+"px",left:(r.left-pad)+"px",width:(r.width+pad*2)+"px",height:(r.height+pad*2)+"px"});
+    let tip=document.querySelector(".tour-tip");if(!tip){tip=document.createElement("div");tip.className="tour-tip";tip.setAttribute("role","dialog");document.body.appendChild(tip);
+      tip.innerHTML=`<span class="eyebrow">Tutorial · ${tour.i+1} of ${tour.steps.length}</span><h3>${esc(title)}</h3><p>${esc(text)}</p>
+        <div class="row"><button class="btn ghost sm" data-tour="skip">Skip</button>${tour.i?`<button class="btn sm" data-tour="back">Back</button>`:""}<button class="btn primary sm" data-tour="next">${tour.i===tour.steps.length-1?"Done":"Next"}</button></div>`;}
+    const tw=Math.min(340,innerWidth-24),below=r.bottom+tip.offsetHeight+18<innerHeight;
+    Object.assign(tip.style,{width:tw+"px",left:Math.max(12,Math.min(innerWidth-tw-12,r.left))+"px",top:(below?r.bottom+12:Math.max(12,r.top-tip.offsetHeight-12))+"px"});
+    if(!below&&r.top-tip.offsetHeight-12<12)tip.style.top=Math.max(12,innerHeight-tip.offsetHeight-12)+"px";};
+  place();setTimeout(place,350);setTimeout(place,700);
+}
+function tourStep(d){if(!tour)return;tour.i+=d;if(tour.i<0)tour.i=0;if(tour.i>=tour.steps.length)return endTour();drawTour(true);}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tour]");if(!b)return;const a=b.dataset.tour;if(a==="skip")endTour();else tourStep(a==="next"?1:-1);});
+addEventListener("resize",()=>{if(tour)drawTour(false);});addEventListener("scroll",()=>{if(tour&&!document.querySelector(".tour-tip:hover"))drawTour(false);},{passive:true});
+document.addEventListener("keydown",e=>{if(tour&&e.key==="Escape")endTour();});
+const tourSeen=n=>{try{return localStorage.getItem("deckhud.tour."+n)==="1";}catch(_){return true;}};
+
+// Footer: the notice Wizards' Fan Content Policy asks for, Scryfall credit, bug reports, and an optional tip link.
+const BUG_FORM=true;
+const TIP_URL="";   // Paste a Ko-fi / Buy Me a Coffee link here to show a tip button. Keep the app free to use.
+let bugOpen=false,bugSent=false,bugErr="";
+function footerHtml(){
+  return `<footer class="appfoot"><div class="row">${BUG_FORM?`<button class="link" data-act="bug">Report a bug</button>`:""}${/^https:\/\//.test(TIP_URL)?`<a class="link" href="${esc(TIP_URL)}" target="_blank" rel="noopener">Tip the developer</a>`:""}</div>
+    <p>mtghud is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.</p>
+    <p>Card data and images from <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>. Precon lists from <a href="https://mtgjson.com" target="_blank" rel="noopener">MTGJSON</a>.</p></footer>`;
+}
+function bugSheet(){
+  return `<div class="sheet-bg" data-act="closebug"></div><div class="cardsheet bugsheet" role="dialog" aria-modal="true" aria-label="Report a bug"><div class="cs-body">
+    <span class="eyebrow">Report a bug</span><h2>What went wrong?</h2>
+    ${bugSent?`<p>Sent. Thanks for helping fix it.</p>`:`
+    <label class="t" for="bug-msg">What happened, and what did you expect?</label>
+    <textarea id="bug-msg" rows="5" maxlength="2000" placeholder="e.g. I tapped Pass turn and my mana didn't untap."></textarea>
+    <label class="t" for="bug-contact">How can we reach you? (optional)</label>
+    <input type="text" id="bug-contact" maxlength="100" placeholder="Name or handle. Leave blank to stay anonymous.">
+    <label class="check"><input type="checkbox" id="bug-ctx" checked> Include which screen and deck I was on, and my browser type</label>
+    ${bugErr?`<p class="status err">${esc(bugErr)}</p>`:""}`}</div>
+    <div class="cs-foot">${bugSent?`<button class="btn primary" data-act="closebug">Close</button>`:`<button class="btn primary" data-act="sendbug">Send report</button><button class="btn ghost" data-act="closebug">Cancel</button>`}</div></div>`;
+}
+async function sendBug(){
+  const msg=(document.getElementById("bug-msg").value||"").trim();if(msg.length<5){bugErr="Add a sentence about what happened.";return render();}
+  const ctx=document.getElementById("bug-ctx").checked?`screen: ${view}; deck: ${S.game?S.game.deck.name:"none"}; turn: ${S.game?S.game.turn:"-"}; ${navigator.userAgent}`.slice(0,500):"";
+  try{const r=await fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
+      body:new URLSearchParams({"form-name":"bug-report",message:msg,contact:(document.getElementById("bug-contact").value||"").trim().slice(0,100),context:ctx}).toString()});
+    if(!r.ok)throw 0;bugSent=true;bugErr="";}catch(_){bugErr="Couldn't send the report. Check your connection and try again.";}
+  render();
+}
+
+// Table view: a watch-only screen of every player's battlefield, for a TV or a second display.
+let tvMode=location.hash==="#tv",tvErr="";
+function openTableView(){const w=window.open(location.pathname+"#tv","mtghud-tv");if(!w)location.hash="tv";}
+function tvInner(){
+  const all=seatOrder(peerList.filter(p=>p.kind==="viewer"&&p.presence&&p.presence.b&&typeof p.presence.b==="object"));
+  const turnN=peerNick(tblState.turn),dn=tblState.dn||0;
+  const room=esc((S.table||{}).room||"Room");
+  const medal=`<div class="tvcenter"><div class="tvmedal"><span class="eyebrow">${all.length} player${all.length===1?"":"s"} at the table${sessOf()?" · game "+(Number(sessOf().n)||1):""}</span><b>${room}</b>${turnN||dn?`<span class="tvstate">${turnN?esc(turnN)+"'s turn":""}${turnN&&dn?" · ":""}${dn?["","Day","Night"][dn]:""}</span>`:""}</div></div>`;
+  const sx=sessOf();
+  if(sx&&sx.brk){const line=sessLine(sx);return `<div class="tvtable tvbreak"><div class="tvboard"><span class="eyebrow">${room} · after game ${Number(sx.last&&sx.last.n)||""}</span>
+    <h1>${sx.last?esc(String(sx.last.w||"").slice(0,20))+" won":"Standings"}</h1>${sessStandings(sx,false)}
+    ${sx.last&&sx.last.i?`<p class="tvup"><b>${esc(String(sx.last.i).slice(0,20))}</b> is in${sx.last.o?` for ${esc(String(sx.last.o).slice(0,20))}`:""}.</p>`:""}
+    ${line.length?`<p class="tvline">Waiting: ${line.map(n=>esc(n)).join(" · ")}</p>`:""}<p class="tvline">Game ${Number(sx.n)||1} starts when a player taps Start.</p></div></div>`;}
+  if(!all.length)return `<div class="tvtable">${medal}<p class="tvempty">No boards yet. Players appear here as soon as they start a game in the room.</p></div>`;
+  // Seat players around the table: the near side fills left to right, the far side continues right to left,
+  // so turn order runs clockwise like a real table.
+  const nearN=Math.ceil(all.length/2),near=all.slice(0,nearN),far=all.slice(nearN).reverse();
+  const seat=p=>matHtml(p.presence.b,false,true);
+  return `<div class="tvtable">${far.length?`<div class="seats far">${far.map(seat).join("")}</div>`:""}${medal}<div class="seats near">${near.map(seat).join("")}</div></div>`;
+}
+function renderTV(){
+  const t=S.table||{};mcInfo={};
+  if(!tableRoom){app.innerHTML=`<header class="field"><span class="eyebrow">Table view</span><h1>Watch a room</h1>
+    <p class="muted">Shows every player's battlefield, for a TV or second screen. This screen only watches; it doesn't play.</p></header>
+    ${roomState!=="ready"?`<p class="status">${roomState==="loading"?"Connecting…":"Table sharing isn't available."}</p>`:`<section class="panel"><div class="spread"><span class="eyebrow">Room</span></div>
+    <div class="tjoin three"><input type="text" id="tv-room" placeholder="Room name" value="${esc(t.room||"")}" maxlength="24" aria-label="Room name">
+    <input type="text" id="tv-key" placeholder="Key" value="${esc(t.key?fmtKey(t.key):"")}" maxlength="12" aria-label="Room key" autocapitalize="off">
+    <button class="btn primary" data-act="tvjoin">Watch room</button></div>${tvErr?`<p class="status err">${esc(tvErr)}</p>`:""}</section>`}`;return;}
+  app.innerHTML=`<button class="btn ghost sm tvexit" data-act="tvexit">Exit</button><div class="tvwrap" id="tvgrid">${tvInner()}</div>`;
+}
+function simHtml(g){const dig=modeOf(g)==="digital";
+  const stp=(k,v,l)=>`<div class="simnum"><span class="eyebrow">${l}</span><b>${v}</b>${dig?"":`<span class="tkbtns"><button data-simadj="${k}" data-n="-1" aria-label="${l} minus 1">−</button><button data-simadj="${k}" data-n="1" aria-label="${l} plus 1">+</button></span>`}</div>`;
+  return `<section class="panel simpanel"><div class="spread"><span class="eyebrow">Hand &amp; library</span><span class="mana">${dig?"The app holds your deck":"Log each move as you make it with your cards"}</span></div>
+    <div class="simnums">${stp("hand",g.hand||0,"Hand")}${stp("lib",g.lib||0,"Library")}</div>
+    ${dig?digitalHtml(g):`<div class="row simacts"><button class="btn primary" data-sim="draw">Draw</button><button class="btn" data-sim="land">Play a land</button><button class="btn" data-sim="spell">Cast a spell</button><button class="btn" data-sim="discard">Discard</button><button class="btn" data-sim="mill">Mill 1</button></div>
+    <p class="status">${g.simNote?esc(g.simNote):"Putting a card into play from the list below takes it from your hand. Spells, discards and milled cards go to your graveyard."}</p>`}</section>`;}
 function renderHud(){
   const g=S.game;
   // Games started on an older version keep a stale copy of the precon; refresh it so trackers match the current preset.
@@ -1225,15 +1717,18 @@ function renderHud(){
   const d=g.deck;
   if(fresh&&fresh.groups){g.groups=g.groups||[];fresh.groups.forEach(fg=>{if(!g.groups.some(x=>x.name===fg.name))g.groups.push({name:fg.name,p:fg.p,t:fg.t,n:0,c:0});});}
   g.inplay=g.inplay||[];g.cardUsed=g.cardUsed||{};
-  g.cmdr=g.cmdr||{on:false,casts:0};g.gy=g.gy||[];g.ex=g.ex||[];
-  if(g.inplay.some(n=>isCmdr(d,n))){g.inplay=g.inplay.filter(n=>!isCmdr(d,n));g.cmdr.on=true;g.cmdr.casts=Math.max(1,g.cmdr.casts);save();}
+  g.cmdr=g.cmdr||{on:false,casts:0};g.cmdr2=g.cmdr2||{on:false,casts:0};g.ctr=g.ctr||{};g.gy=g.gy||[];g.ex=g.ex||[];
+  if(d.mods.includes("cmdr")&&g.vals.poison==null)g.vals.poison=0;
+  syncDead(g);const ctl=ctlMap();ctlSig=JSON.stringify(ctl);
+  if(g.sessN==null){const sx=sessOf();g.sessN=sx?Number(sx.n)||1:1;}
+  if(g.inplay.some(n=>isCmdr(d,n))){g.inplay.filter(n=>isCmdr(d,n)).forEach(n=>{const z=d.cmdr2&&cmdrMatch(n,d.cmdr2)&&!cmdrMatch(n,d.cmdr)?g.cmdr2:g.cmdr;z.on=true;z.casts=Math.max(1,z.casts);});g.inplay=g.inplay.filter(n=>!isCmdr(d,n));save();}
   const inCards=g.inplay.map(n=>cardInfo(d,n));
   const cbP=inCards.reduce((a,c)=>a+(c.buff?c.buff.p:0),0),cbT=inCards.reduce((a,c)=>a+(c.buff?c.buff.t:0),0);
   const landBonus=inCards.reduce((a,c)=>a+(c.land||0),0);
   const cardMana=inCards.filter(c=>c.mana);
   g.attach=g.attach||{};
   // Things equipment can be attached to: your commander, creature/vehicle cards in play, and your token groups.
-  const hosts=[...(d.cmdr&&g.cmdr.on?[d.cmdr]:[]),...inCards.filter(c=>c.cat==="Creatures"||c.cat==="Vehicles").map(c=>c.name),...(g.groups||[]).filter(x=>x.n>0).map(x=>"A "+x.name.replace(/ tokens?$/i,"").replace(/s$/,""))];
+  const hosts=[...(d.cmdr&&g.cmdr.on?[d.cmdr]:[]),...(d.cmdr2&&g.cmdr2.on?[d.cmdr2]:[]),...inCards.filter(c=>c.cat==="Creatures"||c.cat==="Vehicles").map(c=>c.name),...(g.groups||[]).filter(x=>x.n>0).map(x=>"A "+x.name.replace(/ tokens?$/i,"").replace(/s$/,""))];
   Object.keys(g.attach).forEach(k=>{if(!g.inplay.includes(k)||!hosts.includes(g.attach[k]))delete g.attach[k];});
   const artifacts=(d.cmdr&&g.cmdr.on?1:0)+inCards.filter(c=>!["Enchantments"].includes(c.cat)).length+(g.groups||[]).reduce((a,x)=>a+x.n,0);
   const equipLine=c=>{const on=g.attach[c.name];if(!on)return "Not attached";return "On "+on+(c.plating?` · about +${artifacts}/+0 (${artifacts} artifacts)`:"");};
@@ -1243,9 +1738,12 @@ function renderHud(){
   const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>r.isCmdr?g.cmdr.on:(!r.card||g.inplay.includes(r.card))).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
   Object.keys(g.unearthed||{}).filter(n=>g.inplay.includes(n)).forEach((n,k)=>rems.push({p:"end",t:"Exile "+n+" (unearthed). Passing the turn does this for you.",src:n,i:9000+k}));
   const left=rems.filter(r=>!g.done.includes(r.i)).length;
-  let tiles="",togs="",hasOpps=false,lifeTile="";
+  let tiles="",togs="",hasOpps=d.mods.includes("cmdr"),lifeTile="";
+  const SHARED=["monarch","initiative","daynight"];
+  if(tableRoom){if("monarch" in g.flags)g.flags.monarch=tblState.monarch===uid;if("initiative" in g.flags)g.flags.initiative=tblState.initiative===uid;if("daynight" in g.flags)g.flags.daynight=tblState.dn||0;}
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
-    if(M.kind==="counter"){const t=tileCounter(m,M.label,g.vals[m],{wide:M.wide,warn:M.warn});if(m==="life")lifeTile=t;else tiles+=t;}
+    if(M.kind==="counter"){if(m==="poison"&&hasOpps)return;const t=tileCounter(m,M.label,g.vals[m],{wide:M.wide,warn:M.warn});if(m==="life")lifeTile=t;else tiles+=t;}
+    if(tableRoom&&SHARED.includes(m))return;
     if(M.kind==="cmdr")hasOpps=true;
     if(M.kind==="toggle")togs+=`<button class="tog" data-flag="${m}" aria-pressed="${!!g.flags[m]}">${esc(M.label)}</button>`;
     if(M.kind==="cycle")togs+=`<button class="tog" data-cycle="${m}" aria-pressed="${g.flags[m]>0}">${esc(M.states[g.flags[m]])}</button>`;});
@@ -1291,30 +1789,49 @@ function renderHud(){
     ${g.groups.some(x=>x.n<=0)?`<div class="toggles idle">${g.groups.map((x,i)=>x.n>0?"":`<button class="tog" data-gn="${i}" data-gd="1">+ ${esc(x.name.replace(/ tokens?$/i,""))} ${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}</button>`).join("")}</div>`:""}
     <button class="link" data-addopen="grp">+ Creature group</button>
     ${addOpen==="grp"?`<div class="addrow"><input type="text" id="add-grp" placeholder="e.g. Zombie tokens"><select id="add-grp-p" aria-label="Base power">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><select id="add-grp-t" aria-label="Base toughness">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><button class="btn primary" data-addgo="grp">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button></div>`:""}</section>`;
+  const cpt=(nm,k)=>ptPlus(ptOf(d,nm),g.ctr[k]||0).slice(0,7);
   curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
+    ...(d.cmdr2?{cmdr2:String(d.cmdr2).slice(0,60),cmdr2On:!!g.cmdr2.on,cmdr2Tap:!!(g.cmdr2.on&&g.cmdr2.tap),cmdr2Pt:cpt(d.cmdr2,"cmdr2"),cmdr2Ctr:g.ctr.cmdr2||0}:{}),
+    poison:g.vals.poison||0,cmdrCtr:g.ctr.cmdr||0,
     life:g.vals.life??null,turn:g.turn,power:pow,cnt,mana:[avail,total],
-    groups:g.groups.filter(x=>x.n>0).slice(0,8).map(x=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`]),
+    groups:g.groups.map((x,gi)=>[x,gi]).filter(([x])=>x.n>0).slice(0,8).map(([x,gi])=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`,Math.min(x.n,x.tap||0),gi]),
     gy:g.gy.slice(-40).map(n=>String(n).slice(0,40)),ex:g.ex.slice(-40).map(n=>String(n).slice(0,40)),
-    cmdrOn:!!(d.cmdr&&g.cmdr.on),cmdrPt:String((cardInfo(d,d.cmdr)||{}).pt||"").slice(0,7),colors:(d.colors||[]).slice(0,5),
-    cards:g.inplay.slice(0,40).map(n=>{const c=cardInfo(d,n);return [String(n).slice(0,40),String(c.cat||"Other").slice(0,14),String(c.pt||"").slice(0,7),!!(c.mana&&g.cardUsed[n])];}),
-    fx:[...inCards.filter(c=>fxText(c)).map(c=>c.name+": "+fxText(c)),...g.effects.map(f=>f.text)].slice(0,30).map(t=>String(t).slice(0,320))};
+    cmdrOn:!!(d.cmdr&&g.cmdr.on),cmdrTap:!!(g.cmdr.on&&g.cmdr.tap),cmdrPt:cpt(d.cmdr,"cmdr"),colors:(d.colors||[]).slice(0,5),
+    ...(modeOf(g)!=="ar"?{hand:g.hand||0,lib:g.lib||0,mode:modeOf(g)}:{}),
+    ...(g.took&&Object.keys(g.took).length?{took:Object.values(g.took).slice(0,20).map(t=>[String(t.n).slice(0,40),String(t.o).slice(0,40)])}:{}),
+    ...(g.deadOut&&g.deadOut.length?{dead:g.deadOut.slice(-20)}:{}),
+    cards:g.inplay.filter(n=>!ctl[n]).slice(0,40).map(n=>{const c=cardInfo(d,n);return [String(n).slice(0,40),String(c.cat||"Other").slice(0,14),ptPlus(ptOf(d,n),g.ctr[n]||0).slice(0,7),!!g.cardUsed[n],g.ctr[n]||0];}),
+    fx:[...inCards.filter(c=>!ctl[c.name]&&fxText(c)).map(c=>c.name+": "+fxText(c)),...g.effects.map(f=>f.text)].slice(0,30).map(t=>String(t).slice(0,320))};
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
     <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
+  ${tableRoom?(()=>{const ps=seatOrder(tablePeers()),turnN=peerNick(tblState.turn),mine=tblState.turn===uid;
+    const role=(k,label)=>{const h=tblState[k],me=h===uid;return `<div class="shrole${me?" on":""}"><span>${gl(label)}: <b>${h?(me?"You":esc(peerNick(h)||"Left the room")):"Nobody"}</b></span><button class="btn sm" data-share="${k}">${me?"Give up":"Take"}</button></div>`;};
+    const dn=tblState.dn||0;
+    return `<section class="panel shared"><div class="spread"><span class="eyebrow">Table · ${esc((S.table||{}).room||"")}</span><span class="mana">${ps.length} player${ps.length===1?"":"s"} · everyone sees this</span></div>
+      <div class="shturn${mine?" on":""}"><span>${mine?"<b>Your turn.</b> Pass turn hands it to the next player.":turnN?`<b>${esc(turnN)}</b>'s turn`:"Nobody has started. Whoever goes first taps the button."}</span>${mine?"":`<button class="btn sm${turnN?"":" primary"}" data-share="turn">It's my turn</button>`}</div>
+      <div class="seats-ed"><span class="eyebrow">Turn order · set it to match your seats</span><ol>${ps.map((p,i)=>`<li class="${p.peer===tblState.turn?"on":""}"><span>${esc(String(p.presence.b.nick||"Player").slice(0,20))}${p.peer===uid?" <em>you</em>":""}</span><span class="tkbtns"><button data-seat="-1" data-id="${esc(p.peer)}"${i===0?" disabled":""} aria-label="Move ${esc(String(p.presence.b.nick||"Player"))} earlier">↑</button><button data-seat="1" data-id="${esc(p.peer)}"${i===ps.length-1?" disabled":""} aria-label="Move ${esc(String(p.presence.b.nick||"Player"))} later">↓</button></span></li>`).join("")}</ol></div>
+      <div class="shroles">${role("monarch","Monarch")}${role("initiative","Initiative")}
+        <div class="shrole"><span>${gl("Day / Night")}: <b>${["Neither","Day","Night"][dn]}</b></span><button class="btn sm" data-share="dn">Change</button></div></div>${sessHtml(g)}</section>`;})():""}
   <div class="vitals">${hasOpps?oppsHtml(g,g.vals.life):lifeTile}${manaHtml}</div>
+  ${modeOf(g)!=="ar"?simHtml(g):""}
   <h2 class="zonehead">Your board</h2>
   <div class="zone mine">
+  <section class="panel mybf"><div class="spread"><span class="eyebrow">Your battlefield</span><span class="status">Tap a card to tap or untap it. Tap <span class="mcinfo inl">i</span> to read it.</span></div>
+    ${(()=>{mcInfo={};const any=curBoard.cmdrOn||curBoard.cmdr2On||curBoard.cards.length||curBoard.groups.length;return any?matHtml(curBoard,true,false,true):`<p class="none">Cards you put into play show up here. Tap one to turn it sideways, the way you would at the table.</p>`;})()}</section>
   ${rems.length?`<section class="panel turnlist"><div class="spread"><span class="eyebrow">This turn</span><span class="mana">${left?left+" to check":"All handled"}</span></div>
     ${rems.map(r=>{const on=g.done.includes(r.i);return `<div class="chk${on?" done":""}" data-done="${r.i}"><span class="when w-${r.p}">${WHEN[r.p]}</span><span class="ctext"><b>${esc(r.src)}</b> ${gl(r.t)}</span><button class="box" data-done="${r.i}" aria-pressed="${on}" aria-label="Mark handled">${on?"✓":""}</button></div>`}).join("")}</section>`:""}
-  ${d.cmdr?(()=>{const tax=2*g.cmdr.casts;return `<section class="panel cmdr"><div class="spread"><span class="eyebrow">Commander</span><span class="mana">${g.cmdr.on?"On the battlefield":"In the command zone"}</span></div>
-    <div class="cmdrow"><div class="cmain"><span class="cname">${esc(d.cmdr)}</span>
-      <span class="csum">${g.cmdr.on?`Cast ${g.cmdr.casts} time${g.cmdr.casts===1?"":"s"}. Next cast from the command zone costs {${tax}} more.`:(g.cmdr.casts?`Commander tax: costs {${tax}} more to cast now.`:"No commander tax yet.")}</span></div>
+  ${d.cmdr?(()=>{const slot=(name,z,sx)=>{const tax=2*z.casts,ck="cmdr"+sx,n=g.ctr[ck]||0;return `<div class="cmdrow"><div class="cmain"><span class="cname">${esc(name)}</span>
+      <span class="csum">${z.on?`Cast ${z.casts} time${z.casts===1?"":"s"}. Next cast from the command zone costs {${tax}} more.`:(z.casts?`Commander tax: costs {${tax}} more to cast now.`:"No commander tax yet.")}</span></div>
       <span class="tax" aria-label="Commander tax">+${tax}</span></div>
-    <div class="row">${g.cmdr.on?`<button class="btn" data-act="cmdrback">Died or exiled: back to command zone</button>`
-      :`<button class="btn primary" data-act="cmdrcast">Cast${tax?` (+${tax} tax)`:""}</button>`}
-      <span class="stp"><button data-act="cmdrdown" aria-label="One fewer cast">−</button><b>${g.cmdr.casts}</b><button data-act="cmdrup" aria-label="One more cast">+</button></span><span class="status">casts</span></div>
+    <div class="row">${z.on?`<button class="btn" data-cz="${sx}" data-cza="back">Died or exiled: back to command zone</button>`
+      :`<button class="btn primary" data-cz="${sx}" data-cza="cast">Cast${tax?` (+${tax} tax)`:""}</button>`}
+      <span class="stp"><button data-cz="${sx}" data-cza="down" aria-label="One fewer cast">−</button><b>${z.casts}</b><button data-cz="${sx}" data-cza="up" aria-label="One more cast">+</button></span><span class="status">casts</span>
+      ${z.on?`<span class="stp ctr"><button data-ctr="${ck}" data-n="-1" aria-label="Remove a +1/+1 counter">−</button><b>${n}</b><button data-ctr="${ck}" data-n="1" aria-label="Add a +1/+1 counter">+</button></span><span class="status">+1/+1</span>`:""}</div>`;};
+    return `<section class="panel cmdr"><div class="spread"><span class="eyebrow">Commander${d.cmdr2?"s":""}</span><span class="mana">${d.cmdr2?"Each has its own tax":g.cmdr.on?"On the battlefield":"In the command zone"}</span></div>
+    ${slot(d.cmdr,g.cmdr,"")}${d.cmdr2?slot(d.cmdr2,g.cmdr2,"2"):""}
     <p class="status">Tax goes up {2} for every time you've already cast it from the command zone.</p></section>`;})():""}
-  ${`<section class="panel cardspanel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
+  ${`<section class="panel cardspanel"><div class="spread"><span class="eyebrow">Cards in play</span>${modeOf(g)==="digital"?`<span class="mana">Play cards from your hand</span>`:`<button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button>`}</div>
     ${pickOpen?(()=>{const out=cards.filter(c=>!g.inplay.includes(c));const catOf=c=>cardInfo(d,c).cat||"Other";
       const cats=out.length?["All",...CAT_ORDER.filter(k=>out.some(c=>catOf(c)===k))]:[];const cur=cats.includes(pickCat)?pickCat:"All";const inCat=(c,k)=>k==="All"||catOf(c)===k;
       const addRow=`<div class="addrow addcard"><input type="text" id="add-card" placeholder="Search for a card, e.g. Sol Ring" autocomplete="off" role="combobox" aria-controls="sugg-add-card" aria-autocomplete="list"><button class="btn primary" data-act="addcard">Add</button><div class="sugg" id="sugg-add-card" role="listbox"></div></div>${addStatus?`<p class="status">${esc(addStatus)}</p>`:""}`;
@@ -1322,11 +1839,14 @@ function renderHud(){
       return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>inCat(c,k)).length}</span></button>`).join("")}</div>
       <div class="picks" data-cur="${esc(cur)}">${out.map(c=>`<button class="tog" data-card="${cards.indexOf(c)}" data-pcat="${esc(catOf(c))}" data-pname="${esc(c.toLowerCase())}"${inCat(c,cur)?"":" hidden"}>${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}
     ${pickOpen&&inCards.length?`<span class="inplaylbl">In play (${inCards.length})</span>`:""}
-    ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${g.unearthed&&g.unearthed[c.name]?`<b class="unearthed">Unearthed: exiled at end of turn</b> · `:""}${gl(c.equip?equipLine(c):cardSummary(c))}</span>
+    ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span>${ctl[c.name]?`<span class="ctltag">${esc(ctl[c.name])} controls this</span>`:g.took&&g.took[c.name]?`<span class="ctltag mine">From ${esc(g.took[c.name].nick||"another player")}</span>`:g.copies&&g.copies[c.name]?`<span class="ctltag mine">Copy</span>`:""}<span class="csum">${g.unearthed&&g.unearthed[c.name]?`<b class="unearthed">Unearthed: exiled at end of turn</b> · `:""}${gl(c.equip?equipLine(c):cardSummary(c))}</span>
         ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
       ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
+      ${c.cat==="Creatures"||c.cat==="Vehicles"?`<span class="stp ctr" title="+1/+1 counters on this creature"><button data-ctr="${esc(c.name)}" data-n="-1" aria-label="Remove a +1/+1 counter from ${esc(c.name)}">−</button><b>${g.ctr[c.name]||0}</b><button data-ctr="${esc(c.name)}" data-n="1" aria-label="Add a +1/+1 counter to ${esc(c.name)}">+</button></span>`:""}
       <button class="x" data-leave="${esc(c.name)}" aria-label="${esc(c.name)} left play">×</button>
-      ${leaveOpen===c.name?`<div class="leave"><span>Where did it go?</span><button class="btn" data-leaveto="gy">Graveyard</button><button class="btn" data-leaveto="ex">Exile</button><button class="btn" data-leaveto="hand">Hand or library</button><button class="btn ghost" data-leaveto="cancel">Cancel</button></div>`:""}</div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.${cards.length?"":" This deck has no card list, so add cards by name."}</p>`)}</section>`}
+      ${leaveOpen===c.name?(g.copies&&g.copies[c.name]?`<div class="leave"><span>A copy just stops existing.</span><button class="btn" data-leaveto="copy">Remove copy</button><button class="btn ghost" data-leaveto="cancel">Cancel</button></div>`
+        :g.took&&g.took[c.name]?`<div class="leave"><span>It belongs to ${esc(g.took[c.name].nick||"another player")}. Where did it go?</span><button class="btn" data-leaveto="owner">Back to its owner</button><button class="btn" data-leaveto="ogy">Their graveyard</button><button class="btn" data-leaveto="oex">Their exile</button><button class="btn ghost" data-leaveto="cancel">Cancel</button></div>`
+        :`<div class="leave"><span>Where did it go?</span><button class="btn" data-leaveto="gy">Graveyard</button><button class="btn" data-leaveto="ex">Exile</button>${modeOf(g)==="ar"?`<button class="btn" data-leaveto="hand">Hand or library</button>`:`<button class="btn" data-leaveto="hand">Hand</button><button class="btn" data-leaveto="lib">Library${modeOf(g)==="digital"?" top":""}</button>`}<button class="btn ghost" data-leaveto="cancel">Cancel</button></div>`):""}</div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.${cards.length?"":" This deck has no card list, so add cards by name."}</p>`)}</section>`}
   ${fxHtml}
   ${gyHtml}
   ${boardHtml}
@@ -1334,7 +1854,7 @@ function renderHud(){
   ${togs?`<div class="toggles wide">${togs}</div>`:""}
   ${tiles?`<div class="grid tiles">${tiles}</div>`:""}
   </div>
-  <h2 class="zonehead theirs">Other players</h2>
+  <h2 class="zonehead theirs"><span>Other players</span>${tableRoom?`<button class="btn ghost sm" data-act="opentv">Open table view</button>`:""}</h2>
   <div class="zone theirs">
   <div class="fields" id="fields">${fieldsInner()}</div>
   ${watchHtml}
@@ -1342,7 +1862,7 @@ function renderHud(){
   <div class="bar"><button class="btn" data-act="back">Decks</button><button class="btn primary" data-act="next">Pass turn</button></div>
   ${confirmReset==="end"?`<div class="confirm"><span>End this game? Your saved decks stay, but this game's life, board and turn are cleared.</span><div class="row"><button class="btn danger" data-act="doend">End game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
    :confirmReset?`<div class="confirm"><span>Restart ${esc(d.name)} from turn 1 with fresh life and an empty board?</span><div class="row"><button class="btn danger" data-act="doreset">Restart game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
-   :`<div class="row"><button class="btn ghost" data-act="reset">Restart game</button><button class="btn ghost" data-act="endgame">End game</button><button class="btn ghost" data-act="glossary">Glossary</button></div>`}`;
+   :`<div class="row"><button class="btn ghost" data-act="reset">Restart game</button><button class="btn ghost" data-act="endgame">End game</button><button class="btn ghost" data-act="glossary">Glossary</button><button class="btn ghost" data-gmode="1" title="Switch between AR companion and full sim">Mode: ${modeOf(g)==="ar"?"AR":modeOf(g)==="sim"?"Full sim":"No cards"}</button><button class="btn ghost" data-act="tour">Tutorial</button></div>`}`;
 }
 
 function renderSetup(){
@@ -1351,6 +1871,7 @@ function renderSetup(){
   <header class="field"><span class="eyebrow">Custom deck</span><h1>${d.existing?"Edit deck":"New deck"}</h1></header>
   <div class="field"><label class="t" for="f-name">Deck name</label><input type="text" id="f-name" value="${esc(d.name)}" placeholder="e.g. Atraxa superfriends"></div>
   <div class="field"><label class="t" for="f-cmdr">Commander</label><input type="text" id="f-cmdr" value="${esc(d.cmdr)}"></div>
+  <div class="field"><label class="t" for="f-cmdr2">Second commander <span class="opt">only for partner pairs</span></label><input type="text" id="f-cmdr2" value="${esc(d.cmdr2||"")}"></div>
   <div class="field"><span class="t">Deck colors</span><div class="toggles">${["W","U","B","R","G"].map(c=>`<button class="tog cpick" data-color="${c}" aria-pressed="${(d.colors||[]).includes(c)}"><i style="background:${MTGC[c].ring}"></i>${MTGC[c].n}</button>`).join("")}</div></div>
   <section class="field" id="ai-box"><label class="t" for="f-list">Decklist (optional)</label>
     <textarea id="f-list" placeholder="Paste an export from Moxfield, Archidekt, etc.&#10;1 Sol Ring&#10;1 Smothering Tithe">${esc(d.list||"")}</textarea>
@@ -1370,7 +1891,7 @@ function renderSetup(){
 function syncDraft(){
   if(view!=="setup")return;
   const v=id=>document.getElementById(id);
-  draft.name=v("f-name").value.trim();draft.cmdr=v("f-cmdr").value.trim();
+  draft.name=v("f-name").value.trim();draft.cmdr=v("f-cmdr").value.trim();draft.cmdr2=v("f-cmdr2")?v("f-cmdr2").value.trim():(draft.cmdr2||"");
   draft.list=v("f-list")?v("f-list").value:"";
   draft.mods=[...document.querySelectorAll("[data-mod]")].filter(x=>x.checked).map(x=>x.dataset.mod);
   draft.custom=v("f-custom").value.split(",").map(s=>s.trim()).filter(Boolean).slice(0,8);
@@ -1518,10 +2039,10 @@ async function importPrecon(f,viewOnly){
   try{
     let deck=null,cmdrs,main;
     try{const r=await fetch("precons/decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=await r.json();
-      const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[],power:c.p,toughness:c.tg});
+      const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[],power:c.p,toughness:c.tg,q:c.q||1});
       cmdrs=(deck.commander||[]).map(conv);main=(deck.cards||[]).map(conv);}
     catch(_){const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=(await r.json()).data;
-      const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[],power:c.power,toughness:c.toughness});
+      const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[],power:c.power,toughness:c.toughness,q:c.count||1});
       cmdrs=(deck.commander||[]).map(conv);main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);}
     const seen=new Set(),all=[...cmdrs,...main].filter(c=>c.name&&!seen.has(c.name)&&seen.add(c.name));
     // Any nonland card that arrived without rules text gets it from Scryfall.
@@ -1529,10 +2050,10 @@ async function importPrecon(f,viewOnly){
     if(blank.length){try{const {found}=await scryfall(blank.map(c=>c.name));
       found.forEach(fc=>{const t=all.find(c=>normName(c.name)===normName(fc.name));if(t){const fx=fc.card_faces&&!fc.oracle_text?fc.card_faces:[fc];
         t.oracle_text=fx.map(x=>x.oracle_text||"").join("\n");t.type_line=fc.type_line||t.type_line;t.color_identity=fc.color_identity||t.color_identity;}});}catch(_){}}
-    const cmdr=cmdrs[0]?cmdrs[0].name.split(" // ")[0]:"";
+    const cmdr=cmdrs[0]?cmdrs[0].name.split(" // ")[0]:"",cmdr2=cmdrs[1]?cmdrs[1].name.split(" // ")[0]:"";
     const b=buildFromCards(all,{cmdr,colors:cmdrs.length?["W","U","B","R","G"].filter(x=>cmdrs.some(c=>c.color_identity.includes(x))):[]});
-    const d={id:"m-"+f,name:deck.name||meta.n,set:meta.c+(meta.d?" ("+meta.d.slice(0,4)+")":""),cmdr,imported:true,
-      list:all.map(c=>"1 "+c.name).join("\n"),custom:[],...b};
+    const d={id:"m-"+f,name:deck.name||meta.n,set:meta.c+(meta.d?" ("+meta.d.slice(0,4)+")":""),cmdr,cmdr2,imported:true,kinds:kindsOf(all),
+      list:all.map(c=>(cmdrs.includes(c)?1:Math.max(1,Math.min(99,c.q||1)))+" "+c.name).join("\n"),qfix:true,custom:[],...b};
     if(viewOnly){catBusy=null;d._f=f;openDeckView(d,"home");return;}
     const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.unshift(d);save();
     catBusy=null;startGame(d);
@@ -1561,9 +2082,9 @@ async function suggest(){
     if(!draft.cmdr){const h=cmdrHints(draft.list||""),canLead=c=>/legendary.*creature|can be your commander/i.test((c.type_line||"")+" "+(c.oracle_text||""));
       const pick=names=>found.filter(c=>names.some(n=>normName(n)===normName(c.name))&&canLead(c));
       const hit=pick(h.tagged).length?pick(h.tagged):pick(h.tail);
-      if(hit.length){draft.cmdr=hit[0].name.split(" // ")[0];picked=hit.map(c=>c.name.split(" // ")[0]).join(" & ");
+      if(hit.length){draft.cmdr=hit[0].name.split(" // ")[0];if(hit[1])draft.cmdr2=hit[1].name.split(" // ")[0];picked=hit.map(c=>c.name.split(" // ")[0]).join(" & ");
         if(hit.length>1&&!(draft.colors||[]).length)draft.colors=["W","U","B","R","G"].filter(x=>hit.some(c=>(c.color_identity||[]).includes(x)));}}
-    const b=buildFromCards(found,draft);Object.assign(draft,b);
+    const b=buildFromCards(found,draft);Object.assign(draft,b);draft.kinds=kindsOf(found);
     aiStatus=(picked?`Commander found: ${picked}. `:(!draft.cmdr?"No commander found in the list, so type it in the Commander field and import again. ":""))+`Found ${found.length} cards: ${draft.cards.length} with effects, ${draft.groups.length} token types.`+(missing.length?` Couldn't find: ${missing.slice(0,4).join(", ")}${missing.length>4?"…":""}.`:"")+" Adjust anything below.";
   }catch(e){aiStatus="Couldn't reach Scryfall. Check your connection and try again.";}
   render();
@@ -1582,12 +2103,39 @@ app.addEventListener("click",e=>{
   if(ds.start){const d=allDecks().find(x=>x.id===ds.start);if(d)startGame(d);return;}
   if(ds.edit){const d=S.decks.find(x=>x.id===ds.edit);draft={...JSON.parse(JSON.stringify(d)),existing:true};aiStatus="";view="setup";return render();}
   if(ds.zone){const i=ds.zone.lastIndexOf("|"),k=ds.zone.slice(0,i),z=ds.zone.slice(i+1);zonesOpen[k]=zonesOpen[k]===z?"":z;return refreshTable();}
+  if(ds.tblmode){tblMode=ds.tblmode;tableErr="";return refreshTable();}
   if(ds.fpeer){focusPeer=ds.fpeer==="all"?null:ds.fpeer;refreshTable();const f=document.getElementById("fields");if(f&&focusPeer)f.scrollIntoView({block:"start",behavior:"smooth"});return;}
   if(ds.peer){openPeers.has(ds.peer)?openPeers.delete(ds.peer):openPeers.add(ds.peer);return refreshTable();}
   if(ds.mode&&g){g.dmgMode=ds.mode;save();return render();}
-  if(ds.opp!=null&&g){const o=g.opps[ds.opp],n=Number(ds.amt);g.last={i:Number(ds.opp),life:o.life,cd:o.cd};
-    o.life+=n;if(n<0&&g.dmgMode==="cmdr")o.cd+=-n;save();return render();}
-  if(ds.delopp!=null&&g){if(g.opps.length>1){g.opps.splice(Number(ds.delopp),1);renumberOpps(g);g.last=null;save();}return render();}
+  if(ds.opp!=null&&g){const o=g.opps[ds.opp],n=Number(ds.amt);pushOppHist(g,Number(ds.opp),o);
+    o.life+=n;if(g.dmgMode!=="reg"){const k=g.dmgMode==="cmdr2"?"cd2":"cd";o[k]=Math.max(0,(o[k]||0)-n);}save();return render();}
+  if(ds.cdfix!=null&&g){const o=g.opps[ds.cdfix],k=ds.cdk==="cd2"?"cd2":"cd";if(o&&(o[k]||0)>0){pushOppHist(g,Number(ds.cdfix),o);o[k]-=1;o.life+=1;save();}return render();}
+  if(ds.tk!=null&&g){const o=g.opps[ds.tk],k=ds.tkk==="tk2"?"tk2":"tk";if(o){const old=o[k]||0,nv=Math.max(0,old+Number(ds.n));if(nv!==old){pushOppHist(g,Number(ds.tk),o);o[k]=nv;g.vals.life=(g.vals.life??40)-(nv-old);save();}}return render();}
+  if(ds.oppart!=null&&g){const o=g.opps[ds.oppart];if(o){o.partner=!o.partner;if(!o.partner&&o.tk2){g.vals.life=(g.vals.life??40)+o.tk2;o.tk2=0;}save();}return render();}
+  if(ds.delopp!=null&&g){if(g.opps.length>1){g.opps.splice(Number(ds.delopp),1);renumberOpps(g);g.last=null;g.hist=[];save();}return render();}
+  if(ds.cz!=null&&g&&ds.cza){const z=ds.cz==="2"?g.cmdr2:g.cmdr,ck="cmdr"+ds.cz;
+    if(ds.cza==="cast"){z.on=true;z.casts++;}if(ds.cza==="back"){z.on=false;z.tap=false;delete g.ctr[ck];}
+    if(ds.cza==="up")z.casts++;if(ds.cza==="down")z.casts=Math.max(0,z.casts-1);save();return render();}
+  if(ds.ctr&&g){g.ctr=g.ctr||{};const v=Math.max(0,Math.min(99,(g.ctr[ds.ctr]||0)+Number(ds.n)));if(v)g.ctr[ds.ctr]=v;else delete g.ctr[ds.ctr];save();return render();}
+  if(ds.setmode){S.mode=ds.setmode;save();return render();}
+  if(ds.gmode&&g){if(modeOf(g)==="digital")return;setMode(g,modeOf(g)==="ar"?"sim":"ar");S.mode=g.mode;save();return render();}
+  if(ds.simadj&&g){const k=ds.simadj==="lib"?"lib":"hand";g[k]=Math.max(0,(g[k]||0)+Number(ds.n));save();return render();}
+  if(ds.sim&&g){const a=ds.sim;g.simNote="";
+    if(a==="draw"){if((g.lib||0)<=0)g.simNote="Your library is empty. A player who has to draw from an empty library loses.";else{g.lib--;g.hand=(g.hand||0)+1;}}
+    else if((a==="land"||a==="spell"||a==="discard")&&(g.hand||0)<=0)g.simNote="Your hand is empty. Use + next to Hand if the count is off.";
+    else if(a==="land"){g.hand--;const l=g.sources.find(x=>/^lands?$/i.test(x.name));if(l)l.n++;else g.sources.unshift({name:"Lands",amt:1,n:1,used:0});g.simNote="Land played. It's added to your mana.";}
+    else if(a==="spell"||a==="discard"){g.hand--;addOpen="gy";g.simNote=a==="spell"?"Name the spell to put it in your graveyard, or cancel to skip.":"Name the discarded card, or cancel to skip.";}
+    else if(a==="mill"){if((g.lib||0)<=0)g.simNote="Your library is empty.";else{g.lib--;addOpen="gy";g.simNote="Name the milled card, or cancel to skip.";}}
+    save();render();if(addOpen==="gy"){const i=document.getElementById("add-gy");if(i)i.focus();}return;}
+  if(ds.dig&&g&&modeOf(g)==="digital"){digAct(g,ds);save();render();if(ds.dig==="find"&&digFind){const i=document.getElementById("dig-q");if(i)i.focus();}return;}
+  if(ds.ctlact&&cardOpen){takeCard(cardOpen,ds.ctlact==="copy");return;}
+  if(ds.sess&&tableRoom){sessAct(ds);return render();}
+  if(ds.seat&&tableRoom){moveSeat(ds.id,Number(ds.seat));return render();}
+  if(ds.share&&tableRoom){const k=ds.share;
+    if(k==="turn")setTbl({turn:uid});
+    else if(k==="dn")setTbl({dn:((tblState.dn||0)+1)%3});
+    else if(k==="monarch"||k==="initiative")setTbl({[k]:tblState[k]===uid?null:uid});
+    return render();}
   if(ds.k&&g){g.vals[ds.k]=(g.vals[ds.k]||0)+Number(ds.n);if(!ds.k.startsWith("life")&&g.vals[ds.k]<0)g.vals[ds.k]=0;save();return render();}
   if(ds.ph&&g){g.phase=ds.ph;save();return render();}
   if(ds.flag&&g){g.flags[ds.flag]=!g.flags[ds.flag];save();return render();}
@@ -1604,20 +2152,29 @@ app.addEventListener("click",e=>{
       if(k==="grp")g.groups.push({name:t,p:Number(document.getElementById("add-grp-p").value),t:Number(document.getElementById("add-grp-t").value),n:1,c:0});
       keepCarry();save();}
     addOpen=null;return render();}
-  if(ds.gn!=null&&g){const x=g.groups[ds.gn];x.n=Math.max(0,x.n+Number(ds.gd));save();return render();}
+  if(ds.gn!=null&&g){const x=g.groups[ds.gn];x.n=Math.max(0,x.n+Number(ds.gd));x.tap=Math.min(x.tap||0,x.n);save();return render();}
+  if(ds.mytap&&g){const k=ds.mytap,[kind,rest]=[k.slice(0,k.indexOf(":")<0?k.length:k.indexOf(":")),k.slice(k.indexOf(":")+1)];
+    if(k==="cmdr"){g.cmdr.tap=!g.cmdr.tap;}else if(k==="cmdr2"){g.cmdr2.tap=!g.cmdr2.tap;}
+    else if(kind==="card"){g.cardUsed=g.cardUsed||{};if(g.inplay.includes(rest))g.cardUsed[rest]=!g.cardUsed[rest];}
+    else if(kind==="grpU"||kind==="grpT"){const x=g.groups[Number(rest)];if(x){x.tap=Math.max(0,Math.min(x.n,(x.tap||0)+(kind==="grpU"?1:-1)));}}
+    save();return render();}
   if(ds.gc!=null&&g){const x=g.groups[ds.gc];x.c=Math.max(0,x.c+Number(ds.gd));save();return render();}
   if(ds.bf&&g){const o=ds.bf==="on"?g.buff:g.tbuff;o[ds.ax]+=Number(ds.bd);save();return render();}
   if(ds.delgrp!=null&&g){g.groups.splice(Number(ds.delgrp),1);save();return render();}
   if(ds.addcancel&&g){addOpen=null;return render();}
   if(ds.delsrc!=null&&g){g.sources.splice(Number(ds.delsrc),1);keepCarry();save();return render();}
-  if(ds.card!=null&&g){const c=cardList(g.deck)[Number(ds.card)];if(c){g.inplay=g.inplay||[];g.inplay=g.inplay.includes(c)?g.inplay.filter(x=>x!==c):[...g.inplay,c];save();}
+  if(ds.card!=null&&g){const c=cardList(g.deck)[Number(ds.card)];if(c){g.inplay=g.inplay||[];const was=g.inplay.includes(c);g.inplay=was?g.inplay.filter(x=>x!==c):[...g.inplay,c];if(modeOf(g)==="sim")g.hand=Math.max(0,(g.hand||0)+(was?1:-1));save();}
     const before=(document.querySelector(".cardspanel")||{getBoundingClientRect:()=>({top:0})}).getBoundingClientRect().top;render();
     const p2=document.querySelector(".cardspanel");if(p2){const d=p2.getBoundingClientRect().top-before;if(Math.abs(d)>1)window.scrollBy(0,d);}return;}
   if(ds.cat&&g){pickCat=ds.cat;return render();}
   if(ds.ctap&&g){g.cardUsed=g.cardUsed||{};g.cardUsed[ds.ctap]=!g.cardUsed[ds.ctap];save();return render();}
   if(ds.make&&g){const c=cardInfo(g.deck,ds.make);const grp=(g.groups||[]).find(x=>x.name===c.makeGroup)||(g.groups||[])[0];if(c.make&&grp){grp.n+=c.make;save();}return render();}
   if(ds.leave&&g){leaveOpen=leaveOpen===ds.leave?null:ds.leave;return render();}
-  if(ds.leaveto&&g){const n=leaveOpen;leaveOpen=null;if(n&&ds.leaveto!=="cancel"){g.inplay=g.inplay.filter(x=>x!==n);if(g.attach)delete g.attach[n];if(g.cardUsed)delete g.cardUsed[n];
+  if(ds.leaveto&&g&&leaveOpen&&["copy","owner","ogy","oex"].includes(ds.leaveto)){const n=leaveOpen,t=g.took&&g.took[n];leaveOpen=null;
+    if(t&&ds.leaveto!=="owner"&&ds.leaveto!=="copy"){g.deadOut=g.deadOut||[];g.deadSeq=(g.deadSeq||0)+1;g.deadOut.push([String(t.n).slice(0,40),String(t.o).slice(0,40),ds.leaveto==="oex"?"ex":"gy",g.deadSeq]);}
+    dropTmp(g,n);save();return render();}
+  if(ds.leaveto&&g){const n=leaveOpen;leaveOpen=null;if(n&&ds.leaveto!=="cancel"){if(modeOf(g)==="digital"&&(ds.leaveto==="hand"||ds.leaveto==="lib")){const bn=baseName(n);if(ds.leaveto==="hand")g.handCards.push(bn);else g.libCards.unshift(bn);digSync(g);g.deck.cards=(g.deck.cards||[]).filter(x=>!(x.name===n&&x.tmp));}
+      else if(modeOf(g)==="sim"){if(ds.leaveto==="hand")g.hand=(g.hand||0)+1;if(ds.leaveto==="lib")g.lib=(g.lib||0)+1;}g.inplay=g.inplay.filter(x=>x!==n);if(g.attach)delete g.attach[n];if(g.cardUsed)delete g.cardUsed[n];if(g.ctr)delete g.ctr[n];
       if(ds.leaveto==="gy"||ds.leaveto==="ex"){g[ds.leaveto].push(n);if(g[ds.leaveto].length>200)g[ds.leaveto].shift();}save();}return render();}
   if(ds.gysel&&g){const [z,i]=ds.gysel.split(":");gySel=gySel&&gySel.z===z&&gySel.i===+i?null:{z,i:+i};return render();}
   if(ds.gyact&&g&&gySel){const arr=g[gySel.z],n=arr[gySel.i];if(n!=null){arr.splice(gySel.i,1);
@@ -1638,22 +2195,42 @@ app.addEventListener("click",e=>{
     case "new":draft={id:"u-"+Date.now(),colors:[],name:"",cmdr:"",mods:["life","cmdr"],custom:[],rem:[],list:""};aiStatus="";view="setup";break;
     case "cancel":view="home";break;
     case "back":view="home";confirmReset=false;break;
-    case "next":{Object.keys(g.unearthed||{}).forEach(n=>{if(g.inplay.includes(n)){g.inplay=g.inplay.filter(x=>x!==n);g.ex.push(n);}});g.unearthed={};g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
-    case "untapall":g.sources.forEach(s=>s.used=0);g.cardUsed={};save();break;
+    case "next":{if(tableRoom&&(!tblState.turn||tblState.turn===uid)){const ps=seatOrder(tablePeers()),i=ps.findIndex(p=>p.peer===uid);if(ps.length>1&&i>=0)setTbl({turn:ps[(i+1)%ps.length].peer});}
+      Object.keys(g.unearthed||{}).forEach(n=>{if(g.inplay.includes(n)){g.inplay=g.inplay.filter(x=>x!==n);g.ex.push(n);}});g.unearthed={};g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
+    case "untapall":g.sources.forEach(s=>s.used=0);g.cardUsed={};if(g.cmdr)g.cmdr.tap=false;if(g.cmdr2)g.cmdr2.tap=false;(g.groups||[]).forEach(x=>x.tap=0);save();break;
+    case "tour":endTour();startTour(view==="hud"?"hud":"home");return;
+    case "tourno":try{localStorage.setItem("deckhud.tour.home","1");}catch(_){}break;
+    case "bug":bugOpen=true;bugSent=false;bugErr="";render();setTimeout(()=>{const t=document.getElementById("bug-msg");if(t)t.focus();},50);return;
+    case "closebug":bugOpen=false;break;
+    case "sendbug":sendBug();return;
     case "pick":pickOpen=!pickOpen;addStatus="";break;
     case "addcard":addCard();return;
     case "cmdrcast":g.cmdr.on=true;g.cmdr.casts++;save();break;
-    case "cmdrback":g.cmdr.on=false;save();break;
+    case "cmdrback":g.cmdr.on=false;g.cmdr.tap=false;if(g.ctr)delete g.ctr.cmdr;save();break;
     case "cmdrup":g.cmdr.casts++;save();break;
     case "cmdrdown":g.cmdr.casts=Math.max(0,g.cmdr.casts-1);save();break;
     case "browse":catErr="";loadCatalog();return;
-    case "newtable":{const el=document.getElementById("tbl-code");if(el){const a="abcdefghjkmnpqrstuvwxyz23456789";el.value=Array.from({length:4},()=>a[Math.floor(Math.random()*a.length)]).join("");}return;}
-    case "jointable":{const nick=(document.getElementById("tbl-nick").value||"").trim().slice(0,20);const code=(document.getElementById("tbl-code").value||"").trim().toLowerCase();
-      if(!/^[a-z0-9]{3,12}$/.test(code)){tableErr="Use a code of 3 to 12 letters or numbers.";return refreshTable();}
-      S.table={nick:nick||"Player",code};save();joinTable(code);return;}
-    case "leavetable":leaveTable();S.table={...(S.table||{}),code:""};save();return refreshTable();
+    case "createroom":case "joinroom":{const nick=(document.getElementById("tbl-nick").value||"").trim().slice(0,20);
+      const room=(document.getElementById("tbl-room").value||"").trim().slice(0,24);
+      const key=ds.act==="createroom"?genKey():normKey((document.getElementById("tbl-key")||{}).value);
+      if(room.length<2){tableErr="Give the room a name of at least 2 characters.";return refreshTable();}
+      if(key.length<6){tableErr="Enter the room's key. It's 8 letters and numbers, like k7pq-3xz9.";return refreshTable();}
+      roomCode(room,key).then(code=>{S.table={nick:nick||"Player",room,key,code};save();joinTable(code);});return;}
+    case "shareinvite":{const t=S.table||{};const url=location.origin+location.pathname+"#room="+encodeURIComponent(t.room)+"&key="+normKey(t.key);
+      try{navigator.share({title:"Join my mtghud room",text:`Join my mtghud room "${t.room}" (key ${fmtKey(t.key)})`,url}).catch(()=>{});}catch(_){}return;}
+    case "copyinvite":{const txt=inviteText();copied=false;inviteShow=false;
+      try{navigator.clipboard.writeText(txt).then(()=>{copied=true;refreshTable();setTimeout(()=>{copied=false;refreshTable();},2000);},()=>{inviteShow=true;refreshTable();const el=document.getElementById("invite-text");if(el)el.select();});}
+      catch(_){inviteShow=true;refreshTable();const el=document.getElementById("invite-text");if(el)el.select();}return;}
+    case "tvjoin":{const room=(document.getElementById("tv-room").value||"").trim().slice(0,24),key=normKey(document.getElementById("tv-key").value);
+      if(room.length<2||key.length<6){tvErr="Enter the room name and its key.";return render();}
+      roomCode(room,key).then(code=>{S.table={...(S.table||{}),room,key,code};joinTable(code).then(render);});return;}
+    case "tvexit":leaveTable();history.replaceState(null,"",location.pathname);location.reload();return;
+    case "opentv":openTableView();return;
+    case "leavetable":leaveTable();S.table={nick:(S.table||{}).nick,room:"",key:"",code:""};inviteShow=false;save();return refreshTable();
     case "addopp":g.opps.push({name:"Opponent",life:40,cd:0});renumberOpps(g);save();break;
-    case "undoopp":if(g.last&&g.opps[g.last.i]){g.opps[g.last.i].life=g.last.life;g.opps[g.last.i].cd=g.last.cd;}g.last=null;save();break;
+    case "undoopp":{const h=(g.hist&&g.hist.length)?g.hist.pop():g.last;if(h&&g.opps[h.i]){const o=g.opps[h.i];o.life=h.life;o.cd=h.cd;if("cd2" in h){o.cd2=h.cd2;o.tk=h.tk;o.tk2=h.tk2;if(h.me!=null)g.vals.life=h.me;}}g.last=null;save();break;}
+    case "oppsfromroom":{const ps=seatOrder(peerList.filter(p=>p.kind==="viewer"&&!p.sameTab&&p.presence&&p.presence.b));if(ps.length){
+      g.opps=ps.slice(0,5).map(p=>{const nm=String(p.presence.b.nick||"Player").slice(0,20),old=g.opps.find(o=>o.name===nm);return old||{name:nm,life:Number(p.presence.b.life)||40,cd:0};});g.hist=[];save();}break;}
     case "closeterm":termOpen=null;break;
     case "closecard":cardOpen=null;break;
     case "glossary":glossBack=view==="glossary"?glossBack:view;termOpen=null;view="glossary";window.scrollTo({top:0});break;
@@ -1665,22 +2242,25 @@ app.addEventListener("click",e=>{
     case "ai":suggest();return;
     case "clearcards":syncDraft();draft.cards=[];draft.groups=[];aiStatus="";break;
     case "savedeck":{syncDraft();if(!draft.name){aiStatus="";document.getElementById("f-name").focus();return;}
-      const d={id:draft.id,name:draft.name,cmdr:draft.cmdr,mods:draft.mods.length?draft.mods:["life"],custom:draft.custom,rem:draft.rem,list:draft.list,colors:draft.colors||[],cards:draft.cards||[],groups:draft.groups||[]};
+      const d={id:draft.id,name:draft.name,cmdr:draft.cmdr,cmdr2:draft.cmdr2||"",kinds:draft.kinds,mods:draft.mods.length?draft.mods:["life"],custom:draft.custom,rem:draft.rem,list:draft.list,colors:draft.colors||[],cards:draft.cards||[],groups:draft.groups||[]};
       const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.push(d);save();view="home";break;}
     case "deldeck":S.decks=S.decks.filter(x=>x.id!==draft.id);save();view="home";break;
   }
   render();
 });
-app.addEventListener("input",e=>{if(e.target.id==="add-card"||e.target.id==="add-gy")onCardSearch(e.target);});
+app.addEventListener("input",e=>{if(e.target.id==="add-card"||e.target.id==="add-gy")onCardSearch(e.target);
+  if(e.target.id==="dig-q"){const q=e.target.value.trim().toLowerCase();document.querySelectorAll("#dig-list [data-fname]").forEach(r=>{r.hidden=!!q&&!r.dataset.fname.includes(q);});}});
 app.addEventListener("input",e=>{if(e.target.id==="cat-q"){catQuery=e.target.value;const el=document.getElementById("catalog");
   if(el){const pos=e.target.selectionStart;el.innerHTML=catalogHtml();const i=document.getElementById("cat-q");i.focus();try{i.setSelectionRange(pos,pos);}catch(_){}}}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(cardOpen||termOpen)){cardOpen=null;termOpen=null;render();}});
 app.addEventListener("keydown",e=>{if(e.target.id==="add-card"&&e.key==="Enter"){e.preventDefault();addCard();}});
-app.addEventListener("change",e=>{if(e.target.matches("[data-mod]"))syncDraft();
+app.addEventListener("change",e=>{if(e.target.matches("[data-sessrule]")){const x=sessOf();if(x)sessWrite({...x,rule:e.target.value==="winner"?"winner":"first"});return;}
+  if(e.target.matches("[data-mod]"))syncDraft();
   if(e.target.matches("[data-oppname]")&&S.game&&S.game.opps){S.game.opps[e.target.dataset.oppname].name=e.target.value.trim().slice(0,24)||"Opponent";save();}
   if(e.target.matches("[data-attach]")&&S.game){S.game.attach=S.game.attach||{};const v=e.target.value;if(v)S.game.attach[e.target.dataset.attach]=v;else delete S.game.attach[e.target.dataset.attach];save();render();}});
 
-if(S.game)view="hud";
+if(S.game)view="hud";if(tvMode)view="tv";
+addEventListener("hashchange",()=>{const tv=location.hash==="#tv";if(tv!==tvMode){location.reload();}});
 render();
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>

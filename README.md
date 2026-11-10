@@ -54,9 +54,46 @@ The Firebase `apiKey` isn't a secret. It only identifies your project, and the d
 
 The free plan allows 100 phones connected at once, which is plenty for a game store night.
 
+## 4. Keep the precon library on your own site (recommended)
+
+A weekly GitHub job downloads every Commander precon from MTGJSON and saves it into this repo under `precons/`. The app reads decks from there first and only asks MTGJSON directly if those files are missing. That way, search works even if MTGJSON changes how its site works.
+
+1. In your GitHub repo, click **Add file → Create new file**.
+2. For the file name, type `.github/workflows/update-precons.yml`. The slashes create the folders automatically.
+3. Paste in the contents of `update-precons.yml` and click **Commit changes**.
+4. Go to **Settings → Actions → General**. Under **Workflow permissions**, choose **Read and write permissions** and click **Save**.
+5. Open the **Actions** tab, click **Update precons** on the left, then click **Run workflow**. It takes a minute or two. A green check means a new `precons` folder is in your repo, and Netlify redeploys on its own.
+
+After that, it runs every Monday on its own. If a run ever finds fewer than 50 decks, it stops and leaves the last good copy in place.
+
+## 5. Bug reports, tips, and the TV view
+
+- **Bug reports.** The Report a bug link at the bottom of the app sends reports to Netlify Forms, which are free on your plan. Turn them on once: in Netlify, open your project, go to **Forms**, and click **Enable form detection**. Then redeploy. Reports show up under **Forms → bug-report**, and you can set email notifications there.
+- **Tip button.** Open `index.html`, find `const TIP_URL=""` and paste your Ko-fi or Buy Me a Coffee link between the quotes. Wizards' Fan Content Policy allows donations as long as the app stays free to use, so keep it free.
+- **Table view for a TV.** In a room, tap **Table view**. It opens a watch-only screen laid out like a tabletop seen from above: players sit on both sides of a felt table, in turn order, with their creatures facing the middle and their life totals at the outer edge.
+  - On an iPad with Stage Manager and an external display, drag that window onto the TV, and the iPad stays on your own board.
+  - Or open `https://mtghud.netlify.app/#tv` on any device connected to the TV, like a laptop over HDMI or a smart TV browser, and enter the room name and key.
+  - The table view never changes anything in the room.
+
+## Play modes, the shared table and sessions
+
+- **Modes** (pick on the home screen): **AR companion** tracks what helps while you play with real cards. **Full sim, real cards** adds hand and library counts with Draw, Play a land, Cast, Discard and Mill buttons, plus Take control and Copy on other players' cards. **Full sim, no cards** shuffles and deals your deck in the app; your hand stays on your phone and others only see how many cards you hold.
+- **Shared table** (in a room): one panel shows whose turn it is, who holds Monarch and Initiative, and Day/Night. Pass turn hands the turn to the next player in the order people joined.
+- **Sessions:** in a room, tap **Start a session** to keep score across games, run a waiting line, and show standings on the TV between games.
+- **These need the latest `database.rules.json` published in Firebase.** It adds a small shared `state` area for each room.
+- `docs/PROJECT_LOG.md` has the roadmap, review checklists and known limits; `docs/DECISIONS.md` explains why things work the way they do.
+
+## Security notes
+
+- Rooms are a room name plus a secret key. The app hashes both into the database address, so the room name alone can't find a room.
+- **Update your Firebase rules** to the new `database.rules.json`. It only allows those hashed room addresses, lets each phone write only its own board, and caps field sizes. Paste it in **Realtime Database → Rules** and click **Publish**.
+- `_headers` adds standard security headers on Netlify.
+- In no-cards mode, your hand and library order are saved only in your own browser and are never sent anywhere.
+- The app stores only a nickname and board state. There are no accounts or emails, and saved decks stay in each browser.
+
 ## Using it
 
-- **Any Commander precon:** tap **Browse all Commander precons**, search by name (for example "Necron"), and tap the deck. The app downloads the full list with every card's rules text from [MTGJSON](https://mtgjson.com), a free public card database, and sets up trackers, card effects, mana, token types and colors on its own. The deck is then saved under My decks, so it opens instantly next time.
+- **Any Commander precon:** tap **Browse all Commander precons**, search by deck or commander name (for example "Necron" or "Szarekh"), and tap the deck. The app downloads the full list with every card's rules text from [MTGJSON](https://mtgjson.com), a free public card database, and sets up trackers, card effects, mana, token types and colors on its own. The deck is then saved under My decks, so it opens instantly next time.
 - **Hand-built precons:** these have checked reminders and card categories. Tap **Put into play** when a card lands. Its effects, team buffs, mana and reminders then switch on.
 - **Your own deck:** tap **New deck** and paste a decklist from Moxfield or Archidekt (Export → Text). Then tap **Import from decklist**. The app reads each card's rules text from Scryfall and builds:
   - trackers such as energy, treasure and monarch
@@ -65,8 +102,8 @@ The free plan allows 100 phones connected at once, which is plenty for a game st
   - token types
   - team buffs
 
-  Put your commander's exact name in the Commander field first, so its triggers always show. Check the result, since the import is automatic and won't be perfect for every card.
-- **Table:** one person taps **New code** and everyone joins that code with their name. Each phone shares its own board, and you can tap a player to see their creatures, cards in play and effects.
+  The app finds the commander automatically when the list marks it. That covers Moxfield and MTG Arena exports with a "Commander" section, Archidekt's [Commander] tag, and MTGO lists that end with the commander on its own line. If it can't tell, it asks you to type the name. Check the result, since the import is automatic and won't be perfect for every card.
+- **Private rooms:** one person taps **Create a room**, names it, and gets a key. Tap **Invite** to text it, or Copy invite. Everyone else joins with the room name and key, or opens the invite link. Each phone shares its own board under Other players.
 
 All decks and games are saved in each phone's browser. Clearing the browser's site data erases them.
 
