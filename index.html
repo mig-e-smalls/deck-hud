@@ -658,7 +658,7 @@ function oppsHtml(g){
     ${g.opps.length<5?`<button class="link" data-act="addopp">+ Opponent</button>`:""}</section>`;
 }
 // Live table: each phone writes a summary of its own board to Firebase; everyone at the same code reads them all.
-let fbDb=null,uid=null,tableRoom=null,roomState="loading",peerList=[],openPeers=new Set(),lastPres=null,curBoard=null,tableErr="";
+let fbErr="",fbDb=null,uid=null,tableRoom=null,roomState="loading",peerList=[],openPeers=new Set(),lastPres=null,curBoard=null,tableErr="";
 const STALE_MS=6*60*60*1000;
 async function joinTable(code){
   tableErr="";
@@ -685,7 +685,12 @@ function refreshTable(){const el=document.getElementById("tablepanel");if(el)el.
 function tableInner(){
   const t=S.table||{};
   if(roomState==="off")return `<span class="eyebrow">Table</span><p class="none">Table sharing is off. Whoever hosts this app can turn it on by adding a free Firebase project (README, step 3).</p>`;
-  if(roomState==="error")return `<span class="eyebrow">Table</span><p class="none">Couldn't connect to the table service. Check your connection, then reload.</p>`;
+  if(roomState==="error"){const hint=/operation-not-allowed|admin-restricted/.test(fbErr)?"Anonymous sign-in is turned off. In Firebase, go to Authentication → Sign-in method and enable Anonymous."
+      :/api-key|invalid-api-key/.test(fbErr)?"The Firebase API key in index.html doesn't match your project. Recopy it from Project settings."
+      :/unauthorized-domain|requests-from-referer/.test(fbErr)?"This website address isn't allowed. In Firebase, add it under Authentication → Settings → Authorized domains."
+      :/network/.test(fbErr)?"The device couldn't reach Firebase. Check the connection, or turn off ad or tracker blockers for this site."
+      :"Couldn't connect to the table service. Check your connection, then reload.";
+    return `<span class="eyebrow">Table</span><p class="none">${esc(hint)}</p><p class="status">Error code: ${esc(fbErr)}</p>`;}
   if(!tableRoom)return `<div class="spread"><span class="eyebrow">Table</span><span class="mana">See everyone's board live</span></div>
     <p class="status">Everyone opens Deck HUD on their phone and joins the same code. Each person shares their own board.</p>
     <div class="tjoin"><input type="text" id="tbl-nick" placeholder="Your name" value="${esc(t.nick||"")}" maxlength="20" aria-label="Your name">
@@ -712,7 +717,7 @@ function tableInner(){
 (async()=>{const cfg=window.FIREBASE_CONFIG||{};
   if(!cfg.apiKey||!window.firebase){roomState="off";refreshTable();return;}
   try{firebase.initializeApp(cfg);const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;fbDb=firebase.database();}
-  catch(e){roomState="error";refreshTable();return;}
+  catch(e){roomState="error";fbErr=(e&&(e.code||e.message))||"unknown";console.error("Firebase:",e);refreshTable();return;}
   roomState="ready";if(S.table&&S.table.code)joinTable(S.table.code);else refreshTable();})();
 function renderHud(){
   const g=S.game;
