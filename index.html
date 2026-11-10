@@ -509,7 +509,6 @@ html{-webkit-text-size-adjust:100%}
 button.mc{font:inherit;text-align:left;cursor:pointer}
 button.mc:focus-visible{outline:2px solid #ecd08a;outline-offset:2px}
 @media (hover:hover){button.mc:hover{transform:translateY(-3px)}button.mc.tapped:hover{transform:rotate(90deg) translateX(-3px)}}
-.cardsheet{max-height:80vh;overflow-y:auto}
 .cshead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .cshead h2{color:var(--ink)}
 .cost{font-family:var(--display);font-weight:800;color:var(--muted);white-space:nowrap}
@@ -523,7 +522,6 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .mc .mcart{position:absolute;left:3px;right:3px;bottom:3px;top:46%;border-radius:4px;background-size:cover;background-position:center;z-index:0}
 .mc .mcn,.mc .mct,.mc .mcpt,.mc .mcq{position:relative;z-index:1}
 .mc .mcpt,.mc .mcq{position:absolute}
-.cardsheet .csimg{display:block;width:min(260px,70%);aspect-ratio:488/680;margin:0 auto 4px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45);background:var(--sunk)}
 .leave{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--sunk);border-radius:8px;padding:8px}
 .leave span{font-family:var(--display);font-weight:700;font-size:.9rem;margin-right:4px}
 .leave .btn{padding:7px 10px;font-size:.88rem}
@@ -547,6 +545,38 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .sopt:hover,.sopt:focus-visible{background:var(--sunk)}
 .cats.dim{opacity:.4}
 .shead{font-family:var(--display);font-weight:800;font-size:.75rem;color:var(--muted);padding:6px 12px 2px}
+/* Card viewer */
+.cardsheet{position:fixed;z-index:21;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 32px);
+  display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr auto;overflow:hidden;
+  --surface:#efe2c4;--sunk:#e0cea4;--ink:#2b2016;--muted:#6e5a40;--line:#c4ab78;color:var(--ink);background:var(--surface);
+  border:2px solid #0e0b08;border-radius:14px;box-shadow:0 0 0 3px #3a2f24,0 0 0 4px #8c7448,0 20px 50px rgba(0,0,0,.6)}
+.cardsheet .cs-img{background:#1a1511;display:flex;justify-content:center;padding:14px}
+.cardsheet .cs-img img{display:block;height:min(38dvh,300px);width:auto;aspect-ratio:488/680;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.cardsheet .cs-body{overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.cardsheet .cs-foot{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--sunk)}
+.cardsheet:not(.hasimg){grid-template-rows:1fr auto}
+.cardsheet .cshead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.cardsheet .cshead h2{margin:0;font-size:1.35rem}
+.cardsheet .cstext p{margin:0 0 6px;line-height:1.5}
+.cardsheet .cstext .face{font-family:var(--display);font-weight:800;margin-top:6px}
+.cardsheet .remind{color:var(--muted)}
+.sym{display:inline-flex;align-items:center;justify-content:center;width:1.15em;height:1.15em;border-radius:50%;font-family:var(--display);font-weight:800;font-size:.85em;
+  vertical-align:-.15em;margin:0 1px;border:1px solid rgba(0,0,0,.45);box-shadow:inset 0 1px 1px rgba(255,255,255,.35)}
+.cost .sym{width:1.35em;height:1.35em;font-size:.9em}
+@media (min-width:640px){
+  .cardsheet.hasimg{grid-template-columns:auto 1fr;grid-template-rows:1fr auto}
+  .cardsheet.hasimg .cs-img{grid-row:1/3;align-items:flex-start;padding:18px}
+  .cardsheet.hasimg .cs-img img{height:auto;width:250px}
+  .cardsheet .cs-body{padding:18px}
+}
+.cardsheet .btn.ghost{color:var(--ink);border-color:#a88d5c;background:transparent}
+.cardsheet .eyebrow{color:#7a4f12}
+.cardsheet .cs-img img{height:min(30dvh,260px)}
+@media (min-width:640px){.cardsheet.hasimg .cs-img img{height:auto}}
+.gychip{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left}
+.gyab{font-family:var(--display);font-weight:700;font-size:.72rem;color:#5b3608}
+.gyact .btn .sym,.gyab .sym{width:1.05em;height:1.05em;font-size:.75em}
+.unearthed{color:var(--bad);font-family:var(--display)}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -699,9 +729,27 @@ function isCmdr(d,name){const a=normName(name),b=normName(d&&d.cmdr);if(!a||!b)r
   return a===b||(b.length>5&&(" "+a+" ").includes(" "+b+" "))||a.startsWith(b+" ")||b.startsWith(a+" ")||a.split(" ")[0]===b&&b.length>3||b.split(" ")[0]===a&&a.length>3||a.replace(/ the .*/,"")===b.replace(/ the .*/,"");}
 function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deckReminders(d).map(r=>r.card).filter(Boolean)])].filter(n=>!isCmdr(d,n));}
 function cardInfo(d,name){return (d.cards||[]).find(c=>c.name===name)||{name};}
+// What a card does on the battlefield, in one line: its static and triggered abilities, without reminder text
+// or abilities that only work from hand or graveyard (cycling, flashback, unearth…).
+const OFFFIELD=/\b(?:[a-z]*cycling|flashback|unearth|embalm|eternalize|escape|encore|foretell|madness|evoke|dash|retrace|scavenge|transmute|disturb|blitz|ninjutsu|kicker|multikicker|buyback|morph|megamorph|disguise|channel|plot|aftermath|jump-start|overload|emerge|spectacle|surge|prowl|replicate|entwine|bestow)\b[\s—-]*(?:\{[^}]+\})+[^.]*?(?=\s+[A-Z]|$)/gi;
+function fxText(c){
+  if(!c)return "";
+  const clean=t=>String(t||"").replace(/\([^)]*\)/g,"").replace(OFFFIELD,"").replace(/\s{2,}/g," ").trim();
+  const f=clean(c.fx);if(f.length>3)return f;
+  return (c.rem||[]).map(r=>clean(r[1])).filter(Boolean).join(" ").slice(0,240);
+}
+// Abilities that work from the graveyard. Shown only on your own Graveyard panel; never shared with the table.
+const GYKW=/\b(Unearth|Flashback|Escape|Embalm|Eternalize|Disturb|Scavenge|Retrace|Encore|Jump-start|Aftermath)\b\s*(?:—\s*)?((?:\{[^}]+\})+[^.(]*)/i;
+function gyAbility(d,name){
+  const c=cardInfo(d,name);if(c&&c.gy)return c.gy;
+  const m=String(c&&c.fx||"").match(GYKW);if(m)return (m[1]+" "+m[2]).trim();
+  const cc=typeof cardCache!=="undefined"&&cardCache.get(String(name).toLowerCase());
+  if(cc){const t=(cc.oracle_text||(cc.card_faces||[]).map(f=>f.oracle_text||"").join("\n")).replace(/\([^)]*\)/g,"");const m2=t.match(GYKW);if(m2)return (m2[1]+" "+m2[2]).trim();}
+  return "";
+}
 function cardSummary(c){const bits=[];if(c.mana)bits.push("taps for "+c.mana);if(c.buff)bits.push("team "+sgn(c.buff.p)+"/"+sgn(c.buff.t));
-  if(c.fx)bits.push(c.fx);else if(c.rem&&c.rem[0])bits.push(c.rem[0][1]);return bits.join(" · ");}
-let pickOpen=false,leaveOpen=null,gySel=null;
+  const f=fxText(c);if(f)bits.push(f);return bits.join(" · ");}
+let pickOpen=false,leaveOpen=null,gySel=null;const standaloneArt=true;
 function startGame(d){
   const vals={},flags={};
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
@@ -761,20 +809,37 @@ function render(){
     <div class="row"><button class="btn primary" data-act="closeterm">Got it</button><button class="btn ghost" data-act="glossary">Full glossary</button></div></div>`);
 }
 // Read a card from someone's board: what they shared, plus full rules text from Scryfall when it's reachable.
+function manaSyms(cost){
+  const col={W:"#f4efd6",U:"#2f74ad",B:"#3b3330",R:"#c8462f",G:"#2f8150",C:"#b7b1a6"};
+  return esc(cost||"").replace(/\{([^}]{1,6})\}/g,(m,x)=>{const k=x.toUpperCase();const bg=col[k]||"#cdbb92";const fg=k==="W"||!col[k]||k==="C"?"#24190f":"#fff";
+    return `<span class="sym" style="background:${bg};color:${fg}" aria-label="${x}">${/^[WUBRGC]$/.test(k)?"":esc(x)}</span>`;});
+}
+function rulesHtml(t){
+  return esc(t||"").replace(/\{([^}]{1,6})\}/g,m=>manaSyms(m)).replace(/\(([^)]*)\)/g,'<i class="remind">($1)</i>').split("\n").map(l=>`<p>${l}</p>`).join("");
+}
 function cardSheet(){
   const c=cardOpen,info=c.data;
   const typeLine=info&&info.type_line||({Commander:"Commander",Creatures:"Creature",Vehicles:"Vehicle",Mana:"Mana source",Artifacts:"Artifact",Enchantments:"Enchantment",Token:"Token"}[c.cat]||"Permanent");
   const faces=info?(info.card_faces&&!info.oracle_text?info.card_faces:[info]):[];
-  const text=faces.map(f=>(faces.length>1?`<b>${esc(f.name||"")}</b>\n`:"")+gl(f.oracle_text||"")).join("\n\n");
-  const pt=info&&(info.power??(faces[0]||{}).power)!=null?(info.power??faces[0].power)+"/"+(info.toughness??faces[0].toughness):c.pt;
-  return `<div class="sheet-bg" data-act="closecard"></div><div class="sheet cardsheet" role="dialog" aria-label="${esc(c.n)}">
-    <span class="eyebrow">${esc(c.owner)}'s ${c.cat==="Token"?"token":"card"}${c.q>1?` · ×${c.q} on the battlefield`:""}</span>
-    ${imgOf(info,"normal")?`<img class="csimg" src="${imgOf(info,"normal")}" alt="${esc(c.n)}" loading="lazy">`:""}
-    <div class="cshead"><h2>${esc(c.n)}</h2>${info&&info.mana_cost?`<span class="cost">${esc(info.mana_cost)}</span>`:""}</div>
-    <div class="cstype"><span>${esc(typeLine)}</span>${pt?`<span class="mcpt big">${esc(pt)}</span>`:""}</div>
-    ${c.fx.length?`<div class="csfx"><span class="mlbl">In play now</span>${c.fx.map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
-    ${text?`<div class="cstext">${text.replace(/\n/g,"<br>")}</div>`:c.loading?`<p class="status">Loading rules text…</p>`:c.cat==="Token"?"":`<p class="status">Full rules text isn't available here.</p>`}
-    <div class="row"><button class="btn primary" data-act="closecard">Close</button>${c.cat==="Token"?"":`<a class="btn ghost" href="https://scryfall.com/search?q=${encodeURIComponent('!"'+c.n+'"')}" target="_blank" rel="noopener">Open on Scryfall</a>`}</div></div>`;
+  const f0=faces[0]||{};
+  const pw=info?(info.power??f0.power):null;const pt=pw!=null?pw+"/"+(info.toughness??f0.toughness):c.pt;
+  const rules=faces.map(f=>(faces.length>1?`<p class="face">${esc(f.name||"")}</p>`:"")+rulesHtml(f.oracle_text||"")).join("");
+  const plain=faces.map(f=>f.oracle_text||"").join(" ").replace(/\([^)]*\)/g,"").replace(/\s+/g," ").toLowerCase();
+  const live=c.fx.filter(t=>!plain.includes(String(t).replace(/\s+/g," ").toLowerCase().slice(0,60)));
+  const img=imgOf(info,"normal");
+  const who=c.owner==="Player"||c.owner===((S.table&&S.table.nick)||"Player")?"Your":esc(c.owner)+"'s";
+  return `<div class="sheet-bg" data-act="closecard"></div><div class="cardsheet${img?" hasimg":""}" role="dialog" aria-modal="true" aria-label="${esc(c.n)}">
+    ${img?`<div class="cs-img"><img src="${img}" alt="${esc(c.n)}" loading="lazy"></div>`:""}
+    <div class="cs-body">
+      <span class="eyebrow">${who} ${c.cat==="Token"?"token":"card"}${c.q>1?` · ×${c.q} on the battlefield`:""}</span>
+      <div class="cshead"><h2>${esc(c.n)}</h2>${info&&info.mana_cost?`<span class="cost">${manaSyms(info.mana_cost)}</span>`:""}</div>
+      <div class="cstype"><span>${esc(typeLine)}</span>${pt?`<span class="mcpt big">${esc(pt)}</span>`:""}</div>
+      ${rules?`<div class="cstext">${rules}</div>`:c.loading?`<p class="status">Loading rules text…</p>`:""}
+      ${live.length||(!rules&&c.fx.length)?`<div class="csfx"><span class="mlbl">In play now</span>${(rules?live:c.fx).map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
+      ${!rules&&!c.loading&&!c.fx.length&&c.cat!=="Token"?`<p class="status">Full rules text isn't available here.</p>`:""}
+    </div>
+    <div class="cs-foot"><button class="btn primary" data-act="closecard">Close</button>${c.cat==="Token"?"":`<a class="btn ghost" href="https://scryfall.com/search?q=${encodeURIComponent('!"'+c.n+'"')}" target="_blank" rel="noopener">Open on Scryfall</a>`}</div>
+  </div>`;
 }
 async function openCard(id){
   const m=mcInfo[id];if(!m)return;
@@ -964,7 +1029,8 @@ async function fetchArt(){
     if(!r.ok)throw 0;const j=await r.json();
     (j.data||[]).forEach(d=>{cardCache.set(d.name.toLowerCase(),d);cardCache.set(d.name.split(" // ")[0].toLowerCase(),d);});
     (j.not_found||[]).forEach(x=>cardCache.set(String(x.name).toLowerCase(),null));
-    refreshTable();if(cardOpen&&!cardOpen.data){const d=cardCache.get(cardOpen.n.toLowerCase());if(d){cardOpen.data=d;cardOpen.loading=false;render();}}
+    refreshTable();if(view==="hud"&&!cardOpen&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))&&document.querySelector(".gypanel .gychip"))render();
+    if(cardOpen&&!cardOpen.data){const d=cardCache.get(cardOpen.n.toLowerCase());if(d){cardOpen.data=d;cardOpen.loading=false;render();}}
   }catch(_){artOff=true;}
 }
 function fieldsInner(){mcInfo={};
@@ -1037,6 +1103,7 @@ function renderHud(){
   g.done=g.done||[];g.inplay=g.inplay||[];
   const cards=cardList(d);
   const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>r.isCmdr?g.cmdr.on:(!r.card||g.inplay.includes(r.card))).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
+  Object.keys(g.unearthed||{}).filter(n=>g.inplay.includes(n)).forEach((n,k)=>rems.push({p:"end",t:"Exile "+n+" (unearthed). Passing the turn does this for you.",src:n,i:9000+k}));
   const left=rems.filter(r=>!g.done.includes(r.i)).length;
   let tiles="",togs="",hasOpps=false,lifeTile="";
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
@@ -1054,15 +1121,15 @@ function renderHud(){
     ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Reminders about other players' cards, e.g. "Sam's commander draws when I cast a spell."</p>`}
     ${addForm("watch","Whose card, and what sets it off")}</section>`;
   const zoneList=(z,label)=>{const arr=g[z];return `<div class="gyz"><span class="gylbl">${label} <b>${arr.length}</b></span>
-      <div class="gychips">${arr.length?arr.map((n,i)=>{const sel=gySel&&gySel.z===z&&gySel.i===i;return `<button class="tog gychip${sel?" on":""}" data-gysel="${z}:${i}" aria-pressed="${sel}">${esc(n)}</button>`;}).join(""):`<span class="none">Empty</span>`}</div>
-      ${gySel&&gySel.z===z&&arr[gySel.i]!=null?`<div class="gyact"><span>${esc(arr[gySel.i])}</span><button class="btn primary" data-gyact="play">Return to battlefield</button><button class="btn" data-gyact="move">Move to ${z==="gy"?"exile":"graveyard"}</button><button class="btn ghost" data-gyact="del">Remove</button></div>`:""}</div>`;};
+      <div class="gychips">${arr.length?arr.map((n,i)=>{const sel=gySel&&gySel.z===z&&gySel.i===i;const ab=z==="gy"?gyAbility(g.deck,n):"";if(ab&&standaloneArt)wantArt(n);return `<button class="tog gychip${sel?" on":""}" data-gysel="${z}:${i}" aria-pressed="${sel}">${esc(n)}${ab?`<small class="gyab">${manaSyms(ab.replace(/^(\S+)/,"$1 "))}</small>`:""}</button>`;}).join(""):`<span class="none">Empty</span>`}</div>
+      ${gySel&&gySel.z===z&&arr[gySel.i]!=null?`<div class="gyact"><span>${esc(arr[gySel.i])}</span>${z==="gy"&&/^unearth/i.test(gyAbility(g.deck,arr[gySel.i]))?`<button class="btn primary" data-gyact="unearth">${manaSyms(gyAbility(g.deck,arr[gySel.i]))}</button>`:""}<button class="btn primary" data-gyact="play">Return to battlefield</button><button class="btn" data-gyact="move">Move to ${z==="gy"?"exile":"graveyard"}</button><button class="btn ghost" data-gyact="del">Remove</button></div>`:""}</div>`;};
   const gyHtml=`<section class="panel gypanel"><div class="spread"><span class="eyebrow">Graveyard &amp; exile</span><button class="link" data-addopen="gy">+ Add card</button></div>
     ${addOpen==="gy"?`<div class="addrow"><input type="text" id="add-gy" placeholder="Search for a card, e.g. milled or discarded" autocomplete="off" role="combobox" aria-controls="sugg-add-gy" aria-autocomplete="list"><select id="add-gy-z" aria-label="Zone"><option value="gy">Graveyard</option><option value="ex">Exile</option></select><button class="btn primary" data-addgo="gy">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button><div class="sugg" id="sugg-add-gy" role="listbox"></div></div>`:""}
     ${zoneList("gy","Graveyard")}${zoneList("ex","Exile")}</section>`;
   const fxHtml=`<section class="panel fx"><div class="spread"><span class="eyebrow">Effects in play</span><button class="link" data-addopen="fx">+ Add</button></div>
-    ${inCards.filter(c=>c.fx).map(c=>`<div class="line"><span><b>${esc(c.name)}</b> ${gl(c.equip&&g.attach[c.name]?c.fx.replace(/^Equipped creature/,g.attach[c.name]):c.fx)}${c.plating&&g.attach[c.name]?` <em>about +${artifacts}/+0 now</em>`:""}</span><span></span></div>`).join("")}
+    ${inCards.filter(c=>fxText(c)).map(c=>`<div class="line"><span><b>${esc(c.name)}</b> ${gl(c.equip&&g.attach[c.name]?fxText(c).replace(/^Equipped creature/,g.attach[c.name]):fxText(c))}${c.plating&&g.attach[c.name]?` <em>about +${artifacts}/+0 now</em>`:""}</span><span></span></div>`).join("")}
     ${g.effects.map((f,i)=>`<div class="line"><span>${gl(f.text)} <em>${f.dur==="turn"?"this turn":"ongoing"}</em></span><button class="x" data-delfx="${i}" aria-label="Remove">×</button></div>`).join("")}
-    ${!g.effects.length&&!inCards.some(c=>c.fx)?`<p class="none">Cards you mark in play add their effects here. You can also add one by hand.</p>`:""}
+    ${!g.effects.length&&!inCards.some(c=>fxText(c))?`<p class="none">Cards you mark in play add their effects here. You can also add one by hand.</p>`:""}
     ${addForm("fx","What the effect does",`<select id="add-fx-dur" aria-label="Duration"><option value="on">Ongoing</option><option value="turn">This turn</option></select>`)}</section>`;
   const manaHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Mana</span><span class="mana"><b>${avail}</b> / ${total} left</span></div>
     ${cardMana.length?`<div class="src"><div class="srcname"><span>From cards in play</span></div><div class="pips">${cardMana.map(c=>`<button class="pip wide${g.cardUsed[c.name]?" used":""}" data-ctap="${esc(c.name)}" aria-label="Tap ${esc(c.name)}"><b>${c.mana}</b> ${esc(c.name)}</button>`).join("")}</div></div>`:""}
@@ -1092,7 +1159,7 @@ function renderHud(){
     gy:g.gy.slice(-40).map(n=>String(n).slice(0,40)),ex:g.ex.slice(-40).map(n=>String(n).slice(0,40)),
     cmdrOn:!!(d.cmdr&&g.cmdr.on),cmdrPt:String((cardInfo(d,d.cmdr)||{}).pt||"").slice(0,7),colors:(d.colors||[]).slice(0,5),
     cards:g.inplay.slice(0,40).map(n=>{const c=cardInfo(d,n);return [String(n).slice(0,40),String(c.cat||"Other").slice(0,14),String(c.pt||"").slice(0,7),!!(c.mana&&g.cardUsed[n])];}),
-    fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,30).map(t=>String(t).slice(0,320))};
+    fx:[...inCards.filter(c=>fxText(c)).map(c=>c.name+": "+fxText(c)),...g.effects.map(f=>f.text)].slice(0,30).map(t=>String(t).slice(0,320))};
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
     <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
@@ -1117,7 +1184,7 @@ function renderHud(){
       return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>inCat(c,k)).length}</span></button>`).join("")}</div>
       <div class="picks" data-cur="${esc(cur)}">${out.map(c=>`<button class="tog" data-card="${cards.indexOf(c)}" data-pcat="${esc(catOf(c))}" data-pname="${esc(c.toLowerCase())}"${inCat(c,cur)?"":" hidden"}>${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}
     ${pickOpen&&inCards.length?`<span class="inplaylbl">In play (${inCards.length})</span>`:""}
-    ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${gl(c.equip?equipLine(c):cardSummary(c))}</span>
+    ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${g.unearthed&&g.unearthed[c.name]?`<b class="unearthed">Unearthed: exiled at end of turn</b> · `:""}${gl(c.equip?equipLine(c):cardSummary(c))}</span>
         ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
       ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
       <button class="x" data-leave="${esc(c.name)}" aria-label="${esc(c.name)} left play">×</button>
@@ -1231,7 +1298,7 @@ function analyzeCard(c){
   // Only permanents can be "in play".
   if(/\b(instant|sorcery|land)\b/i.test(type)&&!/creature|artifact|enchantment|planeswalker|battle/i.test(type))return res;
   const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
-  const rem=[],fx=[];let mana=0,buff=null;
+  const rem=[],fx=[];let mana=0,buff=null,gyab="";
   for(const raw of lines){
     const l=raw.replace(/^[^—{}]{2,40} — /,""),ll=l.toLowerCase();
     let p=null;
@@ -1241,13 +1308,15 @@ function analyzeCard(c){
     else if(/^at the beginning of (your|each) end step|^at the beginning of the end step/.test(ll))p="end";
     else if(/^at the beginning of your (precombat|first) main phase/.test(ll))p="m1";
     else if(/^(whenever|when .* (dies|leaves)|at the beginning)/.test(ll)&&!/^when .* enters/.test(ll))p="m1";
-    if(p){rem.push([p,l.slice(0,150)]);continue;}
+    if(p){rem.push([p,l.slice(0,150)]);fx.push(l);continue;}
     const add=l.match(/^\{T\}(?:, [^:]+)?: Add ((?:\{[^}]+\})+)/);
     if(add){mana=Math.max(mana,(add[1].match(/\{[^}]+\}/g)||[]).length);continue;}
     const anyAdd=l.match(/^\{T\}: Add (one|two|three) mana/i);if(anyAdd){mana=Math.max(mana,NUMW[anyAdd[1].toLowerCase()]);continue;}
     const b=l.match(/(?:other )?creatures you control get \+(\d+)\/\+(\d+)/i);
     if(b){buff={p:+b[1],t:+b[2]};}
     if(/^(flying|vigilance|trample|haste|deathtouch|lifelink|reach|menace|first strike|double strike|flash|hexproof|indestructible|defender|ward|crew|equip|enchant|unearth|cascade|squad|miracle|evolve|ravenous)\b/i.test(l)&&l.length<40)continue;
+    {const gm=l.match(GYKW);if(gm&&/^(unearth|flashback|escape|embalm|eternalize|disturb|scavenge|retrace|encore|jump-start|aftermath)\b/i.test(l))gyab=(gm[1]+" "+gm[2]).trim();}
+    if(/^([a-z]*cycling|flashback|embalm|eternalize|escape|encore|foretell|madness|evoke|dash|retrace|scavenge|transmute|disturb|blitz|ninjutsu|kicker|multikicker|buyback|morph|megamorph|disguise|channel|plot|aftermath|jump-start|overload|emerge|spectacle|surge|prowl|replicate|entwine|suspend)\b/i.test(l))continue;
     if(/^when .* enters/i.test(l))continue;
     if(/^[^:]{0,60}:/.test(l)&&!/^[A-Z][^{]*—/.test(l))continue; // activated abilities: skip from always-on effects
     if(l.length>4)fx.push(l);
@@ -1258,7 +1327,7 @@ function analyzeCard(c){
   const cat=/vehicle/i.test(type)?"Vehicles":/creature/i.test(type)?"Creatures":mana?"Mana":/artifact/i.test(type)?"Artifacts":/enchantment/i.test(type)?"Enchantments":"Other";
   const f0=faces[0]||{},pw=c.power??f0.power,tg=c.toughness??f0.toughness;
   if(true){
-    res.card={name,cat};if(pw!=null&&tg!=null)res.card.pt=pw+"/"+tg;
+    res.card={name,cat};if(pw!=null&&tg!=null)res.card.pt=pw+"/"+tg;if(gyab)res.card.gy=gyab;
     if(rem.length)res.card.rem=rem.slice(0,3);
     if(fx.length)res.card.fx=fx.slice(0,2).join(" ").slice(0,200);
     if(mana)res.card.mana=mana;
@@ -1410,7 +1479,8 @@ app.addEventListener("click",e=>{
       if(ds.leaveto==="gy"||ds.leaveto==="ex"){g[ds.leaveto].push(n);if(g[ds.leaveto].length>200)g[ds.leaveto].shift();}save();}return render();}
   if(ds.gysel&&g){const [z,i]=ds.gysel.split(":");gySel=gySel&&gySel.z===z&&gySel.i===+i?null:{z,i:+i};return render();}
   if(ds.gyact&&g&&gySel){const arr=g[gySel.z],n=arr[gySel.i];if(n!=null){arr.splice(gySel.i,1);
-      if(ds.gyact==="play"){const known=cardList(g.deck).includes(n);if(!known){g.deck.cards=g.deck.cards||[];if(!g.deck.cards.some(c=>c.name===n))g.deck.cards.push({name:n,cat:"Other",added:true});}if(!g.inplay.includes(n))g.inplay.push(n);}
+      if(ds.gyact==="unearth"){g.unearthed=g.unearthed||{};g.unearthed[n]=true;}
+      if(ds.gyact==="play"||ds.gyact==="unearth"){const known=cardList(g.deck).includes(n);if(!known){g.deck.cards=g.deck.cards||[];if(!g.deck.cards.some(c=>c.name===n))g.deck.cards.push({name:n,cat:"Other",added:true});}if(!g.inplay.includes(n))g.inplay.push(n);}
       if(ds.gyact==="move")g[gySel.z==="gy"?"ex":"gy"].push(n);save();}gySel=null;return render();}
   if(ds.done!=null&&g){const n=Number(ds.done);g.done=g.done.includes(n)?g.done.filter(x=>x!==n):[...g.done,n];save();return render();}
   if(ds.delfx!=null&&g){g.effects.splice(Number(ds.delfx),1);save();return render();}
@@ -1422,7 +1492,7 @@ app.addEventListener("click",e=>{
     case "new":draft={id:"u-"+Date.now(),colors:[],name:"",cmdr:"",mods:["life","cmdr"],custom:[],rem:[],list:""};aiStatus="";view="setup";break;
     case "cancel":view="home";break;
     case "back":view="home";confirmReset=false;break;
-    case "next":{g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
+    case "next":{Object.keys(g.unearthed||{}).forEach(n=>{if(g.inplay.includes(n)){g.inplay=g.inplay.filter(x=>x!==n);g.ex.push(n);}});g.unearthed={};g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
     case "untapall":g.sources.forEach(s=>s.used=0);g.cardUsed={};save();break;
     case "pick":pickOpen=!pickOpen;addStatus="";break;
     case "addcard":addCard();return;
