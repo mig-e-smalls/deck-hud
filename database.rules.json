@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "tables": {
+      "$code": {
+        "players": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "!newData.exists() || (newData.child('nick').isString() && newData.child('nick').val().length <= 20)"
+          }
+        }
+      }
+    }
+  }
+}

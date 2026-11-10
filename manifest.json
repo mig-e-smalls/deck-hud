@@ -1,0 +1,16 @@
+{
+  "name": "Deck HUD",
+  "short_name": "Deck HUD",
+  "description": "Table-side HUD for Commander: trackers, trigger reminders, and everyone's board.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#15110e",
+  "theme_color": "#15110e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

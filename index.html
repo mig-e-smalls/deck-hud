@@ -1,0 +1,1082 @@
+<title>Deck HUD</title>
+<meta name="theme-color" content="#15110e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Deck HUD">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>
+/* ===== Table sharing setup =====
+   Paste your Firebase web config here (see README.md, step 3).
+   Leave apiKey empty and the app still works; only the Table panel is turned off. */
+window.FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  projectId: "",
+  appId: ""
+};
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@500;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: one-column table-side HUD; phase rail on top, tracker tiles in a 2-col grid, big thumb targets */
+:root{
+  --bg:#ECEFE9; --surface:#FFFFFF; --sunk:#E1E6DF; --ink:#1C2320; --muted:#5C6964;
+  --line:#CDD4CD; --accent:#94650E; --accent-ink:#FFFFFF; --good:#2B7A4B; --bad:#B0352C;
+  --display:"Spectral",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111715; --surface:#1A221F; --sunk:#0C110F; --ink:#ECE7DA; --muted:#97A49E;
+  --line:#2B3732; --accent:#E2B24E; --accent-ink:#1A1405; --good:#5DBB84; --bad:#E7766B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111715; --surface:#1A221F; --sunk:#0C110F; --ink:#ECE7DA; --muted:#97A49E;
+  --line:#2B3732; --accent:#E2B24E; --accent-ink:#1A1405; --good:#5DBB84; --bad:#E7766B; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+img{max-width:100%}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+body{font-family:var(--body);font-size:16px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:700}
+h1{font-size:1.75rem;letter-spacing:.01em}
+h2{font-size:1.2rem}
+.eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;font-weight:600}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+
+/* deck list */
+.decks{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.deck{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 4px;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;text-align:left;width:100%}
+.deck:hover{background:var(--sunk)}
+.deck .name{font-family:var(--display);font-size:1.1rem;font-weight:700}
+.deck .meta{grid-column:1;font-size:.88rem;color:var(--muted)}
+.deck .go{grid-row:1/3;grid-column:2;align-self:center;color:var(--accent);font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap;grid-column:1}
+.chip{font-size:.75rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--line);padding-left:10px}
+
+/* HUD */
+.hudhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.turn{font-variant-numeric:tabular-nums;font-family:var(--display);font-size:1.6rem;font-weight:700;line-height:1}
+.phases{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;background:var(--sunk);padding:4px;border-radius:12px}
+.ph{border:0;background:none;border-radius:9px;padding:9px 2px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.ph.on{background:var(--accent);color:var(--accent-ink)}
+.reminders{display:flex;flex-direction:column;gap:8px;min-height:24px}
+.rem{background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:.95rem}
+.rem .src{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:700;display:block;margin-bottom:2px}
+.none{font-size:.9rem;color:var(--muted);padding:4px 2px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile.wide{grid-column:1/-1}
+.tile.warn{border-color:var(--bad)}
+.tile .lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--muted);overflow-wrap:anywhere}
+.tile .val{font-variant-numeric:tabular-nums;font-size:2.3rem;font-weight:700;line-height:1;text-align:center}
+.tile.wide .val{font-size:3.4rem}
+.tile.warn .val{color:var(--bad)}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tile.wide .steps{grid-template-columns:repeat(4,1fr)}
+.steps button{border:1px solid var(--line);background:var(--sunk);border-radius:9px;padding:10px 0;font-weight:700;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.toggles{display:flex;gap:8px;flex-wrap:wrap}
+.tog{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bar{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.bar .btn{padding:14px}
+
+/* setup */
+.field{display:flex;flex-direction:column;gap:6px}
+label.t{font-weight:600;font-size:.9rem}
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;box-sizing:border-box}
+textarea{min-height:120px;resize:vertical;font-size:.9rem}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.check{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:.92rem}
+.check input{accent-color:var(--accent);width:18px;height:18px}
+.remlist{display:flex;flex-direction:column;gap:6px}
+.remitem{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font-size:.9rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.remitem b{font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.remitem button{border:0;background:none;color:var(--muted);font-size:1.1rem}
+.addrem{display:grid;grid-template-columns:110px 1fr;gap:8px}
+.addrem .span{grid-column:1/-1}
+.confirm{background:var(--sunk);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.status{font-size:.88rem;color:var(--muted)}
+.term{font:inherit;font-weight:700;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:2px;color:inherit;background:none;border:0;padding:0;display:inline}
+.chk{cursor:pointer}
+.chk button.box{background:none;color:inherit;padding:0}
+.chk.done .box{background:var(--good)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--surface);color:var(--ink);border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px;max-width:640px;margin:0 auto;box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+.sheet p{max-width:60ch}
+.gloss{margin:0;display:flex;flex-direction:column}
+.gloss div{padding:12px 0;border-top:1px solid var(--line)}
+.gloss dt{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.gloss dd{margin:2px 0 0;color:var(--ink);max-width:62ch}
+.seg{display:inline-flex;background:var(--sunk);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;border-radius:8px;padding:7px 12px;font-weight:600;font-size:.88rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.opp{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:6px}
+.opp.dead{opacity:.55}
+.otop{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center}
+.oname{border:0!important;background:none!important;padding:2px 0!important;font-weight:700;font-size:1.05rem;min-width:0}
+.olife{font-variant-numeric:tabular-nums;font-size:2rem;font-weight:700;line-height:1}
+.obot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ocd{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ocd.hot{color:var(--bad);font-weight:700}
+.odmg{display:flex;gap:6px}
+.odmg button{border:1px solid var(--line);background:var(--sunk);border-radius:9px;min-width:52px;padding:10px 0;font-weight:700;font-variant-numeric:tabular-nums}
+.odmg .heal{color:var(--good)}
+.tjoin{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.status.err{color:var(--bad)}
+.peer{border-top:1px solid var(--line)}
+.ptop{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;text-align:left;background:none;border:0;padding:10px 0}
+.ptop:disabled{cursor:default;color:inherit}
+.pname{font-weight:700;overflow-wrap:anywhere}
+.pname em{font-style:normal;font-size:.75rem;color:var(--muted);font-weight:600;margin-left:4px}
+.pstats{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.88rem}
+.pstats b{color:var(--ink)}
+.pdeck{grid-column:1/-1;font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.chev{margin-left:4px}
+.pbody{display:flex;flex-direction:column;gap:10px;padding:0 0 12px;font-size:.92rem}
+.pline{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.pline b{font-variant-numeric:tabular-nums}
+.pfx{margin:3px 0}
+.card{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:8px 0}
+.cmain{display:flex;flex-direction:column;min-width:0}
+.cname{font-weight:700;overflow-wrap:anywhere}
+.csum{font-size:.82rem;color:var(--muted);overflow-wrap:anywhere}
+.attach{margin-top:6px;padding:7px 10px;font-size:.88rem}
+.btn.make{padding:8px 10px;font-size:.85rem;white-space:nowrap}
+.picks{display:flex;flex-wrap:wrap;gap:6px;padding-top:4px}
+.cats{display:flex;gap:4px;overflow-x:auto;border-top:1px solid var(--line);padding-top:10px;scrollbar-width:none}
+.cat{flex:none;border:1px solid var(--line);background:var(--sunk);border-radius:8px;padding:7px 10px;font-weight:600;font-size:.85rem}
+.cat span{color:var(--muted);font-variant-numeric:tabular-nums;margin-left:2px}
+.cat.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cat.on span{color:var(--bg);opacity:.7}
+.pip.wide{width:auto;height:auto;border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600}
+.pip.wide.used{transform:none;text-decoration:line-through}
+.fixed{font-variant-numeric:tabular-nums;padding:0 6px}
+.turnbox{display:flex;gap:12px;align-items:center;text-align:right}
+.chk{display:grid;grid-template-columns:62px 1fr 28px;gap:10px;align-items:center;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:10px 0;font-size:.95rem;width:100%}
+.chk .when{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--accent)}
+.chk .ctext{min-width:0;overflow-wrap:anywhere}
+.chk .box{width:26px;height:26px;border:2px solid var(--line);border-radius:7px;display:grid;place-items:center;font-weight:700}
+.chk.done .ctext{color:var(--muted);text-decoration:line-through}
+.chk.done .when{color:var(--muted)}
+.chk.done .box{background:var(--good);border-color:var(--good);color:var(--bg)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.panel.fx{border-color:var(--accent)}
+.link{border:0;background:none;color:var(--accent);font-weight:700;padding:4px 0}
+.line{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;font-size:.95rem;padding:6px 0;border-top:1px solid var(--line)}
+.line em,.srcname em{font-style:normal;font-size:.75rem;color:var(--muted);margin-left:6px}
+.line.hot span{font-weight:700}
+.x{border:0;background:none;color:var(--muted);font-size:1.2rem;padding:0 6px}
+.mana{font-variant-numeric:tabular-nums;color:var(--muted)}
+.mana b{font-size:1.5rem;color:var(--ink)}
+.src{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:8px 0;border-top:1px solid var(--line)}
+.srcname{min-width:0;overflow-wrap:anywhere}
+.pips{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.pip{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;font-variant-numeric:tabular-nums}
+.pip.used{background:transparent;color:var(--muted);border-color:var(--line);transform:rotate(90deg)}
+.srcctl{grid-row:1;grid-column:2;display:flex;gap:4px}
+.srcctl button{border:1px solid var(--line);background:var(--sunk);border-radius:8px;width:34px;height:30px;font-weight:700}
+.addrow{display:grid;grid-template-columns:1fr auto auto auto;gap:6px}
+.addrow:has(#add-grp){grid-template-columns:1fr auto auto auto auto}
+.buffs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.88rem}
+.blbl,.glbl{color:var(--muted)}
+.bctl{display:flex;align-items:center;gap:4px}
+.bctl i{color:var(--muted);font-style:normal}
+.stp{display:inline-flex;align-items:center;gap:2px}
+.stp b{min-width:2.2em;text-align:center;font-variant-numeric:tabular-nums}
+.stp button{border:1px solid var(--line);background:var(--sunk);border-radius:8px;width:36px;height:34px;font-weight:700}
+.grp{border-top:1px solid var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.gtop{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
+.gname{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.pt{font-family:var(--display);font-weight:700;font-size:1.5rem;font-variant-numeric:tabular-nums}
+.gctl{display:grid;grid-template-columns:auto auto;justify-content:space-between;gap:6px 10px;align-items:center;font-size:.88rem}
+.gbase{font-style:normal;font-size:.75rem;color:var(--muted)}
+@media (max-width:420px){.addrow,.addrow:has(#add-grp){grid-template-columns:1fr 1fr}.addrow input{grid-column:1/-1}}
+@media (prefers-reduced-motion:no-preference){.pip{transition:transform .15s,background .15s}}
+@media (max-width:380px){.phases .ph{font-size:.7rem}}
+@media (prefers-reduced-motion:no-preference){.tile .val{transition:color .2s}}
+/* ===== Tabletop skin: card-frame panels on a playmat ===== */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{
+  --bg:#15110e; --surface:#2a221b; --sunk:#221b15; --ink:#efe2c4; --muted:#b6a483;
+  --line:#4a3d2f; --accent:#c9a65a; --accent-ink:#1b130a; --good:#3f8a57; --bad:#c2513d;
+  --display:"Cinzel","Trajan Pro",Georgia,serif; --body:"Crimson Pro",Georgia,"Times New Roman",serif;
+  --gilt:linear-gradient(180deg,#ecd08a 0%,#c9a65a 55%,#a07e38 100%);
+  --namebar:linear-gradient(180deg,#eadcb6 0%,#cdb88a 100%);
+  color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15110e; --surface:#2a221b; --sunk:#221b15; --ink:#efe2c4; --muted:#b6a483;
+  --line:#4a3d2f; --accent:#c9a65a; --accent-ink:#1b130a; --good:#3f8a57; --bad:#c2513d; color-scheme:dark}}
+html,body{background:radial-gradient(120% 60% at 50% 0%,#2c221a 0%,#15110e 60%,#0e0b09 100%) fixed,#15110e}
+body{font-family:var(--body);font-size:17px;line-height:1.45}
+h1{font-family:var(--display);font-size:2.1rem;font-weight:700;letter-spacing:.03em;color:#f3e6c6}
+h2{font-family:var(--display);font-weight:700;letter-spacing:.02em}
+.eyebrow{text-transform:none;letter-spacing:.04em;font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--accent)}
+.muted,.note,.status{color:var(--muted)}
+.note{border-left-color:#6b5636}
+
+/* Card frame: any panel-like block gets parchment text box inside a dark, gilt-edged frame */
+.panel,.tile,.confirm,.sheet,.check,.remitem,.decks .deck{
+  --surface:#efe2c4; --sunk:#e0cea4; --ink:#2b2016; --muted:#6e5a40; --line:#c4ab78; --accent:#7a5214; --accent-ink:#1b130a;
+  color:var(--ink);
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%),var(--surface);
+  border:2px solid #0e0b08;border-radius:10px;
+  box-shadow:0 0 0 3px #3a2f24,0 0 0 4px #8c7448,0 8px 18px rgba(0,0,0,.55)}
+.panel{padding:0 12px 12px;gap:8px}
+/* Title strip, like a card's name bar */
+.panel>.spread:first-child,.panel>.eyebrow:first-child{
+  margin:0 -12px 2px;padding:8px 12px;background:var(--namebar);border-bottom:2px solid #2a221b;border-radius:8px 8px 0 0}
+.panel>.spread:first-child .eyebrow,.panel>.eyebrow:first-child{display:block;color:#24190f;font-size:1rem;font-weight:700;letter-spacing:.02em}
+.panel>.spread:first-child .mana{color:#4b3a24;font-size:.88rem}
+.panel>.spread:first-child .mana b{color:#24190f;font-family:var(--display)}
+.panel.fx{border-color:#0e0b08}
+.panel .link{color:#7a4f12}
+.panel>.spread:first-child .link{color:#5b3608}
+
+/* Tiles: life total is the power/toughness plaque */
+.tile{padding:0 10px 10px;gap:8px}
+.tile .lbl{margin:0 -10px;padding:6px 10px;background:var(--namebar);border-bottom:2px solid #2a221b;border-radius:8px 8px 0 0;
+  font-family:var(--display);text-transform:none;letter-spacing:.02em;font-size:.88rem;color:#24190f;font-weight:700}
+.tile .val{font-family:var(--display);font-weight:700;color:#24190f}
+.tile.wide .val{width:fit-content;margin:4px auto 2px;padding:4px 26px 2px;font-size:3.6rem;
+  background:linear-gradient(180deg,#f8eed6,#d2bd8f);border:2px solid #2a221b;border-radius:12px 12px 12px 12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 0 #5e4a2c}
+.tile.warn .val{color:var(--bad)}
+
+/* Buttons */
+.btn{font-family:var(--display);font-weight:700;letter-spacing:.02em;border-radius:8px;background:#2a221b;color:#efe2c4;border:1px solid #6b5636}
+.btn.primary{background:var(--gilt);color:#23190d;border:1px solid #4a3a1f;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 0 #3a2c14}
+.btn.ghost{background:transparent}
+.panel .btn,.confirm .btn,.sheet .btn{background:var(--sunk);color:var(--ink);border-color:#a88d5c}
+.panel .btn.primary,.confirm .btn.primary,.sheet .btn.primary{background:var(--gilt);color:#23190d;border-color:#4a3a1f}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.steps button,.odmg button,.stp button,.srcctl button,.cat{font-family:var(--display);background:var(--sunk);border:1px solid #a88d5c;color:var(--ink)}
+.steps button:active,.odmg button:active,.stp button:active{transform:translateY(1px)}
+.odmg .heal{color:var(--good)}
+.tog{font-family:var(--body);font-weight:600;font-size:.98rem;background:var(--sunk);border:1px solid #a88d5c;color:var(--ink)}
+.tog[aria-pressed="true"]{background:var(--gilt);color:#23190d;border-color:#4a3a1f}
+.cat.on{background:#2b2016;color:#efe2c4;border-color:#2b2016}
+.seg{background:var(--sunk);border:1px solid #a88d5c}
+.seg button{font-family:var(--display);color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--gilt);color:#23190d}
+
+/* Mana: coins */
+.pip{background:radial-gradient(circle at 35% 30%,#ffffff 0%,#d9d0bd 45%,#8f8676 100%);border:2px solid #2a221b;color:#1b1714;font-family:var(--display)}
+.pip.used{background:#cdbb92;color:#7d6a4c;border-color:#a88d5c;opacity:.75}
+.pip.wide{font-family:var(--body)}
+
+/* Timing gems on the turn checklist */
+.chk .when{justify-self:start;font-family:var(--display);letter-spacing:.03em;text-transform:none;font-size:.72rem;color:#f3e6c6;padding:3px 8px;border-radius:999px;background:#3b3128}
+.chk .when.w-up,.chk .when.w-draw{background:#2b5a7f}
+.chk .when.w-m1,.chk .when.w-m2{background:#2f5d3a}
+.chk .when.w-combat{background:#8f2a1f}
+.chk .when.w-end{background:#2b2016}
+.chk.done .when{opacity:.45;color:#f3e6c6}
+.chk .box{border-color:#6e5a40}
+.chk .ctext b{font-family:var(--display);font-size:.92rem}
+.term{text-decoration-color:#8c7448}
+
+/* Creatures and P/T */
+.pt{font-family:var(--display);padding:0 8px;border:2px solid #2a221b;border-radius:8px;background:linear-gradient(180deg,#f8eed6,#d2bd8f);font-size:1.25rem}
+.gname,.cname,.pname{font-family:var(--display);font-weight:700;font-size:.98rem}
+.olife,.turn{font-family:var(--display)}
+.oname{font-family:var(--display);color:var(--ink)}
+
+/* Inputs */
+input[type=text],textarea,select{font-family:var(--body);font-size:1rem;background:#f7eed8;color:#2b2016;border:1px solid #a88d5c}
+label.t{font-family:var(--display);font-weight:600;color:#efe2c4}
+.check{font-size:1rem}
+.check input{accent-color:#7a5214}
+
+/* Home deck list as a fan of cards */
+.decks{border-top:0;gap:14px;padding:4px}
+.decks .deck{padding:0 12px 12px;grid-template-columns:1fr auto}
+.decks .deck .name{grid-column:1/-1;margin:0 -12px 6px;padding:8px 12px;background:var(--namebar);border-bottom:2px solid #2a221b;border-radius:8px 8px 0 0;font-family:var(--display);color:#24190f}
+.decks .deck .meta{font-style:italic}
+.decks .deck .go{grid-row:auto;grid-column:2;align-self:end;color:#7a4f12;font-family:var(--display)}
+.decks .deck:hover{filter:brightness(1.04)}
+.chip{border-color:#a88d5c;color:#5b4730;background:#e6d4ab}
+.wubrg{display:flex;gap:8px;margin-top:4px}
+.wubrg i{width:14px;height:14px;border-radius:50%;border:1px solid #0e0b08;box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+
+/* HUD header sits on the playmat */
+.hudhead h2{color:#f3e6c6;font-size:1.35rem}
+.sheet{border-radius:14px 14px 0 0}
+.gloss dt{font-family:var(--display)}
+.gloss dd{color:#d9c9a6}
+.bar .btn{padding:14px}
+.panel>.spread:first-child+*,.panel>.spread:first-child+.status+*{border-top:0}
+
+/* Type swap: sturdy sans for names and numbers, screen-friendly serif for rules text */
+:root,:root[data-theme="dark"],:root[data-theme="light"]{--display:"Alegreya Sans","Trebuchet MS",system-ui,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--display:"Alegreya Sans","Trebuchet MS",system-ui,sans-serif;--body:"Source Serif 4",Georgia,"Times New Roman",serif}}
+body{font-size:16px;line-height:1.5}
+h1{font-size:2.3rem;font-weight:800;letter-spacing:0}
+h2,.eyebrow,.btn,.tile .lbl,.chk .when,.seg button{letter-spacing:0}
+.panel>.spread:first-child .eyebrow,.panel>.eyebrow:first-child{font-size:1.08rem;font-weight:800}
+.tile .lbl{font-size:.98rem;font-weight:800}
+.tile .val,.olife,.turn,.pt{font-weight:800}
+.tile.wide .val{font-size:3.8rem}
+.btn{font-weight:800;font-size:1rem}
+.steps button,.odmg button,.stp button,.srcctl button{font-weight:800;font-size:1.1rem}
+.gname,.cname,.pname,.decks .deck .name{font-weight:800;font-size:1.05rem}
+.chk .ctext b{font-family:var(--display);font-weight:800;font-size:1rem}
+.chk .when{font-weight:800;font-size:.78rem}
+.tog{font-size:.95rem}
+
+/* Deck colors: frame ring, name bars and playmat follow the deck's color identity */
+.panel,.tile,.confirm,.sheet,.check,.remitem,.decks .deck{box-shadow:0 0 0 3px #3a2f24,0 0 0 4px var(--ring,#8c7448),0 8px 18px rgba(0,0,0,.55)}
+html,body{background:var(--mat,radial-gradient(120% 60% at 50% 0%,#2c221a 0%,#15110e 60%,#0e0b09 100%)),#120f0d;background-attachment:fixed}
+.cpick{display:inline-flex;align-items:center;gap:6px}
+.cpick i{width:12px;height:12px;border-radius:50%;border:1px solid #0e0b08}
+.decks .deck .name{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dpips{display:flex;gap:4px}.dpips i{width:12px;height:12px;border-radius:50%;border:1px solid #0e0b08;box-shadow:inset 0 1px 1px rgba(255,255,255,.5)}
+label.t,span.t{font-family:var(--display);font-weight:800;color:#efe2c4}
+
+/* Catalog */
+.catlist{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding:4px}
+.catrow{display:grid;grid-template-columns:1fr auto;gap:2px 12px;text-align:left;align-items:center;padding:10px 12px;border-radius:9px;
+  background:#efe2c4;color:#2b2016;border:2px solid #0e0b08;box-shadow:0 0 0 2px #3a2f24}
+.catrow .cn{font-family:var(--display);font-weight:800;font-size:1.02rem}
+.catrow .cm{grid-row:2;font-size:.85rem;color:#6e5a40}
+.catrow .cg{grid-row:1/3;grid-column:2;font-family:var(--display);font-weight:800;color:#7a4f12}
+.catrow:disabled{opacity:.6}
+#cat-q{font-size:1rem}
+
+/* Tablet and desktop: use the width */
+input,select,textarea,button{-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+@media (min-width:760px){
+  .wrap{max-width:1100px}
+  .v-home .decks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .v-home .catlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-height:520px}
+  .v-setup,.v-glossary{max-width:720px}
+  .v-hud{display:block;columns:2;column-gap:20px}
+  .v-hud>*{break-inside:avoid;margin-bottom:20px}
+  .v-hud>.grid{display:grid}
+  .v-hud>.hudhead,.v-hud>.bar,.v-hud>.row,.v-hud>.confirm{column-span:all}
+  .v-hud>.bar{max-width:520px;margin-left:auto}
+}
+@media (min-width:1180px){
+  .wrap{max-width:1400px}
+  .v-home .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v-home .catlist{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v-hud{columns:3}
+}
+@media (hover:hover){.catrow:hover,.decks .deck:hover{filter:brightness(1.05)}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const PHASES=[["up","Upkeep"],["draw","Draw"],["m1","Main 1"],["combat","Combat"],["m2","Main 2"],["end","End"]];
+const PH=Object.fromEntries(PHASES);
+
+// Tracker modules. Each can add its own reminders.
+const MODS={
+  life:{label:"Life",kind:"counter",start:40,wide:true},
+  cmdr:{label:"Opponents",kind:"cmdr"},
+  poison:{label:"Poison",kind:"counter",start:0,warn:10},
+  rad:{label:"Rad counters",kind:"counter",start:0,rem:[["m1","Rad: mill that many. Each nonland milled = lose 1 life and remove 1 rad."]]},
+  energy:{label:"Energy",kind:"counter",start:0},
+  exp:{label:"Experience",kind:"counter",start:0},
+  storm:{label:"Spells this turn",kind:"counter",start:0,perTurn:true},
+  treasure:{label:"Treasure",kind:"counter",start:0},
+  food:{label:"Food",kind:"counter",start:0},
+  clue:{label:"Clues",kind:"counter",start:0},
+  junk:{label:"Junk",kind:"counter",start:0,rem:[["m1","Junk: tap + sac to exile your top card. You may play it this turn. Sorcery speed."]]},
+  monarch:{label:"Monarch",kind:"toggle",rem:[["end","If you're the monarch, draw a card."]]},
+  initiative:{label:"Initiative",kind:"toggle",rem:[["up","If you have the initiative, venture into Undercity."]]},
+  daynight:{label:"Day / Night",kind:"cycle",states:["Neither","Day","Night"]},
+};
+
+// Starter precon library. Reminders are paraphrased; check them against your cards.
+const PRECONS=[
+  {id:"p-necron",colors:["B"],name:"Necron Dynasties",set:"Warhammer 40,000 Commander (2022)",cmdr:"Szarekh, the Silent King",
+   mods:["life","cmdr"],custom:[],groups:[{name:"Necron Warrior tokens",p:2,t:2}],
+   sources:[{name:"Lands",amt:1,n:1}],
+   rem:[["combat","Szarekh attacks: mill 3. You may put an artifact creature or Vehicle milled this way into your hand."]],
+   // Cards you mark in play. fx = what it does while out, rem = when to act, buff = team P/T, mana = taps for, make = token button.
+   cards:[
+    {name:"Imotekh the Stormlord",rem:[["combat","Beginning of combat: another artifact creature gets +2/+2 and menace this turn."],["m1","Artifact cards leave your graveyard (unearth, Szarekh, etc.): make 2 Necron Warriors."]],make:2},
+    {name:"Triarch Stalker",rem:[["combat","Beginning of combat: choose an opponent. Creatures attacking them have menace."]]},
+    {name:"Skorpekh Lord",fx:"Other artifact creatures get +1/+0 and have menace.",buff:{p:1,t:0}},
+    {name:"Caged Sun",fx:"Black creatures get +1/+1. Each Swamp makes an extra B.",buff:{p:1,t:1},land:1},
+    {name:"Cryptothrall",fx:"Other artifact creatures have hexproof."},
+    {name:"Biotransference",fx:"Your creatures are artifacts.",rem:[["m1","Each artifact spell you cast: lose 1 life, make a Necron Warrior."]],make:1},
+    {name:"Royal Warden",fx:"Enters with 2 tapped Necron Warriors. Unearth {3}{B}.",make:2},
+    {name:"Night Scythe",fx:"Enters with a Necron Warrior. Flying vehicle, crew 2.",make:1},
+    {name:"Necron Monolith",fx:"Flying, indestructible vehicle, crew 4.",rem:[["combat","Monolith attacks: mill 3. One Necron Warrior per creature milled."]],make:1},
+    {name:"Shard of the Void Dragon",fx:"Gets two +1/+1 counters whenever an artifact goes to graveyard or exile.",rem:[["combat","Shard attacks: each opponent sacrifices a nonland permanent."]]},
+    {name:"Anrakyr the Traveller",rem:[["combat","Anrakyr attacks: cast an artifact from hand or graveyard, paying life equal to its mana value."]]},
+    {name:"Canoptek Spyder",fx:"Another nontoken artifact creature or Vehicle enters: draw a card."},
+    {name:"Psychomancer",fx:"It or another nontoken artifact goes to graveyard or exile: drain 1."},
+    {name:"Skorpekh Destroyer",fx:"Artifact enters under your control: it gains first strike this turn."},
+    {name:"Tomb Blade",rem:[["combat","Combat damage to a player: they lose life per creature they control, unless they sacrifice one."]]},
+    {name:"Ghost Ark",fx:"When crewed, artifact creatures in your graveyard get unearth {3} this turn. Crew 2."},
+    {name:"Trazyn the Infinite",fx:"Has the activated abilities of every artifact card in your graveyard."},
+    {name:"Out of the Tombs",rem:[["up","Add 2 eon counters, then mill cards equal to total eon counters."]]},
+    {name:"Convergence of Dominion",fx:"Graveyard activated abilities cost {2} less while you control your commander."},
+    {name:"Cranial Plating",fx:"Equipped creature gets +1/+0 for each artifact you control.",equip:true,plating:true},
+    {name:"Resurrection Orb",fx:"Equipped creature has lifelink.",equip:true,rem:[["end","Equipped creature died this turn? It returns now."]]},
+    {name:"Mask of Memory",equip:true,rem:[["combat","Equipped creature hits a player: draw 2, discard 1."]]},
+    {name:"Necron Overlord",fx:"{X}, tap it and X untapped artifacts: an opponent loses X life."},
+    {name:"Illuminor Szeras",fx:"Tap, sacrifice another creature: add B equal to its mana value."},
+    {name:"Sol Ring",mana:2},{name:"Arcane Signet",mana:1},{name:"Mind Stone",mana:1},{name:"Commander's Sphere",mana:1},
+    {name:"Thought Vessel",mana:1,fx:"No maximum hand size."},{name:"Hedron Archive",mana:2},{name:"Gilded Lotus",mana:3},
+    {name:"Unstable Obelisk",mana:1},{name:"Sceptre of Eternal Glory",mana:3,fx:"Makes 3 while you control 3+ lands with the same name."},
+    {name:"Mystic Forge",fx:"Look at your top card anytime. You may cast artifacts and colorless spells from the top."},
+   ]},
+  {id:"p-mothman",colors:["U","B","G"],name:"Mutant Menace",set:"Fallout Commander (2024)",cmdr:"The Wise Mothman",
+   mods:["life","cmdr","rad"],custom:["+1/+1 counters placed"],
+   rem:[["combat","Mothman attacks: each player gets a rad counter."],["m1","Nonland cards milled this phase? Mothman puts +1/+1 counters on up to that many creatures."]]},
+  {id:"p-madison",colors:["W","U","R"],name:"Science!",set:"Fallout Commander (2024)",cmdr:"Dr. Madison Li",
+   mods:["life","cmdr","energy"],custom:[],
+   rem:[["m1","Cast an artifact spell: get 1 energy from Madison Li."],["combat","Spend energy on Madison Li's abilities before attackers are declared."]]},
+  {id:"p-caesar",colors:["W","B","R"],name:"Hail, Caesar",set:"Fallout Commander (2024)",cmdr:"Caesar, Legion's Emperor",
+   mods:["life","cmdr"],custom:["Creature tokens"],
+   rem:[["combat","Attacking: you may sacrifice another creature or artifact. Pick two Caesar modes."]]},
+  {id:"p-dogmeat",colors:["W","R","G"],name:"Scrappy Survivors",set:"Fallout Commander (2024)",cmdr:"Dogmeat, Ever Loyal",
+   mods:["life","cmdr","junk"],custom:[],
+   rem:[["combat","Each equipped or enchanted creature that attacks makes a Junk token."]]},
+];
+
+// Picker categories for precon cards.
+const CAT_ORDER=["Creatures","Vehicles","Mana","Artifacts","Enchantments","Other"];
+(()=>{const C={Creatures:["Imotekh the Stormlord","Triarch Stalker","Skorpekh Lord","Cryptothrall","Royal Warden","Shard of the Void Dragon","Anrakyr the Traveller","Canoptek Spyder","Psychomancer","Skorpekh Destroyer","Tomb Blade","Trazyn the Infinite","Necron Overlord","Illuminor Szeras"],
+  Vehicles:["Night Scythe","Necron Monolith","Ghost Ark"],
+  Mana:["Sol Ring","Arcane Signet","Mind Stone","Commander's Sphere","Thought Vessel","Hedron Archive","Gilded Lotus","Unstable Obelisk","Sceptre of Eternal Glory","Caged Sun"],
+  Artifacts:["Convergence of Dominion","Cranial Plating","Resurrection Orb","Mask of Memory","Mystic Forge"],
+  Enchantments:["Biotransference","Out of the Tombs"]};
+  PRECONS.forEach(p=>(p.cards||[]).forEach(c=>{for(const k in C)if(C[k].includes(c.name))c.cat=k;}));})();
+let pickCat=null;
+
+// Glossary. Each entry: key, title, plain-language meaning, and the word forms that link to it.
+const GLOSS=[
+ ["flying","Flying","Can only be blocked by creatures with flying or reach.",["flying"]],
+ ["menace","Menace","Can't be blocked except by two or more creatures.",["menace"]],
+ ["hexproof","Hexproof","Opponents' spells and abilities can't target it. You can still target it yourself, and effects that don't target (like 'destroy all') still hit it.",["hexproof"]],
+ ["haste","Haste","Can attack and use tap abilities the turn it comes into play.",["haste"]],
+ ["vigilance","Vigilance","Doesn't tap when it attacks, so it can still block on the next turn.",["vigilance"]],
+ ["deathtouch","Deathtouch","Any amount of damage it deals to a creature is enough to destroy that creature.",["deathtouch"]],
+ ["lifelink","Lifelink","Damage it deals also gains you that much life.",["lifelink"]],
+ ["indestructible","Indestructible","Damage and 'destroy' effects don't kill it. It can still be exiled, sacrificed, or shrunk to 0 toughness.",["indestructible"]],
+ ["trample","Trample","When blocked, damage beyond what's needed to kill the blockers goes through to the player.",["trample"]],
+ ["first","First strike","Deals combat damage before creatures without first strike, so it can kill a blocker before it hits back.",["first strike"]],
+ ["double","Double strike","Deals combat damage twice: once in the first-strike step and once in the regular step.",["double strike"]],
+ ["flash","Flash","You can cast it any time you could cast an instant, including on other players' turns.",["flash"]],
+ ["ward","Ward","When an opponent targets it, their spell or ability is countered unless they pay the ward cost.",["ward"]],
+ ["unearth","Unearth","Pay the unearth cost to bring this creature back from your graveyard. It gets haste, and at the next end step it's exiled. Sorcery speed only.",["unearth"]],
+ ["mill","Mill","Put cards from the top of a library straight into the graveyard.",["milled","mills","mill"]],
+ ["exile","Exile","Removed from the game into a separate zone. Exiled cards usually can't come back.",["exiled","exile"]],
+ ["sacrifice","Sacrifice","Put your own permanent into the graveyard. It can't be stopped by indestructible or regeneration.",["sacrificed","sacrifices","sacrifice"]],
+ ["graveyard","Graveyard","Your discard pile. Cards go here when they die, are discarded, or are milled.",["graveyards","graveyard"]],
+ ["tap","Tap","Turn a card sideways to use it. Tapped cards can't attack or be tapped again until they untap at the start of your turn.",["tapped","tap","untapped"]],
+ ["token","Token","A permanent created by an effect rather than a card. If it leaves the battlefield it stops existing.",["tokens","token"]],
+ ["counter","+1/+1 counter","A marker that permanently gives the creature +1 power and +1 toughness.",["+1/+1 counters","+1/+1 counter","+1/+1 each"]],
+ ["eon","Eon counter","A marker Out of the Tombs adds to itself each upkeep. The total sets how many cards you mill.",["eon counters","eon counter"]],
+ ["vehicle","Vehicle","An artifact that becomes a creature only when crewed.",["vehicles","vehicle"]],
+ ["crew","Crew","Tap creatures with total power equal to the crew number to turn the Vehicle into a creature until end of turn.",["crewed","crew"]],
+ ["equip","Equipment","An artifact you attach to a creature you control by paying its equip cost, at sorcery speed. It stays if the creature leaves and can be moved again.",["equipped","equipment","equip"]],
+ ["artifact","Artifact","A card type for objects and machines. Necron creatures are artifact creatures, which matters for lots of this deck's effects.",["artifacts","artifact"]],
+ ["nontoken","Nontoken","An actual card, not a token.",["nontoken"]],
+ ["nonland","Nonland permanent","Anything on the battlefield that isn't a land: creatures, artifacts, enchantments and so on.",["nonland permanent","nonland"]],
+ ["mv","Mana value","The total mana in a card's cost. {2}{B}{B} has mana value 4.",["mana value"]],
+ ["sorcery","Sorcery speed","Only during your own main phase, when nothing else is waiting to resolve.",["sorcery speed"]],
+ ["combat","Beginning of combat","The start of the combat phase, before attackers are declared. Triggers here happen before you pick attackers.",["beginning of combat"]],
+ ["upkeep","Upkeep","Right after you untap at the start of your turn, before you draw.",["upkeep"]],
+ ["end","End step","The last part of a turn, after the second main phase. 'At the next end step' effects happen here.",["end step"]],
+ ["drain","Drain","An opponent loses life and you gain the same amount.",["drain"]],
+ ["cascade","Cascade","When you cast it, reveal cards from the top until you hit a cheaper nonland card. You may cast that card free.",["cascade"]],
+ ["legendary","Legendary","You can only control one card with that name. If you get a second, choose one to keep.",["legendary"]],
+ ["cmdrdmg","Commander damage","Combat damage from a single commander. Take 21 from the same commander and you lose.",["commander damage","cmdr dmg"]],
+ ["poison","Poison","Ten poison counters and you lose the game.",["poison"]],
+ ["energy","Energy","A resource you collect and spend on abilities. It stays between turns.",["energy"]],
+ ["monarch","Monarch","The monarch draws an extra card at their end step. Deal combat damage to the monarch to take it.",["monarch"]],
+ ["initiative","Initiative","Gives you a trip into the Undercity dungeon. Deal combat damage to whoever has it to take it.",["initiative"]],
+];
+const GL=Object.fromEntries(GLOSS.map(([k,t,d])=>[k,{t,d}]));
+const GL_FORMS=GLOSS.flatMap(([k,,,f])=>f.map(w=>[w,k])).sort((a,b)=>b[0].length-a[0].length);
+const GL_RE=new RegExp("(^|[^A-Za-z])("+GL_FORMS.map(([w])=>w.replace(/[.*+?^${}()|[\]\\/]/g,"\\$&")).join("|")+")(?![A-Za-z])","gi");
+// Escape text, then turn glossary words into tappable terms.
+function gl(text){return esc(text).replace(GL_RE,(m,pre,w)=>{const f=GL_FORMS.find(([x])=>x.toLowerCase()===w.toLowerCase());
+  return f?`${pre}<button type="button" class="term" data-term="${f[1]}">${w}</button>`:m;});}
+let termOpen=null,glossBack="home";
+
+const KEY="deckhud.v1";
+let S={decks:[],game:null};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+let view="home", draft=null, confirmReset=false, sampleFn=null, aiStatus="";
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function allDecks(){return [...PRECONS.map(d=>({...d,pre:true})),...S.decks]}
+function deckReminders(d){
+  const out=[];
+  d.mods.forEach(m=>(MODS[m]&&MODS[m].rem||[]).forEach(([p,t])=>out.push({p,t,src:MODS[m].label,card:null})));
+  // A reminder from a card other than the commander only shows while that card is marked in play.
+  (d.rem||[]).forEach(([p,t,src])=>out.push({p,t,src:src||d.cmdr||d.name,card:src&&src!==d.cmdr?src:null}));
+  (d.cards||[]).forEach(c=>(c.rem||[]).forEach(([p,t])=>out.push({p,t,src:c.name,card:c.name})));
+  return out;
+}
+// Every card that can be marked in play: rich card entries first, then cards named only on custom reminders.
+function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deckReminders(d).map(r=>r.card).filter(Boolean)])];}
+function cardInfo(d,name){return (d.cards||[]).find(c=>c.name===name)||{name};}
+function cardSummary(c){const bits=[];if(c.mana)bits.push("taps for "+c.mana);if(c.buff)bits.push("team "+sgn(c.buff.p)+"/"+sgn(c.buff.t));
+  if(c.fx)bits.push(c.fx);else if(c.rem&&c.rem[0])bits.push(c.rem[0][1]);return bits.join(" · ");}
+let pickOpen=false;
+function startGame(d){
+  const vals={},flags={};
+  d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
+    if(M.kind==="counter")vals[m]=M.start;
+    if(M.kind==="cmdr"){vals.c1=0;vals.c2=0;vals.c3=0;}
+    if(M.kind==="toggle")flags[m]=false;
+    if(M.kind==="cycle")flags[m]=0;});
+  (d.custom||[]).forEach(c=>vals["x:"+c]=0);
+  // Mana sources and table watch-list carry over between games of the same deck.
+  const carry=(S.carry&&S.carry[d.id])||{};
+  const sources=(carry.sources||d.sources||[{name:"Lands",amt:1,n:1}]).map(s=>({...s,used:0}));
+  const watch=[...(carry.watch||d.watch||[])];
+  const groups=(d.groups||[]).map(x=>({name:x.name,p:x.p,t:x.t,n:0,c:0}));
+  S.game={deck:JSON.parse(JSON.stringify(d)),turn:1,phase:"up",vals,flags,sources,watch,effects:[],groups,buff:{p:0,t:0},tbuff:{p:0,t:0}};
+  save();view="hud";wake();render();
+}
+function keepCarry(){const g=S.game;if(!g)return;S.carry=S.carry||{};
+  S.carry[g.deck.id]={sources:g.sources.map(({name,amt,n})=>({name,amt,n})),watch:g.watch};}
+function untap(g){g.sources.forEach(s=>s.used=0);g.cardUsed={};g.effects=g.effects.filter(e=>e.dur!=="turn");if(g.tbuff)g.tbuff={p:0,t:0};}
+const sgn=n=>(n>=0?"+":"−")+Math.abs(n);
+let addOpen=null; // which inline add form is open on the HUD: "src" | "fx" | "watch"
+let lock=null;
+async function wake(){try{if(navigator.wakeLock&&!lock){lock=await navigator.wakeLock.request("screen");lock.addEventListener("release",()=>lock=null);}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&view==="hud")wake();});
+
+
+// Deck color identity → theme. Mono decks take that color; multicolor decks blend them.
+const MTGC={W:{n:"White",ring:"#e2d6a8",light:"#f6f0dc",mid:"#ddd0a6",mat:"#3a3424"},
+  U:{n:"Blue",ring:"#2f74ad",light:"#d3e5f3",mid:"#a2c5e2",mat:"#0f2338"},
+  B:{n:"Black",ring:"#5a4d47",light:"#dad0ca",mid:"#b2a59d",mat:"#1d1716"},
+  R:{n:"Red",ring:"#c8462f",light:"#f5d4c7",mid:"#e3a590",mat:"#3a1712"},
+  G:{n:"Green",ring:"#2f8150",light:"#d3e7cf",mid:"#a5cba0",mat:"#13291e"},
+  C:{n:"Colorless",ring:"#a29d93",light:"#e6e2da",mid:"#c9c3b8",mat:"#22201d"}};
+function themeVars(colors){
+  const cs=(colors||[]).filter(c=>MTGC[c]);if(!cs.length)return null;
+  const P=cs.map(c=>MTGC[c]);
+  const namebar=P.length===1?`linear-gradient(180deg,${P[0].light} 0%,${P[0].mid} 100%)`:`linear-gradient(90deg,${P.map((p,i)=>p.light+" "+Math.round(i*100/(P.length-1))+"%").join(",")})`;
+  const ring=P.length===1?P[0].ring:"#c9a65a";
+  const spots=P.map((p,i)=>`radial-gradient(70% 45% at ${P.length===1?50:Math.round(i*100/(P.length-1))}% 0%,${p.mat} 0%,transparent 70%)`).join(",");
+  return {"--ring":ring,"--namebar":namebar,"--mat":spots+",linear-gradient(180deg,#14110e,#0d0b09)"};
+}
+function styleVars(colors){const v=themeVars(colors);return v?Object.entries(v).map(([k,x])=>k+":"+x).join(";"):"";}
+function applyTheme(colors){const v=themeVars(colors),st=document.documentElement.style;
+  ["--ring","--namebar","--mat"].forEach(k=>st.removeProperty(k));if(v)Object.entries(v).forEach(([k,x])=>st.setProperty(k,x));
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",v?((colors.length===1&&MTGC[colors[0]])?MTGC[colors[0]].mat:"#15110e"):"#15110e");}
+function pips(colors){return (colors||[]).filter(c=>MTGC[c]).map(c=>`<i style="background:${MTGC[c].ring}" title="${MTGC[c].n}"></i>`).join("");}
+function render(){
+  app.className="wrap v-"+(view==="hud"&&S.game?"hud":view);
+  applyTheme(view==="hud"&&S.game?S.game.deck.colors:view==="setup"&&draft?draft.colors:null);
+  if(view==="hud"&&S.game){renderHud();pushPresence();}
+  else if(view==="setup")renderSetup();
+  else if(view==="glossary")renderGlossary();
+  else renderHome();
+  if(termOpen&&GL[termOpen])app.insertAdjacentHTML("beforeend",`<div class="sheet-bg" data-act="closeterm"></div>
+    <div class="sheet" role="dialog" aria-label="${esc(GL[termOpen].t)}"><span class="eyebrow">Glossary</span><h2>${esc(GL[termOpen].t)}</h2><p>${esc(GL[termOpen].d)}</p>
+    <div class="row"><button class="btn primary" data-act="closeterm">Got it</button><button class="btn ghost" data-act="glossary">Full glossary</button></div></div>`);
+}
+function renderGlossary(){
+  const items=[...GLOSS].sort((a,b)=>a[1].localeCompare(b[1]));
+  app.innerHTML=`<header class="field"><span class="eyebrow">Deck HUD</span><h1>Glossary</h1><p class="muted">Plain-language meanings for the keywords that show up in your reminders and effects.</p></header>
+  <div class="row"><button class="btn" data-act="glossback">Back</button></div>
+  <dl class="gloss">${items.map(([k,t,d])=>`<div id="g-${k}"><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("")}</dl>
+  <div class="row"><button class="btn" data-act="glossback">Back</button></div>`;
+}
+
+function deckRow(d){
+  const chips=d.mods.filter(m=>MODS[m]&&!["life","cmdr"].includes(m)).map(m=>`<span class="chip">${esc(MODS[m].label)}</span>`)
+    .concat((d.custom||[]).map(c=>`<span class="chip">${esc(c)}</span>`)).join("");
+  return `<button class="deck" data-start="${esc(d.id)}" style="${styleVars(d.colors)}">
+    <span class="name"><span>${esc(d.name)}</span><span class="dpips">${pips(d.colors)}</span></span>
+    <span class="meta">${esc(d.cmdr||"")}${d.set?" · "+esc(d.set):""}</span>
+    <span class="chips">${chips}</span>
+    <span class="go">Play</span></button>`;
+}
+function renderHome(){
+  const mine=S.decks;
+  app.innerHTML=`
+  <header class="field"><h1>Deck HUD</h1><div class="wubrg" aria-hidden="true"><i style="background:#f4efd6"></i><i style="background:#2f6fa8"></i><i style="background:#2a2420"></i><i style="background:#c0432f"></i><i style="background:#2f7a48"></i></div>
+    <p class="muted">Pick a deck. Trackers and trigger reminders load for that deck only.</p><div class="row"><button class="link" data-act="glossary">Keyword glossary</button></div></header>
+  ${S.game?`<div class="confirm"><div class="spread"><span>Game in progress: <b>${esc(S.game.deck.name)}</b>, turn ${S.game.turn}</span>
+    <button class="btn primary" data-act="resume">Resume</button></div></div>`:""}
+  <section class="field"><h2>All precons</h2><div id="catalog" class="field">${catalogHtml()}</div></section>
+  <section class="field"><div class="spread"><h2>Hand-built precons</h2></div>
+    <div class="decks">${PRECONS.map(deckRow).join("")}</div>
+    <p class="note">Set up by hand with card categories and reminders checked against the cards.</p></section>
+  <section class="field"><div class="spread"><h2>My decks</h2><button class="btn" data-act="new">New deck</button></div>
+    ${mine.length?`<div class="decks">${mine.map(deckRow).join("")}</div>
+      <div class="row">${mine.map(d=>`<button class="btn ghost" data-edit="${esc(d.id)}">Edit ${esc(d.name)}</button>`).join("")}</div>`
+     :`<p class="none">No saved decks yet. Precons you play and decks you build show up here.</p>`}
+    <p class="note">Saved on this device only.</p></section>`;
+}
+
+function tileCounter(key,label,val,opts={}){
+  const warn=opts.warn!=null&&val>=opts.warn;
+  const steps=opts.wide?[-5,-1,1,5]:[-1,1];
+  return `<div class="tile${opts.wide?" wide":""}${warn?" warn":""}"><span class="lbl">${esc(label)}</span>
+    <span class="val" aria-live="polite">${val}</span>
+    <div class="steps">${steps.map(n=>`<button data-k="${esc(key)}" data-n="${n}" aria-label="${esc(label)} ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div></div>`;
+}
+// Opponents: their life, and commander damage your commander has dealt each of them.
+function oppsHtml(g){
+  if(!g.opps)g.opps=[1,2,3].map(i=>({name:"Opponent "+i,life:40,cd:0}));
+  g.dmgMode=g.dmgMode||"reg";
+  const cm=g.dmgMode==="cmdr";
+  return `<section class="panel opps"><div class="spread"><span class="eyebrow">Opponents</span>
+    <div class="seg" role="group" aria-label="Damage type"><button data-mode="reg" aria-pressed="${!cm}">Regular</button><button data-mode="cmdr" aria-pressed="${cm}">Commander</button></div></div>
+    <p class="status">${cm?"Damage also counts toward 21 commander damage.":"Damage only lowers life."}${g.last?` <button class="link" data-act="undoopp">Undo last</button>`:""}</p>
+    ${g.opps.map((o,i)=>{const dead=o.life<=0||o.cd>=21;return `<div class="opp${dead?" dead":""}">
+      <div class="otop"><input type="text" id="opp-${i}" class="oname" data-oppname="${i}" value="${esc(o.name)}" aria-label="Opponent name">
+        <span class="olife">${o.life}</span><button class="x" data-delopp="${i}" aria-label="Remove ${esc(o.name)}">×</button></div>
+      <div class="obot"><span class="ocd${o.cd>=15?" hot":""}">${gl("Commander damage")} ${o.cd}/21${dead?" · out":""}</span>
+        <div class="odmg"><button data-opp="${i}" data-amt="-5">−5</button><button data-opp="${i}" data-amt="-1">−1</button><button data-opp="${i}" data-amt="1" class="heal">+1</button></div></div></div>`;}).join("")}
+    ${g.opps.length<5?`<button class="link" data-act="addopp">+ Opponent</button>`:""}</section>`;
+}
+// Live table: each phone writes a summary of its own board to Firebase; everyone at the same code reads them all.
+let fbDb=null,uid=null,tableRoom=null,roomState="loading",peerList=[],openPeers=new Set(),lastPres=null,curBoard=null,tableErr="";
+const STALE_MS=6*60*60*1000;
+async function joinTable(code){
+  tableErr="";
+  try{leaveTable();
+    const ref=fbDb.ref("tables/"+code+"/players"),me=ref.child(uid);
+    await me.onDisconnect().remove();
+    tableRoom={ref,me};
+    ref.on("value",snap=>{const v=snap.val()||{},now=Date.now();
+      peerList=Object.entries(v).filter(([k,b])=>b&&typeof b==="object"&&(!b.t||now-b.t<STALE_MS))
+        .map(([k,b])=>({peer:k,sameTab:k===uid,kind:"viewer",presence:{b}}));refreshTable();},
+      ()=>{tableRoom=null;tableErr="Lost the table connection. Join again.";refreshTable();});
+    lastPres=null;pushPresence();
+  }catch(e){tableRoom=null;tableErr="Couldn't join that table. Check your connection and try again.";}
+  refreshTable();
+}
+function leaveTable(){if(!tableRoom)return;try{tableRoom.ref.off();tableRoom.me.onDisconnect().cancel();tableRoom.me.remove();}catch(e){}tableRoom=null;peerList=[];}
+function pushPresence(){
+  if(!tableRoom||!curBoard)return;
+  const b={...curBoard,nick:(S.table&&S.table.nick)||"Player"};const j=JSON.stringify(b);
+  if(j===lastPres)return;lastPres=j;
+  tableRoom.me.set({...b,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{tableErr="Couldn't share your board. Check the database rules.";refreshTable();});
+}
+function refreshTable(){const el=document.getElementById("tablepanel");if(el)el.innerHTML=tableInner();}
+function tableInner(){
+  const t=S.table||{};
+  if(roomState==="off")return `<span class="eyebrow">Table</span><p class="none">Table sharing is off. Whoever hosts this app can turn it on by adding a free Firebase project (README, step 3).</p>`;
+  if(roomState==="error")return `<span class="eyebrow">Table</span><p class="none">Couldn't connect to the table service. Check your connection, then reload.</p>`;
+  if(!tableRoom)return `<div class="spread"><span class="eyebrow">Table</span><span class="mana">See everyone's board live</span></div>
+    <p class="status">Everyone opens Deck HUD on their phone and joins the same code. Each person shares their own board.</p>
+    <div class="tjoin"><input type="text" id="tbl-nick" placeholder="Your name" value="${esc(t.nick||"")}" maxlength="20" aria-label="Your name">
+    <input type="text" id="tbl-code" placeholder="Table code" value="${esc(t.code||"")}" maxlength="12" aria-label="Table code" autocapitalize="off">
+    <button class="btn primary" data-act="jointable"${roomState!=="ready"?" disabled":""}>Join</button><button class="btn ghost" data-act="newtable">New code</button></div>
+    ${tableErr?`<p class="status err">${esc(tableErr)}</p>`:""}`;
+  const ps=peerList.filter(p=>p.kind==="viewer"&&p.presence&&p.presence.b&&typeof p.presence.b==="object");
+  const others=ps.filter(p=>!p.sameTab);
+  const row=p=>{const b=p.presence.b,me=p.sameTab,open=!me&&openPeers.has(p.peer);
+    const groups=Array.isArray(b.groups)?b.groups:[],cards=Array.isArray(b.cards)?b.cards:[],fx=Array.isArray(b.fx)?b.fx:[];
+    return `<div class="peer${me?" me":""}"><button class="ptop" ${me?"disabled":`data-peer="${esc(p.peer)}" aria-expanded="${open}"`}>
+      <span class="pname">${esc(String(b.nick||"Player"))}${me?" <em>you</em>":""}</span>
+      <span class="pstats"><b>${esc(String(b.life??"–"))}</b> life · <b>${esc(String(b.power??0))}</b> power${me?"":` <span class="chev">${open?"▴":"▾"}</span>`}</span>
+      <span class="pdeck">${esc(String(b.deck||""))}${b.cmdr?" · "+esc(String(b.cmdr)):""} · turn ${esc(String(b.turn??"–"))}</span></button>
+      ${open?`<div class="pbody">
+        <div><span class="eyebrow">Creatures · ${esc(String(b.cnt??0))}</span>${groups.length?groups.map(x=>`<div class="pline"><span>${esc(String(x[1]))}× ${esc(String(x[0]))}</span><b>${esc(String(x[2]))}</b></div>`).join(""):`<p class="none">None tracked.</p>`}</div>
+        <div><span class="eyebrow">Cards in play</span>${cards.length?`<p>${cards.map(c=>esc(String(c))).join(" · ")}</p>`:`<p class="none">None marked.</p>`}</div>
+        <div><span class="eyebrow">Effects</span>${fx.length?fx.map(f=>`<p class="pfx">${gl(String(f))}</p>`).join(""):`<p class="none">None.</p>`}</div>
+        ${Array.isArray(b.mana)?`<p class="status">Mana open: ${esc(String(b.mana[0]))} of ${esc(String(b.mana[1]))}</p>`:""}</div>`:""}</div>`;};
+  return `<div class="spread"><span class="eyebrow">Table · ${esc(t.code||"")}</span><button class="link" data-act="leavetable">Leave</button></div>
+    ${ps.map(row).join("")}
+    ${others.length?"":`<p class="none">Waiting for others. Have them join code <b>${esc(t.code||"")}</b>.</p>`}`;
+}
+(async()=>{const cfg=window.FIREBASE_CONFIG||{};
+  if(!cfg.apiKey||!window.firebase){roomState="off";refreshTable();return;}
+  try{firebase.initializeApp(cfg);const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;fbDb=firebase.database();}
+  catch(e){roomState="error";refreshTable();return;}
+  roomState="ready";if(S.table&&S.table.code)joinTable(S.table.code);else refreshTable();})();
+function renderHud(){
+  const g=S.game;
+  // Games started on an older version keep a stale copy of the precon; refresh it so trackers match the current preset.
+  const fresh=PRECONS.find(p=>p.id===g.deck.id);
+  if(fresh){g.deck={...g.deck,mods:fresh.mods,custom:fresh.custom,rem:fresh.rem,groups:fresh.groups,cards:fresh.cards,colors:fresh.colors};}
+  const d=g.deck;
+  g.inplay=g.inplay||[];g.cardUsed=g.cardUsed||{};
+  const inCards=g.inplay.map(n=>cardInfo(d,n));
+  const cbP=inCards.reduce((a,c)=>a+(c.buff?c.buff.p:0),0),cbT=inCards.reduce((a,c)=>a+(c.buff?c.buff.t:0),0);
+  const landBonus=inCards.reduce((a,c)=>a+(c.land||0),0);
+  const cardMana=inCards.filter(c=>c.mana);
+  g.attach=g.attach||{};
+  // Things equipment can be attached to: your commander, creature/vehicle cards in play, and your token groups.
+  const hosts=[...(d.cmdr?[d.cmdr]:[]),...inCards.filter(c=>c.cat==="Creatures"||c.cat==="Vehicles").map(c=>c.name),...(g.groups||[]).filter(x=>x.n>0).map(x=>"A "+x.name.replace(/ tokens?$/i,"").replace(/s$/,""))];
+  Object.keys(g.attach).forEach(k=>{if(!g.inplay.includes(k)||!hosts.includes(g.attach[k]))delete g.attach[k];});
+  const artifacts=(d.cmdr?1:0)+inCards.filter(c=>!["Enchantments"].includes(c.cat)).length+(g.groups||[]).reduce((a,x)=>a+x.n,0);
+  const equipLine=c=>{const on=g.attach[c.name];if(!on)return "Not attached";return "On "+on+(c.plating?` · about +${artifacts}/+0 (${artifacts} artifacts)`:"");};
+  const ORDER=["up","draw","m1","combat","m2","end"],WHEN={up:"Start",draw:"Start",m1:"Main",combat:"Combat",m2:"Main",end:"End"};
+  g.done=g.done||[];g.inplay=g.inplay||[];
+  const cards=cardList(d);
+  const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>!r.card||g.inplay.includes(r.card)).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
+  const left=rems.filter(r=>!g.done.includes(r.i)).length;
+  let tiles="",togs="",hasOpps=false;
+  d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
+    if(M.kind==="counter")tiles+=tileCounter(m,M.label,g.vals[m],{wide:M.wide,warn:M.warn});
+    if(M.kind==="cmdr")hasOpps=true;
+    if(M.kind==="toggle")togs+=`<button class="tog" data-flag="${m}" aria-pressed="${!!g.flags[m]}">${esc(M.label)}</button>`;
+    if(M.kind==="cycle")togs+=`<button class="tog" data-cycle="${m}" aria-pressed="${g.flags[m]>0}">${esc(M.states[g.flags[m]])}</button>`;});
+  (d.custom||[]).forEach(c=>tiles+=tileCounter("x:"+c,c,g.vals["x:"+c]));
+  g.sources=g.sources||[];g.watch=g.watch||[];g.effects=g.effects||[];
+  const amtOf=s=>s.amt+(s.name==="Lands"?landBonus:0);
+  const avail=g.sources.reduce((a,s)=>a+(s.n-s.used)*amtOf(s),0)+cardMana.reduce((a,c)=>a+(g.cardUsed[c.name]?0:c.mana),0);
+  const total=g.sources.reduce((a,s)=>a+s.n*amtOf(s),0)+cardMana.reduce((a,c)=>a+c.mana,0);
+  const addForm=(kind,ph,extra="")=>addOpen===kind?`<div class="addrow"><input type="text" id="add-${kind}" placeholder="${ph}">${extra}<button class="btn primary" data-addgo="${kind}">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button></div>`:"";
+  const watchHtml=`<section class="panel watch"><div class="spread"><span class="eyebrow">Watch the table</span><button class="link" data-addopen="watch">+ Add</button></div>
+    ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Other players' triggers you keep feeding, e.g. "Sam's commander draws when I cast a spell."</p>`}
+    ${addForm("watch","Whose card, and what sets it off")}</section>`;
+  const fxHtml=`<section class="panel fx"><div class="spread"><span class="eyebrow">Effects in play</span><button class="link" data-addopen="fx">+ Add</button></div>
+    ${inCards.filter(c=>c.fx).map(c=>`<div class="line"><span><b>${esc(c.name)}</b> ${gl(c.equip&&g.attach[c.name]?c.fx.replace(/^Equipped creature/,g.attach[c.name]):c.fx)}${c.plating&&g.attach[c.name]?` <em>about +${artifacts}/+0 now</em>`:""}</span><span></span></div>`).join("")}
+    ${g.effects.map((f,i)=>`<div class="line"><span>${gl(f.text)} <em>${f.dur==="turn"?"this turn":"ongoing"}</em></span><button class="x" data-delfx="${i}" aria-label="Remove">×</button></div>`).join("")}
+    ${!g.effects.length&&!inCards.some(c=>c.fx)?`<p class="none">Cards you mark in play add their effects here. You can also add one by hand.</p>`:""}
+    ${addForm("fx","What the effect does",`<select id="add-fx-dur" aria-label="Duration"><option value="on">Ongoing</option><option value="turn">This turn</option></select>`)}</section>`;
+  const manaHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Mana</span><span class="mana"><b>${avail}</b> / ${total} left</span></div>
+    ${cardMana.length?`<div class="src"><div class="srcname"><span>From cards in play</span></div><div class="pips">${cardMana.map(c=>`<button class="pip wide${g.cardUsed[c.name]?" used":""}" data-ctap="${esc(c.name)}" aria-label="Tap ${esc(c.name)}"><b>${c.mana}</b> ${esc(c.name)}</button>`).join("")}</div></div>`:""}
+    ${g.sources.map((s,i)=>`<div class="src"><div class="srcname"><span>${esc(s.name)}</span><em>${s.n}× · ${amtOf(s)} each${s.name==="Lands"&&landBonus?" with Caged Sun":""}</em></div>
+      <div class="pips">${Array.from({length:s.n},(_,j)=>`<button class="pip${j<s.used?" used":""}" data-tap="${i}" aria-label="Tap ${esc(s.name)}">${amtOf(s)}</button>`).join("")}</div>
+      <div class="srcctl"><button data-srcn="${i}" data-d="-1" aria-label="One fewer ${esc(s.name)}">−</button><button data-srcn="${i}" data-d="1" aria-label="One more ${esc(s.name)}">+</button><button class="x" data-delsrc="${i}" aria-label="Remove ${esc(s.name)}">×</button></div></div>`).join("")}
+    <div class="row"><button class="link" data-addopen="src">+ Mana source</button><button class="link" data-act="untapall">Untap all</button></div>
+    ${addForm("src","e.g. Mana rock",`<select id="add-src-amt" aria-label="Mana it makes">${[1,2,3,4,5].map(n=>`<option value="${n}">${n} mana</option>`).join("")}</select>`)}</section>`;
+  g.groups=g.groups||[];g.buff=g.buff||{p:0,t:0};g.tbuff=g.tbuff||{p:0,t:0};
+  const bp=g.buff.p+g.tbuff.p+cbP,bt=g.buff.t+g.tbuff.t+cbT;
+  const cnt=g.groups.reduce((a,x)=>a+x.n,0);
+  const pow=g.groups.reduce((a,x)=>a+x.n*Math.max(0,x.p+x.c+bp),0);
+  const step=(attr,val,lbl)=>`<span class="stp"><button data-${attr}="-1" aria-label="${lbl} minus">−</button><b>${val}</b><button data-${attr}="1" aria-label="${lbl} plus">+</button></span>`;
+  const buffHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Team buffs</span><span class="mana">Applies to every creature</span></div>
+    <div class="buffs">${inCards.filter(c=>c.buff).map(c=>`<span class="blbl">${esc(c.name)}</span><span class="bctl"><b class="fixed">${sgn(c.buff.p)}/${sgn(c.buff.t)}</b></span>`).join("")}<span class="blbl">Other buffs, ongoing</span><span class="bctl">${step('bf="on" data-ax="p" data-bd',sgn(g.buff.p),"Ongoing power")}<i>/</i>${step('bf="on" data-ax="t" data-bd',sgn(g.buff.t),"Ongoing toughness")}</span>
+      <span class="blbl">Other buffs, this turn</span><span class="bctl">${step('bf="turn" data-ax="p" data-bd',sgn(g.tbuff.p),"This-turn power")}<i>/</i>${step('bf="turn" data-ax="t" data-bd',sgn(g.tbuff.t),"This-turn toughness")}</span></div></section>`;
+  const boardHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Creatures</span><span class="mana"><b>${cnt}</b> creatures · <b>${pow}</b> power</span></div>
+    ${g.groups.map((x,i)=>`<div class="grp"><div class="gtop"><span class="gname">${esc(x.name)}</span><span class="pt">${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}</span><button class="x" data-delgrp="${i}" aria-label="Remove ${esc(x.name)}">×</button></div>
+      <div class="gctl"><span class="glbl">How many</span>${step(`gn="${i}" data-gd`,x.n,x.name+" count")}<span class="glbl">+1/+1 each</span>${step(`gc="${i}" data-gd`,x.c,x.name+" counters")}</div>
+      <em class="gbase">Base ${x.p}/${x.t}</em></div>`).join("")||`<p class="none">Add a group for each kind of creature or token, like "Soldier tokens 1/1".</p>`}
+    <button class="link" data-addopen="grp">+ Creature group</button>
+    ${addOpen==="grp"?`<div class="addrow"><input type="text" id="add-grp" placeholder="e.g. Zombie tokens"><select id="add-grp-p" aria-label="Base power">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><select id="add-grp-t" aria-label="Base toughness">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><button class="btn primary" data-addgo="grp">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button></div>`:""}</section>`;
+  curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
+    life:g.vals.life??null,turn:g.turn,power:pow,cnt,mana:[avail,total],
+    groups:g.groups.filter(x=>x.n>0).slice(0,8).map(x=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`]),
+    cards:g.inplay.slice(0,24).map(n=>String(n).slice(0,40)),
+    fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,10).map(t=>String(t).slice(0,110))};
+  app.innerHTML=`
+  <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
+    <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
+  ${cards.length?`<section class="panel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
+    ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${gl(c.equip?equipLine(c):cardSummary(c))}</span>
+        ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
+      ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
+      <button class="x" data-card="${cards.indexOf(c.name)}" aria-label="${esc(c.name)} left play">×</button></div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.</p>`)}
+    ${pickOpen?(()=>{const out=cards.filter(c=>!g.inplay.includes(c));const catOf=c=>cardInfo(d,c).cat||"Other";
+      const cats=CAT_ORDER.filter(k=>out.some(c=>catOf(c)===k));const cur=cats.includes(pickCat)?pickCat:cats[0];
+      return `<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>catOf(c)===k).length}</span></button>`).join("")}</div>
+      <div class="picks">${out.filter(c=>catOf(c)===cur).map(c=>`<button class="tog" data-card="${cards.indexOf(c)}">${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}</section>`:""}
+  ${rems.length?`<section class="panel"><div class="spread"><span class="eyebrow">This turn</span><span class="mana">${left?left+" to check":"All handled"}</span></div>
+    ${rems.map(r=>{const on=g.done.includes(r.i);return `<div class="chk${on?" done":""}" data-done="${r.i}"><span class="when w-${r.p}">${WHEN[r.p]}</span><span class="ctext"><b>${esc(r.src)}</b> ${gl(r.t)}</span><button class="box" data-done="${r.i}" aria-pressed="${on}" aria-label="Mark handled">${on?"✓":""}</button></div>`}).join("")}</section>`:""}
+  <div class="grid">${tiles}</div>
+  ${hasOpps?oppsHtml(g):""}
+  <section class="panel" id="tablepanel">${tableInner()}</section>
+  ${fxHtml}
+  ${watchHtml}
+  ${togs?`<div class="toggles">${togs}</div>`:""}
+  ${manaHtml}
+  ${buffHtml}
+  ${boardHtml}
+  <div class="bar"><button class="btn" data-act="back">Decks</button><button class="btn primary" data-act="next">Pass turn</button></div>
+  ${confirmReset?`<div class="confirm"><span>Reset every tracker and go back to turn 1?</span><div class="row"><button class="btn danger" data-act="doreset">Reset game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
+   :`<div class="row"><button class="btn ghost" data-act="reset">New game</button><button class="btn ghost" data-act="glossary">Glossary</button></div>`}`;
+}
+
+function renderSetup(){
+  const d=draft;
+  app.innerHTML=`
+  <header class="field"><span class="eyebrow">Custom deck</span><h1>${d.existing?"Edit deck":"New deck"}</h1></header>
+  <div class="field"><label class="t" for="f-name">Deck name</label><input type="text" id="f-name" value="${esc(d.name)}" placeholder="e.g. Atraxa superfriends"></div>
+  <div class="field"><label class="t" for="f-cmdr">Commander</label><input type="text" id="f-cmdr" value="${esc(d.cmdr)}"></div>
+  <div class="field"><span class="t">Deck colors</span><div class="toggles">${["W","U","B","R","G"].map(c=>`<button class="tog cpick" data-color="${c}" aria-pressed="${(d.colors||[]).includes(c)}"><i style="background:${MTGC[c].ring}"></i>${MTGC[c].n}</button>`).join("")}</div></div>
+  <section class="field" id="ai-box"><label class="t" for="f-list">Decklist (optional)</label>
+    <textarea id="f-list" placeholder="Paste an export from Moxfield, Archidekt, etc.&#10;1 Sol Ring&#10;1 Smothering Tithe">${esc(d.list||"")}</textarea>
+    <div class="row"><button class="btn" data-act="ai">Import from decklist</button><span class="status" aria-live="polite">${esc(aiStatus)}</span></div>
+    ${(d.cards||[]).length?`<p class="status">${d.cards.length} cards with effects imported${(d.groups||[]).length?`, ${d.groups.length} token types`:""}. They show up under Cards in play. <button class="link" data-act="clearcards">Clear</button></p>`:""}</section>
+  <section class="field"><span class="t">Trackers</span><div class="checks">
+    ${Object.entries(MODS).map(([k,M])=>`<label class="check"><input type="checkbox" id="m-${k}" data-mod="${k}" ${d.mods.includes(k)?"checked":""}>${esc(M.label)}</label>`).join("")}</div></section>
+  <div class="field"><label class="t" for="f-custom">Extra counters</label><input type="text" id="f-custom" value="${esc((d.custom||[]).join(", "))}" placeholder="Comma separated, e.g. Lore counters, Zombies"></div>
+  <section class="field"><span class="t">Trigger reminders</span>
+    <p class="status">Leave Card blank for your commander. Reminders from other cards only show while you mark that card in play.</p>
+    <div class="remlist">${d.rem.map(([p,t,src],i)=>`<div class="remitem"><b>${PH[p]}</b><span>${src?`<strong>${esc(src)}:</strong> `:""}${esc(t)}</span><button data-delrem="${i}" aria-label="Remove reminder">×</button></div>`).join("")||`<p class="none">None yet.</p>`}</div>
+    <div class="addrem"><select id="f-ph" aria-label="Phase">${PHASES.map(([id,l])=>`<option value="${id}">${l}</option>`).join("")}</select>
+      <input type="text" id="f-remsrc" placeholder="Card (optional)"><input type="text" id="f-rem" placeholder="What to remember" class="span"><button class="btn span" data-act="addrem">Add reminder</button></div></section>
+  <div class="row"><button class="btn primary" data-act="savedeck">Save deck</button><button class="btn ghost" data-act="cancel">Cancel</button>
+    ${d.existing?`<button class="btn danger" data-act="deldeck">Delete</button>`:""}</div>`;
+}
+function syncDraft(){
+  if(view!=="setup")return;
+  const v=id=>document.getElementById(id);
+  draft.name=v("f-name").value.trim();draft.cmdr=v("f-cmdr").value.trim();
+  draft.list=v("f-list")?v("f-list").value:"";
+  draft.mods=[...document.querySelectorAll("[data-mod]")].filter(x=>x.checked).map(x=>x.dataset.mod);
+  draft.custom=v("f-custom").value.split(",").map(s=>s.trim()).filter(Boolean).slice(0,8);
+}
+
+// Decklist import: look every card up on Scryfall, then derive trackers, card effects, mana and token types from its rules text.
+function parseList(text){
+  const out=new Map();
+  for(let line of text.split(/\r?\n/)){
+    line=line.trim();if(!line||/^(\/\/|#)/.test(line)||/:$/.test(line))continue;
+    if(/^(commander|deck|sideboard|maybeboard|mainboard|companion|lands?|creatures?|artifacts?|enchantments?|instants?|sorceries|planeswalkers?)\b/i.test(line)&&!/^\d/.test(line))continue;
+    const m=line.match(/^(?:(\d+)\s*x?\s+)?(.+?)(?:\s+\([A-Za-z0-9]+\).*|\s+\[[^\]]*\].*|\s+\*[A-Z]\*.*|\s+#.*)?$/);
+    if(!m)continue;const name=m[2].replace(/\s+\/\/?\s+.*/,"").trim();if(name)out.set(name.toLowerCase(),name);
+  }
+  return [...out.values()];
+}
+async function scryfall(names,onProgress){
+  const found=[],missing=[];
+  for(let i=0;i<names.length;i+=75){
+    const chunk=names.slice(i,i+75);
+    const r=await fetch("https://api.scryfall.com/cards/collection",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify({identifiers:chunk.map(name=>({name}))})});
+    if(!r.ok)throw new Error("scryfall "+r.status);
+    const j=await r.json();found.push(...(j.data||[]));missing.push(...(j.not_found||[]).map(x=>x.name));
+    onProgress&&onProgress(Math.min(i+75,names.length),names.length);
+    await new Promise(res=>setTimeout(res,120));
+  }
+  return {found,missing};
+}
+const NUMW={a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+function analyzeCard(c){
+  const faces=c.card_faces&&!c.oracle_text?c.card_faces:[c];
+  const text=faces.map(f=>f.oracle_text||"").join("\n").replace(/\([^)]*\)/g,"").trim();
+  const type=faces.map(f=>f.type_line||"").join(" // ")||c.type_line||"";
+  const name=c.name.split(" // ")[0];
+  const res={mods:new Set(),card:null,group:null};
+  const t=text.toLowerCase();
+  if(/\{e\}/i.test(text)||/\benergy counter/.test(t))res.mods.add("energy");
+  if(/rad counter/.test(t))res.mods.add("rad");
+  if(/experience counter/.test(t))res.mods.add("exp");
+  if(/\bstorm\b|spells? you(?:'ve)? cast this turn|you've cast this turn/.test(t))res.mods.add("storm");
+  if(/treasure/.test(t))res.mods.add("treasure");
+  if(/\bfood\b/.test(t))res.mods.add("food");
+  if(/\bclue\b|investigate/.test(t))res.mods.add("clue");
+  if(/\bjunk\b/.test(t))res.mods.add("junk");
+  if(/the monarch/.test(t))res.mods.add("monarch");
+  if(/the initiative/.test(t))res.mods.add("initiative");
+  if(/daybound|nightbound|it becomes (day|night)/.test(t))res.mods.add("daynight");
+  if(/poison counter|\binfect\b|\btoxic\b|\bpoisonous\b/.test(t))res.mods.add("poison");
+  // Only permanents can be "in play".
+  if(/\b(instant|sorcery|land)\b/i.test(type)&&!/creature|artifact|enchantment|planeswalker|battle/i.test(type))return res;
+  const lines=text.split("\n").map(l=>l.trim()).filter(Boolean);
+  const rem=[],fx=[];let mana=0,buff=null;
+  for(const raw of lines){
+    const l=raw.replace(/^[^—{}]{2,40} — /,""),ll=l.toLowerCase();
+    let p=null;
+    if(/^(at the beginning of your upkeep|at the beginning of each upkeep)/.test(ll))p="up";
+    else if(/^at the beginning of your draw step/.test(ll))p="draw";
+    else if(/^at the beginning of (combat|each combat)/.test(ll)||/^whenever .{0,60}\battacks?\b/.test(ll)||/deals combat damage/.test(ll))p="combat";
+    else if(/^at the beginning of (your|each) end step|^at the beginning of the end step/.test(ll))p="end";
+    else if(/^at the beginning of your (precombat|first) main phase/.test(ll))p="m1";
+    else if(/^(whenever|when .* (dies|leaves)|at the beginning)/.test(ll)&&!/^when .* enters/.test(ll))p="m1";
+    if(p){rem.push([p,l.slice(0,150)]);continue;}
+    const add=l.match(/^\{T\}(?:, [^:]+)?: Add ((?:\{[^}]+\})+)/);
+    if(add){mana=Math.max(mana,(add[1].match(/\{[^}]+\}/g)||[]).length);continue;}
+    const anyAdd=l.match(/^\{T\}: Add (one|two|three) mana/i);if(anyAdd){mana=Math.max(mana,NUMW[anyAdd[1].toLowerCase()]);continue;}
+    const b=l.match(/(?:other )?creatures you control get \+(\d+)\/\+(\d+)/i);
+    if(b){buff={p:+b[1],t:+b[2]};}
+    if(/^(flying|vigilance|trample|haste|deathtouch|lifelink|reach|menace|first strike|double strike|flash|hexproof|indestructible|defender|ward|crew|equip|enchant|unearth|cascade|squad|miracle|evolve|ravenous)\b/i.test(l)&&l.length<40)continue;
+    if(/^when .* enters/i.test(l))continue;
+    if(/^[^:]{0,60}:/.test(l)&&!/^[A-Z][^{]*—/.test(l))continue; // activated abilities: skip from always-on effects
+    if(l.length>4)fx.push(l);
+  }
+  // Token types this card makes.
+  const tok=text.match(/create (a|an|one|two|three|four|five|x|\d+) (?:tapped )?(\d+)\/(\d+) ((?:white|blue|black|red|green|colorless|and| )*)?([A-Z][A-Za-z' ]+?) (?:artifact )?creature tokens?/i);
+  if(tok){const n=NUMW[tok[1].toLowerCase()]||parseInt(tok[1],10)||0;res.group={name:tok[5].trim()+" tokens",p:+tok[2],t:+tok[3]};if(n)res.make=n;}
+  const cat=/vehicle/i.test(type)?"Vehicles":/creature/i.test(type)?"Creatures":mana?"Mana":/artifact/i.test(type)?"Artifacts":/enchantment/i.test(type)?"Enchantments":"Other";
+  if(rem.length||fx.length||mana||buff||res.group){
+    res.card={name,cat};
+    if(rem.length)res.card.rem=rem.slice(0,3);
+    if(fx.length)res.card.fx=fx.slice(0,2).join(" ").slice(0,200);
+    if(mana)res.card.mana=mana;
+    if(buff)res.card.buff=buff;
+    if(res.group&&res.make){res.card.make=res.make;res.card.makeGroup=res.group.name;}
+  }
+  return res;
+}
+// Turn a list of Scryfall-shaped cards into trackers, card entries, token groups and colors.
+function buildFromCards(found,base){
+  const mods=new Set(base.mods&&base.mods.length?base.mods:["life","cmdr"]);mods.add("life");mods.add("cmdr");
+  const cards=new Map((base.cards||[]).map(c=>[c.name,c])),groups=new Map((base.groups||[]).map(g=>[g.name,g]));
+  const rem=[...(base.rem||[])];const cmdrName=(base.cmdr||"").toLowerCase();
+  for(const c of found){
+    const r=analyzeCard(c);r.mods.forEach(m=>mods.add(m));
+    if(r.group&&!groups.has(r.group.name))groups.set(r.group.name,r.group);
+    if(!r.card)continue;
+    if(cmdrName&&r.card.name.toLowerCase()===cmdrName){(r.card.rem||[]).forEach(x=>{if(!rem.some(y=>y[1]===x[1]))rem.push([x[0],x[1]]);});continue;}
+    cards.set(r.card.name,r.card);
+  }
+  let colors=base.colors||[];
+  if(!colors.length){const cm=found.find(c=>cmdrName&&c.name.toLowerCase().split(" // ")[0]===cmdrName);
+    const ci=cm?cm.color_identity:[...new Set(found.flatMap(c=>c.color_identity||[]))];colors=["W","U","B","R","G"].filter(x=>(ci||[]).includes(x));}
+  return {mods:[...mods],cards:[...cards.values()].slice(0,120),groups:[...groups.values()].slice(0,8),rem,colors};
+}
+
+// Every Commander precon ever printed, from MTGJSON (free, public data).
+const MTGJSON="https://mtgjson.com/api/v5/";
+let catalog=null,catState="idle",catQuery="",catErr="",catBusy=null;
+async function loadCatalog(){
+  if(catState==="loading")return;
+  try{const c=JSON.parse(localStorage.getItem("deckhud.catalog")||"null");if(c&&Date.now()-c.t<7*864e5){catalog=c.d;catState="ready";return render();}}catch(e){}
+  catState="loading";render();
+  try{const r=await fetch(MTGJSON+"DeckList.json");if(!r.ok)throw 0;const j=await r.json();
+    catalog=(j.data||[]).filter(d=>/commander/i.test(d.type||"")).map(d=>({f:d.fileName,n:d.name,c:d.code,d:d.releaseDate||""}))
+      .sort((a,b)=>b.d.localeCompare(a.d));
+    try{localStorage.setItem("deckhud.catalog",JSON.stringify({t:Date.now(),d:catalog}));}catch(e){}
+    catState="ready";
+  }catch(e){catState="error";catErr="Couldn't load the precon list. Check your connection and try again.";}
+  render();
+}
+async function importPrecon(f){
+  const meta=(catalog||[]).find(x=>x.f===f);if(!meta)return;
+  catBusy=f;render();
+  try{const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;const deck=(await r.json()).data;
+    const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[]});
+    const cmdrs=(deck.commander||[]).map(conv),main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);
+    const seen=new Set(),all=[...cmdrs,...main].filter(c=>!seen.has(c.name)&&seen.add(c.name));
+    const cmdr=cmdrs[0]?cmdrs[0].name.split(" // ")[0]:"";
+    const b=buildFromCards(all,{cmdr,colors:cmdrs.length?["W","U","B","R","G"].filter(x=>cmdrs.some(c=>c.color_identity.includes(x))):[]});
+    const d={id:"m-"+f,name:deck.name||meta.n,set:meta.c+(meta.d?" ("+meta.d.slice(0,4)+")":""),cmdr,imported:true,
+      list:all.map(c=>"1 "+c.name).join("\n"),custom:[],...b};
+    const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.unshift(d);save();
+    catBusy=null;startGame(d);
+  }catch(e){catBusy=null;catErr="Couldn't load that deck. Try again in a moment.";render();}
+}
+function catalogHtml(){
+  if(catState==="idle")return `<button class="btn primary" data-act="browse">Browse all Commander precons</button>`;
+  if(catState==="loading")return `<p class="status">Loading the precon list…</p>`;
+  if(catState==="error")return `<p class="status err">${esc(catErr)}</p><button class="btn" data-act="browse">Try again</button>`;
+  const q=catQuery.trim().toLowerCase();
+  const hits=(catalog||[]).filter(d=>!q||d.n.toLowerCase().includes(q)||d.c.toLowerCase()===q).slice(0,q?60:24);
+  return `<input type="text" id="cat-q" placeholder="Search by deck name or set code" value="${esc(catQuery)}" aria-label="Search precons">
+    ${catErr?`<p class="status err">${esc(catErr)}</p>`:""}
+    <div class="catlist">${hits.map(d=>`<button class="catrow" data-precon="${esc(d.f)}"${catBusy?" disabled":""}><span class="cn">${esc(d.n)}</span><span class="cm">${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?"Loading…":"Play"}</span></button>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
+    <p class="status">${q?"":"Newest first. Search to find older decks. "}Effects are read from each card's rules text automatically, so check unusual cards.</p>`;
+}
+
+async function suggest(){
+  syncDraft();
+  const names=parseList(draft.list||"");
+  if(!names.length){aiStatus="Paste a decklist first.";return render();}
+  aiStatus=`Looking up ${names.length} cards…`;render();
+  try{
+    const {found,missing}=await scryfall(names,(a,b)=>{const el=document.querySelector("#ai-box .status");if(el)el.textContent=`Looking up cards… ${a} of ${b}`;});
+    const b=buildFromCards(found,draft);Object.assign(draft,b);
+    aiStatus=`Found ${found.length} cards: ${draft.cards.length} with effects, ${draft.groups.length} token types.`+(missing.length?` Couldn't find: ${missing.slice(0,4).join(", ")}${missing.length>4?"…":""}.`:"")+" Adjust anything below.";
+  }catch(e){aiStatus="Couldn't reach Scryfall. Check your connection and try again.";}
+  render();
+}
+
+app.addEventListener("click",e=>{
+  const term=e.target.closest(".term");if(term){e.stopPropagation();termOpen=term.dataset.term;return render();}
+  const b=e.target.closest("button")||e.target.closest("[data-done],[data-act]");if(!b)return;
+  const g=S.game,ds=b.dataset;
+  if(ds.precon){catErr="";importPrecon(ds.precon);return;}
+  if(ds.start){const d=allDecks().find(x=>x.id===ds.start);if(d)startGame(d);return;}
+  if(ds.edit){const d=S.decks.find(x=>x.id===ds.edit);draft={...JSON.parse(JSON.stringify(d)),existing:true};aiStatus="";view="setup";return render();}
+  if(ds.peer){openPeers.has(ds.peer)?openPeers.delete(ds.peer):openPeers.add(ds.peer);return refreshTable();}
+  if(ds.mode&&g){g.dmgMode=ds.mode;save();return render();}
+  if(ds.opp!=null&&g){const o=g.opps[ds.opp],n=Number(ds.amt);g.last={i:Number(ds.opp),life:o.life,cd:o.cd};
+    o.life+=n;if(n<0&&g.dmgMode==="cmdr")o.cd+=-n;save();return render();}
+  if(ds.delopp!=null&&g){if(g.opps.length>1){g.opps.splice(Number(ds.delopp),1);g.last=null;save();}return render();}
+  if(ds.k&&g){g.vals[ds.k]=(g.vals[ds.k]||0)+Number(ds.n);if(!ds.k.startsWith("life")&&g.vals[ds.k]<0)g.vals[ds.k]=0;save();return render();}
+  if(ds.ph&&g){g.phase=ds.ph;save();return render();}
+  if(ds.flag&&g){g.flags[ds.flag]=!g.flags[ds.flag];save();return render();}
+  if(ds.cycle&&g){g.flags[ds.cycle]=(g.flags[ds.cycle]+1)%3;save();return render();}
+  if(ds.tap!=null&&g){const s=g.sources[ds.tap];const j=[...b.parentNode.children].indexOf(b);s.used=j<s.used?j:j+1;save();return render();}
+  if(ds.srcn!=null&&g){const s=g.sources[ds.srcn];s.n=Math.max(0,s.n+Number(ds.d));s.used=Math.min(s.used,s.n);
+    if(s.n===0&&s.name!=="Lands")g.sources.splice(Number(ds.srcn),1);keepCarry();save();return render();}
+  if(ds.addopen&&g){addOpen=addOpen===ds.addopen?null:ds.addopen;render();const i=document.getElementById("add-"+addOpen);if(i)i.focus();return;}
+  if(ds.addgo&&g){const k=ds.addgo,t=(document.getElementById("add-"+k).value||"").trim().slice(0,140);
+    if(t){if(k==="src")g.sources.push({name:t,amt:Number(document.getElementById("add-src-amt").value),n:1,used:0});
+      if(k==="fx")g.effects.push({text:t,dur:document.getElementById("add-fx-dur").value==="turn"?"turn":"on"});
+      if(k==="watch")g.watch.push(t);
+      if(k==="grp")g.groups.push({name:t,p:Number(document.getElementById("add-grp-p").value),t:Number(document.getElementById("add-grp-t").value),n:1,c:0});
+      keepCarry();save();}
+    addOpen=null;return render();}
+  if(ds.gn!=null&&g){const x=g.groups[ds.gn];x.n=Math.max(0,x.n+Number(ds.gd));save();return render();}
+  if(ds.gc!=null&&g){const x=g.groups[ds.gc];x.c=Math.max(0,x.c+Number(ds.gd));save();return render();}
+  if(ds.bf&&g){const o=ds.bf==="on"?g.buff:g.tbuff;o[ds.ax]+=Number(ds.bd);save();return render();}
+  if(ds.delgrp!=null&&g){g.groups.splice(Number(ds.delgrp),1);save();return render();}
+  if(ds.addcancel&&g){addOpen=null;return render();}
+  if(ds.delsrc!=null&&g){g.sources.splice(Number(ds.delsrc),1);keepCarry();save();return render();}
+  if(ds.card!=null&&g){const c=cardList(g.deck)[Number(ds.card)];if(c){g.inplay=g.inplay||[];g.inplay=g.inplay.includes(c)?g.inplay.filter(x=>x!==c):[...g.inplay,c];save();}return render();}
+  if(ds.cat&&g){pickCat=ds.cat;return render();}
+  if(ds.ctap&&g){g.cardUsed=g.cardUsed||{};g.cardUsed[ds.ctap]=!g.cardUsed[ds.ctap];save();return render();}
+  if(ds.make&&g){const c=cardInfo(g.deck,ds.make);const grp=(g.groups||[]).find(x=>x.name===c.makeGroup)||(g.groups||[])[0];if(c.make&&grp){grp.n+=c.make;save();}return render();}
+  if(ds.done!=null&&g){const n=Number(ds.done);g.done=g.done.includes(n)?g.done.filter(x=>x!==n):[...g.done,n];save();return render();}
+  if(ds.delfx!=null&&g){g.effects.splice(Number(ds.delfx),1);save();return render();}
+  if(ds.delwatch!=null&&g){g.watch.splice(Number(ds.delwatch),1);keepCarry();save();return render();}
+  if(ds.delrem!=null){syncDraft();draft.rem.splice(Number(ds.delrem),1);return render();}
+  if(ds.color&&view==="setup"){syncDraft();const c=ds.color,cs=draft.colors||[];draft.colors=["W","U","B","R","G"].filter(x=>x===c?!cs.includes(x):cs.includes(x));return render();}
+  switch(ds.act){
+    case "resume":view="hud";wake();break;
+    case "new":draft={id:"u-"+Date.now(),colors:[],name:"",cmdr:"",mods:["life","cmdr"],custom:[],rem:[],list:""};aiStatus="";view="setup";break;
+    case "cancel":view="home";break;
+    case "back":view="home";confirmReset=false;break;
+    case "next":{g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
+    case "untapall":g.sources.forEach(s=>s.used=0);g.cardUsed={};save();break;
+    case "pick":pickOpen=!pickOpen;break;
+    case "browse":catErr="";loadCatalog();return;
+    case "newtable":{const el=document.getElementById("tbl-code");if(el){const a="abcdefghjkmnpqrstuvwxyz23456789";el.value=Array.from({length:4},()=>a[Math.floor(Math.random()*a.length)]).join("");}return;}
+    case "jointable":{const nick=(document.getElementById("tbl-nick").value||"").trim().slice(0,20);const code=(document.getElementById("tbl-code").value||"").trim().toLowerCase();
+      if(!/^[a-z0-9]{3,12}$/.test(code)){tableErr="Use a code of 3 to 12 letters or numbers.";return refreshTable();}
+      S.table={nick:nick||"Player",code};save();joinTable(code);return;}
+    case "leavetable":leaveTable();S.table={...(S.table||{}),code:""};save();return refreshTable();
+    case "addopp":g.opps.push({name:"Opponent "+(g.opps.length+1),life:40,cd:0});save();break;
+    case "undoopp":if(g.last&&g.opps[g.last.i]){g.opps[g.last.i].life=g.last.life;g.opps[g.last.i].cd=g.last.cd;}g.last=null;save();break;
+    case "closeterm":termOpen=null;break;
+    case "glossary":glossBack=view==="glossary"?glossBack:view;termOpen=null;view="glossary";window.scrollTo({top:0});break;
+    case "glossback":view=glossBack==="glossary"?"home":glossBack;break;
+    case "reset":confirmReset=true;break;
+    case "noreset":confirmReset=false;break;
+    case "doreset":confirmReset=false;startGame(g.deck);return;
+    case "addrem":{syncDraft();const t=document.getElementById("f-rem").value.trim();const src=document.getElementById("f-remsrc").value.trim().slice(0,60);if(t)draft.rem.push(src?[document.getElementById("f-ph").value,t,src]:[document.getElementById("f-ph").value,t]);break;}
+    case "ai":suggest();return;
+    case "clearcards":syncDraft();draft.cards=[];draft.groups=[];aiStatus="";break;
+    case "savedeck":{syncDraft();if(!draft.name){aiStatus="";document.getElementById("f-name").focus();return;}
+      const d={id:draft.id,name:draft.name,cmdr:draft.cmdr,mods:draft.mods.length?draft.mods:["life"],custom:draft.custom,rem:draft.rem,list:draft.list,colors:draft.colors||[],cards:draft.cards||[],groups:draft.groups||[]};
+      const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.push(d);save();view="home";break;}
+    case "deldeck":S.decks=S.decks.filter(x=>x.id!==draft.id);save();view="home";break;
+  }
+  render();
+});
+app.addEventListener("input",e=>{if(e.target.id==="cat-q"){catQuery=e.target.value;const el=document.getElementById("catalog");
+  if(el){const pos=e.target.selectionStart;el.innerHTML=catalogHtml();const i=document.getElementById("cat-q");i.focus();try{i.setSelectionRange(pos,pos);}catch(_){}}}});
+app.addEventListener("change",e=>{if(e.target.matches("[data-mod]"))syncDraft();
+  if(e.target.matches("[data-oppname]")&&S.game&&S.game.opps){S.game.opps[e.target.dataset.oppname].name=e.target.value.trim().slice(0,24)||"Opponent";save();}
+  if(e.target.matches("[data-attach]")&&S.game){S.game.attach=S.game.attach||{};const v=e.target.value;if(v)S.game.attach[e.target.dataset.attach]=v;else delete S.game.attach[e.target.dataset.attach];save();render();}});
+
+if(S.game)view="hud";
+render();
+if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
