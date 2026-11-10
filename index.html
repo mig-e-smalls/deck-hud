@@ -664,6 +664,8 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 @media (hover:hover){.vcard:hover{filter:brightness(1.08)}}
 .v-deckview{max-width:1100px}
 .catrow .cg{display:flex;gap:6px;align-items:center}
+.catrow .btn.ghost{color:#2b2016;border-color:rgba(43,32,22,.45)}
+.catrow .cerr{grid-column:1/-1;grid-row:3;margin-top:6px;padding:6px 8px;border-radius:8px;background:#f6d9d3;color:#7a1d14;font-size:.88rem;font-weight:600}
 .decks .deck .btn.ghost{color:#2b2016;border-color:#a88d5c;background:transparent}
 .decks .deck .btn.ghost:hover{background:rgba(0,0,0,.05)}
 .roomseg{align-self:flex-start}
@@ -2016,7 +2018,7 @@ function buildFromCards(found,base){
 
 // Every Commander precon ever printed, from MTGJSON (free, public data).
 const MTGJSON="https://mtgjson.com/api/v5/";
-let catalog=null,catState="idle",catQuery="",catErr="",catBusy=null;
+let catalog=null,catState="idle",catQuery="",catErr="",catBusy=null,catFail=null;
 async function loadCatalog(){
   if(catState==="loading")return;
   try{const c=JSON.parse(localStorage.getItem("deckhud.catalog")||"null");if(c&&Date.now()-c.t<7*864e5){catalog=c.d;catState="ready";return render();}}catch(e){}
@@ -2035,13 +2037,16 @@ async function loadCatalog(){
 }
 async function importPrecon(f,viewOnly){
   const meta=(catalog||[]).find(x=>x.f===f);if(!meta)return;
-  catBusy=f;render();
+  catBusy=f;catFail=null;render();let why="";
   try{
     let deck=null,cmdrs,main;
     try{const r=await fetch("precons/decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=await r.json();
       const conv=c=>({name:c.n,type_line:c.t||"",oracle_text:c.x||"",color_identity:c.ci||[],power:c.p,toughness:c.tg,q:c.q||1});
       cmdrs=(deck.commander||[]).map(conv);main=(deck.cards||[]).map(conv);}
-    catch(_){const r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");if(!r.ok)throw 0;deck=(await r.json()).data;
+    catch(_){let r;try{r=await fetch(MTGJSON+"decks/"+encodeURIComponent(f)+".json");}catch(e){why="The card database (MTGJSON) couldn't be reached. Check your connection, or an ad blocker may be stopping it.";throw e;}
+      if(!r.ok){why="The card database (MTGJSON) answered with error "+r.status+" for this deck.";throw 0;}
+      try{deck=(await r.json()).data;}catch(e){why="The card database sent this deck in a form the app couldn't read.";throw e;}
+      if(!deck||(!deck.mainBoard&&!deck.commander)){why="The card database has no card list for this deck yet.";throw 0;}
       const conv=c=>({name:c.name,type_line:c.type||"",oracle_text:c.text||"",color_identity:c.colorIdentity||[],power:c.power,toughness:c.toughness,q:c.count||1});
       cmdrs=(deck.commander||[]).map(conv);main=[...(deck.mainBoard||[]),...(deck.sideBoard||[])].map(conv);}
     const seen=new Set(),all=[...cmdrs,...main].filter(c=>c.name&&!seen.has(c.name)&&seen.add(c.name));
@@ -2057,7 +2062,8 @@ async function importPrecon(f,viewOnly){
     if(viewOnly){catBusy=null;d._f=f;openDeckView(d,"home");return;}
     const i=S.decks.findIndex(x=>x.id===d.id);if(i>=0)S.decks[i]=d;else S.decks.unshift(d);save();
     catBusy=null;startGame(d);
-  }catch(e){catBusy=null;catErr="Couldn't load that deck. Try again in a moment.";render();}
+  }catch(e){catBusy=null;catFail={f,msg:"Couldn't load this deck. "+(why||"Something went wrong while reading its cards"+(e&&e.message?" ("+String(e.message).slice(0,80)+")":"")+".")};catErr="";
+    try{console.error("[mtghud] precon load failed",f,e);}catch(_){}render();}
 }
 function catalogHtml(){
   if(catState==="idle")return `<button class="btn primary" data-act="browse">Browse all Commander precons</button>`;
@@ -2067,7 +2073,7 @@ function catalogHtml(){
   const hits=(catalog||[]).filter(d=>!q||d.n.toLowerCase().includes(q)||d.c.toLowerCase()===q||(d.cm||[]).some(n=>n.toLowerCase().includes(q))).slice(0,q?60:24);
   return `<input type="text" id="cat-q" placeholder="Search by deck, commander, or set code" value="${esc(catQuery)}" aria-label="Search precons">
     ${catErr?`<p class="status err">${esc(catErr)}</p>`:""}
-    <div class="catlist">${hits.map(d=>`<div class="catrow"><span class="cn">${esc(d.n)}</span><span class="cm">${d.cm&&d.cm.length?esc(d.cm.join(" & "))+" · ":""}${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span><span class="cg">${catBusy===d.f?`<span class="status">Loading…</span>`:`<button class="btn ghost sm" data-catview="${esc(d.f)}"${catBusy?" disabled":""}>Cards</button><button class="btn primary sm" data-precon="${esc(d.f)}"${catBusy?" disabled":""}>Play</button>`}</span></div>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
+    <div class="catlist">${hits.map(d=>`<div class="catrow"><span class="cn">${esc(d.n)}</span><span class="cm">${d.cm&&d.cm.length?esc(d.cm.join(" & "))+" · ":""}${esc(d.c)}${d.d?" · "+esc(d.d.slice(0,4)):""}</span>${catFail&&catFail.f===d.f?`<span class="cerr" role="alert">${esc(catFail.msg)}</span>`:""}<span class="cg">${catBusy===d.f?`<span class="status">Loading…</span>`:`<button class="btn ghost sm" data-catview="${esc(d.f)}"${catBusy?" disabled":""}>Cards</button><button class="btn primary sm" data-precon="${esc(d.f)}"${catBusy?" disabled":""}>Play</button>`}</span></div>`).join("")||`<p class="none">No precons match "${esc(catQuery)}".</p>`}</div>
     <p class="status">${q?"":"Newest first. Search to find older decks. "}Effects are read from each card's rules text automatically, so check unusual cards.</p>`;
 }
 
