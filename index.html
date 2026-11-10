@@ -596,6 +596,8 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 @media (hover:hover){.vcard:hover{filter:brightness(1.08)}}
 .v-deckview{max-width:1100px}
 .catrow .cg{display:flex;gap:6px;align-items:center}
+.decks .deck .btn.ghost{color:#2b2016;border-color:#a88d5c;background:transparent}
+.decks .deck .btn.ghost:hover{background:rgba(0,0,0,.05)}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -965,7 +967,7 @@ function deckRow(d){
     <span class="name"><span>${esc(d.name)}</span><span class="dpips">${pips(d.colors)}</span></span>
     <span class="meta">${esc(d.cmdr||"")}${d.set?" · "+esc(d.set):""}</span>
     <span class="chips">${chips}</span>
-    <span class="dfoot"><button class="btn ghost sm" data-viewdeck="${esc(d.id)}">View cards</button><button class="btn primary sm" data-start="${esc(d.id)}">Play</button></span></div>`;
+    <span class="dfoot">${S.decks.some(x=>x.id===d.id)?`<button class="btn ghost sm" data-edit="${esc(d.id)}">Edit</button>`:""}<button class="btn ghost sm" data-viewdeck="${esc(d.id)}">View cards</button><button class="btn primary sm" data-start="${esc(d.id)}">Play</button></span></div>`;
 }
 function renderHome(){
   const mine=S.decks;
@@ -980,8 +982,7 @@ function renderHome(){
     <div class="decks">${PRECONS.map(deckRow).join("")}</div>
     <p class="note">Set up by hand with card categories and reminders checked against the cards.</p></section>
   <section class="field"><div class="spread"><h2>My decks</h2><button class="btn" data-act="new">New deck</button></div>
-    ${mine.length?`<div class="decks">${mine.map(deckRow).join("")}</div>
-      <div class="row">${mine.map(d=>`<button class="btn ghost" data-edit="${esc(d.id)}">Edit ${esc(d.name)}</button>`).join("")}</div>`
+    ${mine.length?`<div class="decks">${mine.map(deckRow).join("")}</div>`
      :`<p class="none">No saved decks yet. Precons you play and decks you build show up here.</p>`}
     <p class="note">Saved on this device only.</p></section>`;
 }
