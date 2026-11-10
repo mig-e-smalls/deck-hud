@@ -577,6 +577,11 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .gyab{font-family:var(--display);font-weight:700;font-size:.72rem;color:#5b3608}
 .gyact .btn .sym,.gyab .sym{width:1.05em;height:1.05em;font-size:.75em}
 .unearthed{color:var(--bad);font-family:var(--display)}
+/* Mana symbols: same size and centered, with or without a number inside */
+.sym{vertical-align:middle;line-height:1;box-sizing:border-box;flex:none;padding:0;margin-top:-.12em}
+.cost{display:inline-flex;align-items:center;gap:3px;line-height:1}
+.cost .sym{width:1.4em;height:1.4em;font-size:.85em;margin:0}
+.gyact .btn .sym,.gyab .sym{margin-top:0}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -739,6 +744,8 @@ function fxText(c){
   return (c.rem||[]).map(r=>clean(r[1])).filter(Boolean).join(" ").slice(0,240);
 }
 // Abilities that work from the graveyard. Shown only on your own Graveyard panel; never shared with the table.
+// Assist level. Extra rules help is off for now; a future "How much help do you want?" setting can turn these on.
+const ASSIST={graveyardHints:false};
 const GYKW=/\b(Unearth|Flashback|Escape|Embalm|Eternalize|Disturb|Scavenge|Retrace|Encore|Jump-start|Aftermath)\b\s*(?:—\s*)?((?:\{[^}]+\})+[^.(]*)/i;
 function gyAbility(d,name){
   const c=cardInfo(d,name);if(c&&c.gy)return c.gy;
@@ -1121,8 +1128,8 @@ function renderHud(){
     ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Reminders about other players' cards, e.g. "Sam's commander draws when I cast a spell."</p>`}
     ${addForm("watch","Whose card, and what sets it off")}</section>`;
   const zoneList=(z,label)=>{const arr=g[z];return `<div class="gyz"><span class="gylbl">${label} <b>${arr.length}</b></span>
-      <div class="gychips">${arr.length?arr.map((n,i)=>{const sel=gySel&&gySel.z===z&&gySel.i===i;const ab=z==="gy"?gyAbility(g.deck,n):"";if(ab&&standaloneArt)wantArt(n);return `<button class="tog gychip${sel?" on":""}" data-gysel="${z}:${i}" aria-pressed="${sel}">${esc(n)}${ab?`<small class="gyab">${manaSyms(ab.replace(/^(\S+)/,"$1 "))}</small>`:""}</button>`;}).join(""):`<span class="none">Empty</span>`}</div>
-      ${gySel&&gySel.z===z&&arr[gySel.i]!=null?`<div class="gyact"><span>${esc(arr[gySel.i])}</span>${z==="gy"&&/^unearth/i.test(gyAbility(g.deck,arr[gySel.i]))?`<button class="btn primary" data-gyact="unearth">${manaSyms(gyAbility(g.deck,arr[gySel.i]))}</button>`:""}<button class="btn primary" data-gyact="play">Return to battlefield</button><button class="btn" data-gyact="move">Move to ${z==="gy"?"exile":"graveyard"}</button><button class="btn ghost" data-gyact="del">Remove</button></div>`:""}</div>`;};
+      <div class="gychips">${arr.length?arr.map((n,i)=>{const sel=gySel&&gySel.z===z&&gySel.i===i;const ab=ASSIST.graveyardHints&&z==="gy"?gyAbility(g.deck,n):"";if(ab&&standaloneArt)wantArt(n);return `<button class="tog gychip${sel?" on":""}" data-gysel="${z}:${i}" aria-pressed="${sel}">${esc(n)}${ab?`<small class="gyab">${manaSyms(ab.replace(/^(\S+)/,"$1 "))}</small>`:""}</button>`;}).join(""):`<span class="none">Empty</span>`}</div>
+      ${gySel&&gySel.z===z&&arr[gySel.i]!=null?`<div class="gyact"><span>${esc(arr[gySel.i])}</span>${ASSIST.graveyardHints&&z==="gy"&&/^unearth/i.test(gyAbility(g.deck,arr[gySel.i]))?`<button class="btn primary" data-gyact="unearth">${manaSyms(gyAbility(g.deck,arr[gySel.i]))}</button>`:""}<button class="btn primary" data-gyact="play">Return to battlefield</button><button class="btn" data-gyact="move">Move to ${z==="gy"?"exile":"graveyard"}</button><button class="btn ghost" data-gyact="del">Remove</button></div>`:""}</div>`;};
   const gyHtml=`<section class="panel gypanel"><div class="spread"><span class="eyebrow">Graveyard &amp; exile</span><button class="link" data-addopen="gy">+ Add card</button></div>
     ${addOpen==="gy"?`<div class="addrow"><input type="text" id="add-gy" placeholder="Search for a card, e.g. milled or discarded" autocomplete="off" role="combobox" aria-controls="sugg-add-gy" aria-autocomplete="list"><select id="add-gy-z" aria-label="Zone"><option value="gy">Graveyard</option><option value="ex">Exile</option></select><button class="btn primary" data-addgo="gy">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button><div class="sugg" id="sugg-add-gy" role="listbox"></div></div>`:""}
     ${zoneList("gy","Graveyard")}${zoneList("ex","Exile")}</section>`;
