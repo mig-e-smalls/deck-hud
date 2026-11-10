@@ -384,6 +384,81 @@ html{-webkit-text-size-adjust:100%}
 .tax{font-family:var(--display);font-weight:800;font-size:1.6rem;font-variant-numeric:tabular-nums;padding:2px 12px;border:2px solid #2a221b;border-radius:8px;background:linear-gradient(180deg,#f8eed6,#d2bd8f);color:#24190f}
 .panel.cmdr .row{gap:10px}
 .addcard{grid-template-columns:1fr auto!important;border-top:1px solid var(--line);padding-top:10px}
+.vitals{display:grid;gap:14px;align-items:start}
+.vitals>.tile{grid-column:auto}
+@media (min-width:560px){.vitals{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.v-hud>.vitals{column-span:all}
+.tablehome .tjoin{grid-template-columns:1fr 1fr}
+.tablehome .tjoin .btn{padding:12px}
+.lifepanel .me{display:flex;flex-direction:column;gap:8px;padding:6px 0 10px;border-bottom:2px solid var(--line)}
+.lifepanel .metop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lifepanel .mename{font-family:var(--display);font-weight:800;font-size:1.15rem}
+.lifepanel .melife{font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;padding:4px 20px 2px;font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#f8eed6,#d2bd8f);border:2px solid #2a221b;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 0 #5e4a2c;color:#24190f}
+.lifepanel .me.dead .melife{color:var(--bad)}
+.lifepanel .mesteps{grid-template-columns:repeat(4,1fr)}
+.lifepanel .opp:first-of-type{border-top:0}
+/* Health hub: one tile per player */
+.lifepanel .hub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lifepanel .me,.lifepanel .opp{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--sunk);border-bottom-width:1px}
+.lifepanel .me{background:linear-gradient(180deg,#f8eed6,#e3d0a3);border:2px solid #2a221b}
+.lifepanel .metop,.lifepanel .otop{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.lifepanel .mename,.lifepanel .oname{font-family:var(--display);font-weight:800;font-size:1rem;text-align:center;width:100%}
+.lifepanel .melife,.lifepanel .olife{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1.05;padding:0;background:none;border:0;box-shadow:none;color:#24190f}
+.lifepanel .otop .x{position:absolute;top:-6px;right:-6px}
+.lifepanel .obot{flex-direction:column;align-items:stretch;gap:6px}
+.lifepanel .ocd{text-align:center;font-size:.78rem}
+.lifepanel .odmg,.lifepanel .mesteps{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.lifepanel .mesteps{grid-template-columns:repeat(4,1fr)}
+.lifepanel .odmg button,.lifepanel .mesteps button{min-width:0;padding:8px 0;font-size:.95rem}
+.lifepanel .me .mesteps{margin-top:auto}
+.lifepanel .opp.dead{opacity:.5}
+.lifepanel>.link{align-self:center}
+@media (min-width:1180px){.lifepanel .hub{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Health banner spans the full width; mana sits below it */
+.vitals{grid-template-columns:minmax(0,1fr)!important}
+@media (min-width:760px){.lifepanel .hub{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+.toggles.idle{border-top:1px solid var(--line);padding-top:10px}
+/* Your board vs other players */
+.v-hud{display:flex!important;flex-direction:column;gap:18px;columns:auto!important}
+.v-hud>*{margin-bottom:0!important}
+.zone{display:flex;flex-direction:column;gap:18px}
+.zonehead{font-family:var(--display);font-weight:800;font-size:1.2rem;color:#f3e6c6;margin:8px 0 -4px;padding-bottom:6px;border-bottom:1px solid #4a3d2f}
+.zonehead.theirs{color:#c9d6e2;border-bottom-color:#3d4a55}
+.zone.theirs .panel{--ring:#8ea3b5;--namebar:linear-gradient(180deg,#dfe7ee 0%,#b9c7d3 100%)}
+@media (min-width:760px){
+  .zone{display:block;columns:2;column-gap:20px}
+  .zone>*{break-inside:avoid;margin-bottom:20px}
+  .zone>.grid{display:grid}
+}
+@media (min-width:1180px){.zone{columns:3}}
+/* Symmetric board grid: rows of equal-height panels */
+@media (min-width:760px){
+  .zone{display:grid!important;columns:auto!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+  .zone>*{margin:0!important}
+  .zone>.turnlist,.zone>.toggles.wide{grid-column:1/-1}
+  .zone.mine>.buffpanel:last-child{grid-column:1/-1}
+  .zone>.tiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-content:stretch}
+  .zone>.tiles>.tile{height:100%}
+  .zone.theirs:has(#tablepanel[hidden])>.panel:first-child{grid-column:1/-1}
+}
+@media (min-width:1180px){
+  .zone{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .zone.mine>.buffpanel:last-child{grid-column:span 2}
+  .zone.theirs{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+}
+/* Board areas: cards and effects get the most room, buffs stay compact */
+@media (min-width:760px){
+  .zone.mine{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "togs togs" "tiles tiles"}
+  .zone.mine>.turnlist{grid-area:turn}.zone.mine>.cmdr{grid-area:cmdr}.zone.mine>.cardspanel{grid-area:cards}
+  .zone.mine>.fx{grid-area:fx}.zone.mine>.creapanel{grid-area:crea}.zone.mine>.buffpanel{grid-area:buff;grid-column:auto!important}
+  .zone.mine>.toggles.wide{grid-area:togs}.zone.mine>.tiles{grid-area:tiles}
+  .zone.mine>.cardspanel,.zone.mine>.fx{min-height:180px}
+}
+@media (min-width:1180px){
+  .zone.mine{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:"turn turn turn" "cmdr cards cards" "crea fx fx" "buff fx fx" "togs togs togs" "tiles tiles tiles";align-items:stretch}
+  .zone.mine>.buffpanel{align-self:start}
+}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -413,7 +488,7 @@ const MODS={
 // Starter precon library. Reminders are paraphrased; check them against your cards.
 const PRECONS=[
   {id:"p-necron",colors:["B"],name:"Necron Dynasties",set:"Warhammer 40,000 Commander (2022)",cmdr:"Szarekh, the Silent King",
-   mods:["life","cmdr"],custom:[],groups:[{name:"Necron Warrior tokens",p:2,t:2}],
+   mods:["life","cmdr"],custom:[],groups:[{name:"Necron Warrior tokens",p:2,t:2},{name:"Insect tokens",p:1,t:1}],
    sources:[{name:"Lands",amt:1,n:1}],
    rem:[["combat","Szarekh attacks: mill 3. You may put an artifact creature or Vehicle milled this way into your hand."]],
    // Cards you mark in play. fx = what it does while out, rem = when to act, buff = team P/T, mana = taps for, make = token button.
@@ -447,18 +522,6 @@ const PRECONS=[
     {name:"Unstable Obelisk",mana:1},{name:"Sceptre of Eternal Glory",mana:3,fx:"Makes 3 while you control 3+ lands with the same name."},
     {name:"Mystic Forge",fx:"Look at your top card anytime. You may cast artifacts and colorless spells from the top."},
    ]},
-  {id:"p-mothman",colors:["U","B","G"],name:"Mutant Menace",set:"Fallout Commander (2024)",cmdr:"The Wise Mothman",
-   mods:["life","cmdr","rad"],custom:["+1/+1 counters placed"],
-   rem:[["combat","Mothman attacks: each player gets a rad counter."],["m1","Nonland cards milled this phase? Mothman puts +1/+1 counters on up to that many creatures."]]},
-  {id:"p-madison",colors:["W","U","R"],name:"Science!",set:"Fallout Commander (2024)",cmdr:"Dr. Madison Li",
-   mods:["life","cmdr","energy"],custom:[],
-   rem:[["m1","Cast an artifact spell: get 1 energy from Madison Li."],["combat","Spend energy on Madison Li's abilities before attackers are declared."]]},
-  {id:"p-caesar",colors:["W","B","R"],name:"Hail, Caesar",set:"Fallout Commander (2024)",cmdr:"Caesar, Legion's Emperor",
-   mods:["life","cmdr"],custom:["Creature tokens"],
-   rem:[["combat","Attacking: you may sacrifice another creature or artifact. Pick two Caesar modes."]]},
-  {id:"p-dogmeat",colors:["W","R","G"],name:"Scrappy Survivors",set:"Fallout Commander (2024)",cmdr:"Dogmeat, Ever Loyal",
-   mods:["life","cmdr","junk"],custom:[],
-   rem:[["combat","Each equipped or enchanted creature that attacks makes a Junk token."]]},
 ];
 
 // Picker categories for precon cards.
@@ -538,11 +601,15 @@ function deckReminders(d){
   d.mods.forEach(m=>(MODS[m]&&MODS[m].rem||[]).forEach(([p,t])=>out.push({p,t,src:MODS[m].label,card:null})));
   // A reminder from a card other than the commander only shows while that card is marked in play.
   (d.rem||[]).forEach(([p,t,src])=>out.push({p,t,src:src||d.cmdr||d.name,card:src&&src!==d.cmdr?src:null,isCmdr:!!d.cmdr&&(!src||src===d.cmdr)}));
-  (d.cards||[]).forEach(c=>(c.rem||[]).forEach(([p,t])=>out.push({p,t,src:c.name,card:c.name})));
+  (d.cards||[]).forEach(c=>{const cm=isCmdr(d,c.name);(c.rem||[]).forEach(([p,t])=>out.push({p,t,src:c.name,card:cm?null:c.name,isCmdr:cm}));});
   return out;
 }
 // Every card that can be marked in play: rich card entries first, then cards named only on custom reminders.
-function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deckReminders(d).map(r=>r.card).filter(Boolean)])];}
+// The commander lives in the Commander panel, never in Cards in play. Match loosely: "Szarekh" = "Szarekh, the Silent King".
+const normName=n=>String(n||"").toLowerCase().split(" // ")[0].replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim();
+function isCmdr(d,name){const a=normName(name),b=normName(d&&d.cmdr);if(!a||!b)return false;
+  return a===b||(b.length>5&&(" "+a+" ").includes(" "+b+" "))||a.startsWith(b+" ")||b.startsWith(a+" ")||a.split(" ")[0]===b&&b.length>3||b.split(" ")[0]===a&&a.length>3||a.replace(/ the .*/,"")===b.replace(/ the .*/,"");}
+function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deckReminders(d).map(r=>r.card).filter(Boolean)])].filter(n=>!isCmdr(d,n));}
 function cardInfo(d,name){return (d.cards||[]).find(c=>c.name===name)||{name};}
 function cardSummary(c){const bits=[];if(c.mana)bits.push("taps for "+c.mana);if(c.buff)bits.push("team "+sgn(c.buff.p)+"/"+sgn(c.buff.t));
   if(c.fx)bits.push(c.fx);else if(c.rem&&c.rem[0])bits.push(c.rem[0][1]);return bits.join(" · ");}
@@ -626,6 +693,7 @@ function renderHome(){
   app.innerHTML=`
   <header class="field"><h1>Deck HUD</h1><div class="wubrg" aria-hidden="true"><i style="background:#f4efd6"></i><i style="background:#2f6fa8"></i><i style="background:#2a2420"></i><i style="background:#c0432f"></i><i style="background:#2f7a48"></i></div>
     <p class="muted">Pick a deck. Trackers and trigger reminders load for that deck only.</p><div class="row"><button class="link" data-act="glossary">Keyword glossary</button></div></header>
+  <section class="panel tablehome" id="tablepanel">${tableInner()}</section>
   ${S.game?`<div class="confirm"><div class="spread"><span>Game in progress: <b>${esc(S.game.deck.name)}</b>, turn ${S.game.turn}</span>
     <button class="btn primary" data-act="resume">Resume</button></div></div>`:""}
   <section class="field"><h2>All precons</h2><div id="catalog" class="field">${catalogHtml()}</div></section>
@@ -647,18 +715,22 @@ function tileCounter(key,label,val,opts={}){
     <div class="steps">${steps.map(n=>`<button data-k="${esc(key)}" data-n="${n}" aria-label="${esc(label)} ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div></div>`;
 }
 // Opponents: their life, and commander damage your commander has dealt each of them.
-function oppsHtml(g){
+function oppsHtml(g,me){
   if(!g.opps)g.opps=[1,2,3].map(i=>({name:"Opponent "+i,life:40,cd:0}));
   g.dmgMode=g.dmgMode||"reg";
   const cm=g.dmgMode==="cmdr";
-  return `<section class="panel opps"><div class="spread"><span class="eyebrow">Opponents</span>
-    <div class="seg" role="group" aria-label="Damage type"><button data-mode="reg" aria-pressed="${!cm}">Regular</button><button data-mode="cmdr" aria-pressed="${cm}">Commander</button></div></div>
-    <p class="status">${cm?"Damage also counts toward 21 commander damage.":"Damage only lowers life."}${g.last?` <button class="link" data-act="undoopp">Undo last</button>`:""}</p>
+  return `<section class="panel opps lifepanel"><div class="spread"><span class="eyebrow">Life</span>
+    <div class="seg" role="group" aria-label="Damage type to opponents"><button data-mode="reg" aria-pressed="${!cm}">Regular</button><button data-mode="cmdr" aria-pressed="${cm}">Commander</button></div></div>
+    <p class="status">Opponent damage: ${cm?"also counts toward 21 commander damage.":"lowers life only."}${g.last?` <button class="link" data-act="undoopp">Undo last</button>`:""}</p>
+    <div class="hub">
+    ${me!=null?(()=>{const warn=me<=0;return `<div class="me${warn?" dead":""}"><div class="metop"><span class="mename">You</span><span class="melife">${me}</span></div>
+      <div class="steps mesteps">${[-5,-1,1,5].map(n=>`<button data-k="life" data-n="${n}" aria-label="Your life ${n>0?"+":""}${n}">${n>0?"+":"−"}${Math.abs(n)}</button>`).join("")}</div></div>`;})():""}
     ${g.opps.map((o,i)=>{const dead=o.life<=0||o.cd>=21;return `<div class="opp${dead?" dead":""}">
       <div class="otop"><input type="text" id="opp-${i}" class="oname" data-oppname="${i}" value="${esc(o.name)}" aria-label="Opponent name">
         <span class="olife">${o.life}</span><button class="x" data-delopp="${i}" aria-label="Remove ${esc(o.name)}">×</button></div>
-      <div class="obot"><span class="ocd${o.cd>=15?" hot":""}">${gl("Commander damage")} ${o.cd}/21${dead?" · out":""}</span>
+      <div class="obot"><span class="ocd${o.cd>=15?" hot":""}" title="Commander damage">${gl("Cmdr dmg")} ${o.cd}/21${dead?" · out":""}</span>
         <div class="odmg"><button data-opp="${i}" data-amt="-5">−5</button><button data-opp="${i}" data-amt="-1">−1</button><button data-opp="${i}" data-amt="1" class="heal">+1</button></div></div></div>`;}).join("")}
+    </div>
     ${g.opps.length<5?`<button class="link" data-act="addopp">+ Opponent</button>`:""}</section>`;
 }
 // Live table: each phone writes a summary of its own board to Firebase; everyone at the same code reads them all.
@@ -685,7 +757,8 @@ function pushPresence(){
   if(j===lastPres)return;lastPres=j;
   tableRoom.me.set({...b,t:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{tableErr="Couldn't share your board. Check the database rules.";refreshTable();});
 }
-function refreshTable(){const el=document.getElementById("tablepanel");if(el)el.innerHTML=tableInner();}
+function refreshTable(){const el=document.getElementById("tablepanel");if(!el)return;
+  const inGame=view==="hud"&&S.game;el.hidden=inGame&&!tableRoom;el.innerHTML=el.hidden?"":tableInner();}
 function tableInner(){
   const t=S.table||{};
   if(roomState==="off")return `<span class="eyebrow">Table</span><p class="none">Table sharing is off. Whoever hosts this app can turn it on by adding a free Firebase project (README, step 3).</p>`;
@@ -695,7 +768,7 @@ function tableInner(){
       :/network/.test(fbErr)?"The device couldn't reach Firebase. Check the connection, or turn off ad or tracker blockers for this site."
       :"Couldn't connect to the table service. Check your connection, then reload.";
     return `<span class="eyebrow">Table</span><p class="none">${esc(hint)}</p><p class="status">Error code: ${esc(fbErr)}</p>`;}
-  if(!tableRoom)return `<div class="spread"><span class="eyebrow">Table</span><span class="mana">See everyone's board live</span></div>
+  if(!tableRoom)return `<div class="spread"><span class="eyebrow">Join a table</span><span class="mana">See everyone's board live</span></div>
     <p class="status">Everyone opens Deck HUD on their phone and joins the same code. Each person shares their own board.</p>
     <div class="tjoin"><input type="text" id="tbl-nick" placeholder="Your name" value="${esc(t.nick||"")}" maxlength="20" aria-label="Your name">
     <input type="text" id="tbl-code" placeholder="Table code" value="${esc(t.code||"")}" maxlength="12" aria-label="Table code" autocapitalize="off">
@@ -748,8 +821,10 @@ function renderHud(){
   const fresh=PRECONS.find(p=>p.id===g.deck.id);
   if(fresh){g.deck={...g.deck,mods:fresh.mods,custom:fresh.custom,rem:fresh.rem,groups:fresh.groups,cards:[...(fresh.cards||[]),...(g.deck.cards||[]).filter(c=>c.added&&!(fresh.cards||[]).some(f=>f.name===c.name))],colors:fresh.colors};}
   const d=g.deck;
+  if(fresh&&fresh.groups){g.groups=g.groups||[];fresh.groups.forEach(fg=>{if(!g.groups.some(x=>x.name===fg.name))g.groups.push({name:fg.name,p:fg.p,t:fg.t,n:0,c:0});});}
   g.inplay=g.inplay||[];g.cardUsed=g.cardUsed||{};
   g.cmdr=g.cmdr||{on:false,casts:0};
+  if(g.inplay.some(n=>isCmdr(d,n))){g.inplay=g.inplay.filter(n=>!isCmdr(d,n));g.cmdr.on=true;g.cmdr.casts=Math.max(1,g.cmdr.casts);save();}
   const inCards=g.inplay.map(n=>cardInfo(d,n));
   const cbP=inCards.reduce((a,c)=>a+(c.buff?c.buff.p:0),0),cbT=inCards.reduce((a,c)=>a+(c.buff?c.buff.t:0),0);
   const landBonus=inCards.reduce((a,c)=>a+(c.land||0),0);
@@ -765,9 +840,9 @@ function renderHud(){
   const cards=cardList(d);
   const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>r.isCmdr?g.cmdr.on:(!r.card||g.inplay.includes(r.card))).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
   const left=rems.filter(r=>!g.done.includes(r.i)).length;
-  let tiles="",togs="",hasOpps=false;
+  let tiles="",togs="",hasOpps=false,lifeTile="";
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
-    if(M.kind==="counter")tiles+=tileCounter(m,M.label,g.vals[m],{wide:M.wide,warn:M.warn});
+    if(M.kind==="counter"){const t=tileCounter(m,M.label,g.vals[m],{wide:M.wide,warn:M.warn});if(m==="life")lifeTile=t;else tiles+=t;}
     if(M.kind==="cmdr")hasOpps=true;
     if(M.kind==="toggle")togs+=`<button class="tog" data-flag="${m}" aria-pressed="${!!g.flags[m]}">${esc(M.label)}</button>`;
     if(M.kind==="cycle")togs+=`<button class="tog" data-cycle="${m}" aria-pressed="${g.flags[m]>0}">${esc(M.states[g.flags[m]])}</button>`;});
@@ -797,13 +872,14 @@ function renderHud(){
   const cnt=g.groups.reduce((a,x)=>a+x.n,0);
   const pow=g.groups.reduce((a,x)=>a+x.n*Math.max(0,x.p+x.c+bp),0);
   const step=(attr,val,lbl)=>`<span class="stp"><button data-${attr}="-1" aria-label="${lbl} minus">−</button><b>${val}</b><button data-${attr}="1" aria-label="${lbl} plus">+</button></span>`;
-  const buffHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Team buffs</span><span class="mana">Applies to every creature</span></div>
+  const buffHtml=`<section class="panel buffpanel"><div class="spread"><span class="eyebrow">Team buffs</span><span class="mana">Applies to every creature</span></div>
     <div class="buffs">${inCards.filter(c=>c.buff).map(c=>`<span class="blbl">${esc(c.name)}</span><span class="bctl"><b class="fixed">${sgn(c.buff.p)}/${sgn(c.buff.t)}</b></span>`).join("")}<span class="blbl">Other buffs, ongoing</span><span class="bctl">${step('bf="on" data-ax="p" data-bd',sgn(g.buff.p),"Ongoing power")}<i>/</i>${step('bf="on" data-ax="t" data-bd',sgn(g.buff.t),"Ongoing toughness")}</span>
       <span class="blbl">Other buffs, this turn</span><span class="bctl">${step('bf="turn" data-ax="p" data-bd',sgn(g.tbuff.p),"This-turn power")}<i>/</i>${step('bf="turn" data-ax="t" data-bd',sgn(g.tbuff.t),"This-turn toughness")}</span></div></section>`;
-  const boardHtml=`<section class="panel"><div class="spread"><span class="eyebrow">Creatures</span><span class="mana"><b>${cnt}</b> creatures · <b>${pow}</b> power</span></div>
-    ${g.groups.map((x,i)=>`<div class="grp"><div class="gtop"><span class="gname">${esc(x.name)}</span><span class="pt">${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}</span><button class="x" data-delgrp="${i}" aria-label="Remove ${esc(x.name)}">×</button></div>
+  const boardHtml=`<section class="panel creapanel"><div class="spread"><span class="eyebrow">Creatures</span><span class="mana"><b>${cnt}</b> creatures · <b>${pow}</b> power</span></div>
+    ${g.groups.map((x,i)=>x.n<=0?"":`<div class="grp"><div class="gtop"><span class="gname">${esc(x.name)}</span><span class="pt">${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}</span><button class="x" data-delgrp="${i}" aria-label="Remove ${esc(x.name)}">×</button></div>
       <div class="gctl"><span class="glbl">How many</span>${step(`gn="${i}" data-gd`,x.n,x.name+" count")}<span class="glbl">+1/+1 each</span>${step(`gc="${i}" data-gd`,x.c,x.name+" counters")}</div>
-      <em class="gbase">Base ${x.p}/${x.t}</em></div>`).join("")||`<p class="none">Add a group for each kind of creature or token, like "Soldier tokens 1/1".</p>`}
+      <em class="gbase">Base ${x.p}/${x.t}</em></div>`).join("")||`<p class="none">No creatures on the battlefield.</p>`}
+    ${g.groups.some(x=>x.n<=0)?`<div class="toggles idle">${g.groups.map((x,i)=>x.n>0?"":`<button class="tog" data-gn="${i}" data-gd="1">+ ${esc(x.name.replace(/ tokens?$/i,""))} ${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}</button>`).join("")}</div>`:""}
     <button class="link" data-addopen="grp">+ Creature group</button>
     ${addOpen==="grp"?`<div class="addrow"><input type="text" id="add-grp" placeholder="e.g. Zombie tokens"><select id="add-grp-p" aria-label="Base power">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><select id="add-grp-t" aria-label="Base toughness">${[0,1,2,3,4,5,6].map(n=>`<option${n===1?" selected":""}>${n}</option>`).join("")}</select><button class="btn primary" data-addgo="grp">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button></div>`:""}</section>`;
   curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
@@ -814,15 +890,20 @@ function renderHud(){
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
     <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
+  <div class="vitals">${hasOpps?oppsHtml(g,g.vals.life):lifeTile}${manaHtml}</div>
+  <h2 class="zonehead">Your board</h2>
+  <div class="zone mine">
+  ${rems.length?`<section class="panel turnlist"><div class="spread"><span class="eyebrow">This turn</span><span class="mana">${left?left+" to check":"All handled"}</span></div>
+    ${rems.map(r=>{const on=g.done.includes(r.i);return `<div class="chk${on?" done":""}" data-done="${r.i}"><span class="when w-${r.p}">${WHEN[r.p]}</span><span class="ctext"><b>${esc(r.src)}</b> ${gl(r.t)}</span><button class="box" data-done="${r.i}" aria-pressed="${on}" aria-label="Mark handled">${on?"✓":""}</button></div>`}).join("")}</section>`:""}
   ${d.cmdr?(()=>{const tax=2*g.cmdr.casts;return `<section class="panel cmdr"><div class="spread"><span class="eyebrow">Commander</span><span class="mana">${g.cmdr.on?"On the battlefield":"In the command zone"}</span></div>
     <div class="cmdrow"><div class="cmain"><span class="cname">${esc(d.cmdr)}</span>
-      <span class="csum">${g.cmdr.on?`Cast ${g.cmdr.casts} time${g.cmdr.casts===1?"":"s"}. Next cast from the command zone costs {${tax+2}} more.`:(g.cmdr.casts?`Commander tax: costs {${tax}} more to cast now.`:"No commander tax yet.")}</span></div>
-      <span class="tax" aria-label="Commander tax">+${g.cmdr.on?tax+2:tax}</span></div>
+      <span class="csum">${g.cmdr.on?`Cast ${g.cmdr.casts} time${g.cmdr.casts===1?"":"s"}. Next cast from the command zone costs {${tax}} more.`:(g.cmdr.casts?`Commander tax: costs {${tax}} more to cast now.`:"No commander tax yet.")}</span></div>
+      <span class="tax" aria-label="Commander tax">+${tax}</span></div>
     <div class="row">${g.cmdr.on?`<button class="btn" data-act="cmdrback">Died or exiled: back to command zone</button>`
       :`<button class="btn primary" data-act="cmdrcast">Cast${tax?` (+${tax} tax)`:""}</button>`}
       <span class="stp"><button data-act="cmdrdown" aria-label="One fewer cast">−</button><b>${g.cmdr.casts}</b><button data-act="cmdrup" aria-label="One more cast">+</button></span><span class="status">casts</span></div>
     <p class="status">Tax goes up {2} for every time you've already cast it from the command zone.</p></section>`;})():""}
-  ${`<section class="panel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
+  ${`<section class="panel cardspanel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
     ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${gl(c.equip?equipLine(c):cardSummary(c))}</span>
         ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
       ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
@@ -833,17 +914,17 @@ function renderHud(){
       if(!cats.length)return addRow;
       return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>catOf(c)===k).length}</span></button>`).join("")}</div>
       <div class="picks">${out.filter(c=>catOf(c)===cur).map(c=>`<button class="tog" data-card="${cards.indexOf(c)}">${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}</section>`}
-  ${rems.length?`<section class="panel"><div class="spread"><span class="eyebrow">This turn</span><span class="mana">${left?left+" to check":"All handled"}</span></div>
-    ${rems.map(r=>{const on=g.done.includes(r.i);return `<div class="chk${on?" done":""}" data-done="${r.i}"><span class="when w-${r.p}">${WHEN[r.p]}</span><span class="ctext"><b>${esc(r.src)}</b> ${gl(r.t)}</span><button class="box" data-done="${r.i}" aria-pressed="${on}" aria-label="Mark handled">${on?"✓":""}</button></div>`}).join("")}</section>`:""}
-  <div class="grid">${tiles}</div>
-  ${hasOpps?oppsHtml(g):""}
-  <section class="panel" id="tablepanel">${tableInner()}</section>
   ${fxHtml}
-  ${watchHtml}
-  ${togs?`<div class="toggles">${togs}</div>`:""}
-  ${manaHtml}
-  ${buffHtml}
   ${boardHtml}
+  ${buffHtml}
+  ${togs?`<div class="toggles wide">${togs}</div>`:""}
+  ${tiles?`<div class="grid tiles">${tiles}</div>`:""}
+  </div>
+  <h2 class="zonehead theirs">Other players</h2>
+  <div class="zone theirs">
+  ${watchHtml}
+  <section class="panel" id="tablepanel" ${tableRoom?"":"hidden"}>${tableRoom?tableInner():""}</section>
+  </div>
   <div class="bar"><button class="btn" data-act="back">Decks</button><button class="btn primary" data-act="next">Pass turn</button></div>
   ${confirmReset?`<div class="confirm"><span>Reset every tracker and go back to turn 1?</span><div class="row"><button class="btn danger" data-act="doreset">Reset game</button><button class="btn ghost" data-act="noreset">Keep playing</button></div></div>`
    :`<div class="row"><button class="btn ghost" data-act="reset">New game</button><button class="btn ghost" data-act="glossary">Glossary</button></div>`}`;
@@ -971,11 +1052,11 @@ function buildFromCards(found,base){
     const r=analyzeCard(c);r.mods.forEach(m=>mods.add(m));
     if(r.group&&!groups.has(r.group.name))groups.set(r.group.name,r.group);
     if(!r.card)continue;
-    if(cmdrName&&r.card.name.toLowerCase()===cmdrName){(r.card.rem||[]).forEach(x=>{if(!rem.some(y=>y[1]===x[1]))rem.push([x[0],x[1]]);});continue;}
+    if(isCmdr(base,r.card.name)){(r.card.rem||[]).forEach(x=>{if(!rem.some(y=>y[1]===x[1]))rem.push([x[0],x[1]]);});continue;}
     cards.set(r.card.name,r.card);
   }
   let colors=base.colors||[];
-  if(!colors.length){const cm=found.find(c=>cmdrName&&c.name.toLowerCase().split(" // ")[0]===cmdrName);
+  if(!colors.length){const cm=found.find(c=>isCmdr(base,c.name));
     const ci=cm?cm.color_identity:[...new Set(found.flatMap(c=>c.color_identity||[]))];colors=["W","U","B","R","G"].filter(x=>(ci||[]).includes(x));}
   return {mods:[...mods],cards:[...cards.values()].slice(0,120),groups:[...groups.values()].slice(0,8),rem,colors};
 }
