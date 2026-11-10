@@ -497,6 +497,56 @@ html{-webkit-text-size-adjust:100%}
 @media (min-width:1180px){.zone.theirs{grid-template-columns:minmax(0,2fr) minmax(0,1fr)!important}}
 .zone.theirs>.fields{grid-column:1/-1}
 @media (min-width:1180px){.zone.theirs>.fields{grid-column:1}.zone.theirs>.notes{grid-column:2}}
+.mfx p{line-height:1.4}.mfx b{font-family:var(--display);font-weight:800}
+.pstrip{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.pchip{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:120px;padding:8px 12px;border-radius:10px;text-align:left;
+  background:#1d2328;color:#efe2c4;border:1px solid #3d4a55;box-shadow:inset 0 -3px 0 var(--ring,#8ea3b5)}
+.pchip .pcn{font-family:var(--display);font-weight:800;font-size:1rem}
+.pchip .pcs{font-size:.8rem;color:#b6a483}.pchip .pcs b{color:#f3e6c6;font-family:var(--display)}
+.pchip.on{background:linear-gradient(180deg,#ecd08a 0%,#c9a65a 55%,#a07e38 100%);color:#23190d;border-color:#4a3a1f}
+.pchip.on .pcs,.pchip.on .pcs b{color:#3a2c14}
+@media (hover:hover){.pchip:hover{filter:brightness(1.12)}}
+button.mc{font:inherit;text-align:left;cursor:pointer}
+button.mc:focus-visible{outline:2px solid #ecd08a;outline-offset:2px}
+@media (hover:hover){button.mc:hover{transform:translateY(-3px)}button.mc.tapped:hover{transform:rotate(90deg) translateX(-3px)}}
+.cardsheet{max-height:80vh;overflow-y:auto}
+.cshead{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.cshead h2{color:var(--ink)}
+.cost{font-family:var(--display);font-weight:800;color:var(--muted);white-space:nowrap}
+.cstype{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--display);font-weight:700;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px}
+.mcpt.big{position:static;font-size:1rem;padding:1px 8px;color:#24190f}
+.cstext{line-height:1.55;max-width:60ch}
+.csfx{background:var(--sunk);border-radius:8px;padding:8px 10px}
+.csfx p{margin:2px 0}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.inplaylbl{font-family:var(--display);font-weight:800;font-size:.85rem;color:var(--muted);border-top:2px solid var(--line);padding-top:8px;margin-top:4px}
+.mc .mcart{position:absolute;left:3px;right:3px;bottom:3px;top:46%;border-radius:4px;background-size:cover;background-position:center;z-index:0}
+.mc .mcn,.mc .mct,.mc .mcpt,.mc .mcq{position:relative;z-index:1}
+.mc .mcpt,.mc .mcq{position:absolute}
+.cardsheet .csimg{display:block;width:min(260px,70%);aspect-ratio:488/680;margin:0 auto 4px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.45);background:var(--sunk)}
+.leave{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--sunk);border-radius:8px;padding:8px}
+.leave span{font-family:var(--display);font-weight:700;font-size:.9rem;margin-right:4px}
+.leave .btn{padding:7px 10px;font-size:.88rem}
+.gypanel .gyz{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:8px}
+.gylbl{font-family:var(--display);font-weight:800;font-size:.95rem}.gylbl b{color:var(--muted);margin-left:2px}
+.gychips{display:flex;flex-wrap:wrap;gap:6px}
+.gychip{font-size:.88rem;padding:6px 10px}
+.gyact{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--sunk);border-radius:8px;padding:8px}
+.gyact span{font-family:var(--display);font-weight:800;margin-right:4px}
+.gyact .btn{padding:7px 10px;font-size:.88rem}
+.mzones{display:flex;gap:6px;flex-wrap:wrap}
+.zpill{cursor:pointer;font:inherit;font-size:.8rem}
+.zpill.on{background:#c9a65a;color:#23190d;border-color:#c9a65a}
+@media (min-width:760px){.zone.mine{grid-template-areas:"turn turn" "cmdr buff" "cards cards" "fx fx" "crea crea" "gy gy" "togs togs" "tiles tiles"}.zone.mine>.gypanel{grid-area:gy}}
+@media (min-width:1180px){.zone.mine{grid-template-areas:"turn turn turn" "cmdr cards cards" "crea fx fx" "buff gy gy" "togs togs togs" "tiles tiles tiles"}}
+.addrow{position:relative}
+.sugg{grid-column:1/-1;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.sugg[hidden],.sugg:empty{display:none}
+.sopt{font:inherit;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:9px 12px;color:var(--ink)}
+.sopt:first-child{border-top:0}
+.sopt:hover,.sopt:focus-visible{background:var(--sunk)}
+.cats.dim{opacity:.4}
+.shead{font-family:var(--display);font-weight:800;font-size:.75rem;color:var(--muted);padding:6px 12px 2px}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -651,7 +701,7 @@ function cardList(d){return [...new Set([...(d.cards||[]).map(c=>c.name),...deck
 function cardInfo(d,name){return (d.cards||[]).find(c=>c.name===name)||{name};}
 function cardSummary(c){const bits=[];if(c.mana)bits.push("taps for "+c.mana);if(c.buff)bits.push("team "+sgn(c.buff.p)+"/"+sgn(c.buff.t));
   if(c.fx)bits.push(c.fx);else if(c.rem&&c.rem[0])bits.push(c.rem[0][1]);return bits.join(" · ");}
-let pickOpen=false;
+let pickOpen=false,leaveOpen=null,gySel=null;
 function startGame(d){
   const vals={},flags={};
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
@@ -701,13 +751,40 @@ function pips(colors){return (colors||[]).filter(c=>MTGC[c]).map(c=>`<i style="b
 function render(){
   app.className="wrap v-"+(view==="hud"&&S.game?"hud":view);
   applyTheme(view==="hud"&&S.game?S.game.deck.colors:view==="setup"&&draft?draft.colors:null);
-  if(view==="hud"&&S.game){renderHud();pushPresence();}
+  if(view==="hud"&&S.game){renderHud();try{pushPresence();}catch(_){}}
   else if(view==="setup")renderSetup();
   else if(view==="glossary")renderGlossary();
   else renderHome();
+  if(cardOpen)app.insertAdjacentHTML("beforeend",cardSheet());
   if(termOpen&&GL[termOpen])app.insertAdjacentHTML("beforeend",`<div class="sheet-bg" data-act="closeterm"></div>
     <div class="sheet" role="dialog" aria-label="${esc(GL[termOpen].t)}"><span class="eyebrow">Glossary</span><h2>${esc(GL[termOpen].t)}</h2><p>${esc(GL[termOpen].d)}</p>
     <div class="row"><button class="btn primary" data-act="closeterm">Got it</button><button class="btn ghost" data-act="glossary">Full glossary</button></div></div>`);
+}
+// Read a card from someone's board: what they shared, plus full rules text from Scryfall when it's reachable.
+function cardSheet(){
+  const c=cardOpen,info=c.data;
+  const typeLine=info&&info.type_line||({Commander:"Commander",Creatures:"Creature",Vehicles:"Vehicle",Mana:"Mana source",Artifacts:"Artifact",Enchantments:"Enchantment",Token:"Token"}[c.cat]||"Permanent");
+  const faces=info?(info.card_faces&&!info.oracle_text?info.card_faces:[info]):[];
+  const text=faces.map(f=>(faces.length>1?`<b>${esc(f.name||"")}</b>\n`:"")+gl(f.oracle_text||"")).join("\n\n");
+  const pt=info&&(info.power??(faces[0]||{}).power)!=null?(info.power??faces[0].power)+"/"+(info.toughness??faces[0].toughness):c.pt;
+  return `<div class="sheet-bg" data-act="closecard"></div><div class="sheet cardsheet" role="dialog" aria-label="${esc(c.n)}">
+    <span class="eyebrow">${esc(c.owner)}'s ${c.cat==="Token"?"token":"card"}${c.q>1?` · ×${c.q} on the battlefield`:""}</span>
+    ${imgOf(info,"normal")?`<img class="csimg" src="${imgOf(info,"normal")}" alt="${esc(c.n)}" loading="lazy">`:""}
+    <div class="cshead"><h2>${esc(c.n)}</h2>${info&&info.mana_cost?`<span class="cost">${esc(info.mana_cost)}</span>`:""}</div>
+    <div class="cstype"><span>${esc(typeLine)}</span>${pt?`<span class="mcpt big">${esc(pt)}</span>`:""}</div>
+    ${c.fx.length?`<div class="csfx"><span class="mlbl">In play now</span>${c.fx.map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
+    ${text?`<div class="cstext">${text.replace(/\n/g,"<br>")}</div>`:c.loading?`<p class="status">Loading rules text…</p>`:c.cat==="Token"?"":`<p class="status">Full rules text isn't available here.</p>`}
+    <div class="row"><button class="btn primary" data-act="closecard">Close</button>${c.cat==="Token"?"":`<a class="btn ghost" href="https://scryfall.com/search?q=${encodeURIComponent('!"'+c.n+'"')}" target="_blank" rel="noopener">Open on Scryfall</a>`}</div></div>`;
+}
+async function openCard(id){
+  const m=mcInfo[id];if(!m)return;
+  cardOpen={...m,data:null,loading:m.cat!=="Token"};render();
+  if(m.cat==="Token")return;
+  const key=m.n.toLowerCase();
+  try{let data=cardCache.get(key);
+    if(!data){if(artOff)throw 0;const r=await fetch("https://api.scryfall.com/cards/named?exact="+encodeURIComponent(m.n));if(!r.ok)throw 0;data=await r.json();cardCache.set(key,data);}
+    if(cardOpen&&cardOpen.n===m.n){cardOpen.data=data;cardOpen.loading=false;render();}
+  }catch(_){if(cardOpen&&cardOpen.n===m.n){cardOpen.loading=false;render();}}
 }
 function renderGlossary(){
   const items=[...GLOSS].sort((a,b)=>a[1].localeCompare(b[1]));
@@ -838,6 +915,23 @@ function tableInner(){
   try{firebase.initializeApp(cfg);const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;fbDb=firebase.database();}
   catch(e){roomState="error";fbErr=(e&&(e.code||e.message))||"unknown";console.error("Firebase:",e);refreshTable();return;}
   roomState="ready";if(S.table&&S.table.code)joinTable(S.table.code);else refreshTable();})();
+// Card search: your deck's cards first (instant), then Scryfall's autocomplete across every card (when reachable).
+let suggTimer=null,suggSeq=0,suggOff=false;
+function deckNames(){const g=S.game;if(!g)return [];const d=g.deck;return [...new Set([...cardList(d),...(d.cmdr?[d.cmdr]:[]),...g.gy,...g.ex])];}
+function showSugg(inputId,list){const box=document.getElementById("sugg-"+inputId);if(!box)return;
+  box.innerHTML=(inputId==="add-card"&&list.length?`<span class="shead">Other cards</span>`:"")+list.slice(0,8).map(n=>`<button type="button" class="sopt" role="option" data-sugg="${esc(n)}" data-for="${inputId}">${esc(n)}</button>`).join("");box.hidden=!list.length;}
+function filterPicks(q){const box=document.querySelector(".picks");if(!box)return;const cur=box.dataset.cur||"All";
+  box.querySelectorAll("[data-pname]").forEach(b=>{b.hidden=q?!b.dataset.pname.includes(q):!(cur==="All"||b.dataset.pcat===cur);});
+  document.querySelectorAll(".cats").forEach(c=>c.classList.toggle("dim",!!q));}
+function onCardSearch(inp){
+  const q=inp.value.trim().toLowerCase(),id=inp.id;clearTimeout(suggTimer);if(id==="add-card")filterPicks(q);
+  if(q.length<2){showSugg(id,[]);return;}
+  const mine=deckNames().filter(n=>n.toLowerCase().includes(q)).sort((a,b)=>a.toLowerCase().indexOf(q)-b.toLowerCase().indexOf(q));
+  const inPicker=id==="add-card";showSugg(id,inPicker?[]:mine);if(suggOff)return;
+  const seq=++suggSeq;
+  suggTimer=setTimeout(async()=>{try{const r=await fetch("https://api.scryfall.com/cards/autocomplete?q="+encodeURIComponent(inp.value.trim()));if(!r.ok)throw 0;
+    const j=await r.json();if(seq!==suggSeq)return;const more=(j.data||[]).filter(n=>!mine.includes(n));showSugg(id,inPicker?more:[...mine,...more]);}catch(_){suggOff=true;}},200);
+}
 // Put any card into play by name, even if it isn't in the deck's list.
 let addStatus="";
 async function addCard(){
@@ -858,10 +952,31 @@ async function addCard(){
   save();render();const i=document.getElementById("add-card");if(i)i.focus();
 }
 
+let focusPeer=null;const zonesOpen={};
 // Battlefield view: every other player's board laid out like a playmat. Peer data is untrusted, so everything is clipped and escaped.
-function fieldsInner(){
+let mcInfo={},mcSeq=0,cardOpen=null;const cardCache=new Map();
+let artOff=false,artTimer=null;const artWant=new Set();
+const imgOf=(d,kind)=>{const f=d&&(d.image_uris||(d.card_faces&&d.card_faces[0]&&d.card_faces[0].image_uris));const u=f&&f[kind];return typeof u==="string"&&/^https:\/\/cards\.scryfall\.io\//.test(u)?u:"";};
+function wantArt(name){const k=name.toLowerCase();if(artOff||!name||cardCache.has(k))return;artWant.add(name);clearTimeout(artTimer);artTimer=setTimeout(fetchArt,250);}
+async function fetchArt(){
+  const names=[...artWant].slice(0,75);artWant.clear();if(!names.length)return;
+  try{const r=await fetch("https://api.scryfall.com/cards/collection",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({identifiers:names.map(name=>({name}))})});
+    if(!r.ok)throw 0;const j=await r.json();
+    (j.data||[]).forEach(d=>{cardCache.set(d.name.toLowerCase(),d);cardCache.set(d.name.split(" // ")[0].toLowerCase(),d);});
+    (j.not_found||[]).forEach(x=>cardCache.set(String(x.name).toLowerCase(),null));
+    refreshTable();if(cardOpen&&!cardOpen.data){const d=cardCache.get(cardOpen.n.toLowerCase());if(d){cardOpen.data=d;cardOpen.loading=false;render();}}
+  }catch(_){artOff=true;}
+}
+function fieldsInner(){mcInfo={};
   const peers=(tableRoom?peerList:[]).filter(p=>p.kind==="viewer"&&!p.sameTab&&p.presence&&p.presence.b&&typeof p.presence.b==="object");
-  if(peers.length)return peers.map(p=>matHtml(p.presence.b,false)).join("");
+  if(peers.length){
+    if(focusPeer&&!peers.some(p=>p.peer===focusPeer))focusPeer=null;
+    const chip=p=>{const b=p.presence.b,on=focusPeer===p.peer;return `<button class="pchip${on?" on":""}" data-fpeer="${esc(p.peer)}" aria-pressed="${on}" style="${styleVars(Array.isArray(b.colors)?b.colors.filter(c=>["W","U","B","R","G"].includes(c)):[])}">
+      <span class="pcn">${esc(String(b.nick||"Player").slice(0,20))}</span><span class="pcs"><b>${esc(String(b.life??"–").slice(0,5))}</b> life · ${esc(String(b.power??0).slice(0,5))} power</span></button>`;};
+    const strip=`<div class="pstrip" role="group" aria-label="Show a player's board"><button class="pchip all${focusPeer?"":" on"}" data-fpeer="all" aria-pressed="${!focusPeer}"><span class="pcn">All players</span><span class="pcs">${peers.length} at the table</span></button>${peers.map(chip).join("")}</div>`;
+    const shown=focusPeer?peers.filter(p=>p.peer===focusPeer):peers;
+    return strip+shown.map(p=>matHtml(p.presence.b,false)).join("");
+  }
   const code=(S.table&&S.table.code)||"";
   return `<p class="fieldnote">${tableRoom?`Waiting for others to join table <b>${esc(code)}</b>.`:"Join a table from the home screen to see everyone else's battlefield here."} This is how your board looks to them:</p>${curBoard?matHtml(curBoard,true):""}`;
 }
@@ -874,10 +989,14 @@ function matHtml(b,mine){
   const front=[...(b.cmdrOn&&b.cmdr?[{n:str(b.cmdr,40),cat:"Commander",pt:str(b.cmdrPt,7)}]:[]),...cards.filter(isCre)];
   const back=cards.filter(c=>!isCre(c));
   const label={Commander:"Commander",Creatures:"Creature",Vehicles:"Vehicle",Mana:"Mana",Artifacts:"Artifact",Enchantments:"Enchantment",Other:"Permanent"};
-  const mc=c=>`<div class="mc mc-${(c.cat||"Other").toLowerCase()}${c.tap?" tapped":""}" title="${esc(c.n)}"><span class="mcn">${esc(c.n)}</span><span class="mct">${label[c.cat]||"Permanent"}</span>${c.pt?`<span class="mcpt">${esc(c.pt)}</span>`:""}</div>`;
-  const tok=x=>`<div class="mc mc-token" title="${esc(x.n)} tokens"><span class="mcn">${esc(x.n)}</span><span class="mct">Token</span>${x.pt?`<span class="mcpt">${esc(x.pt)}</span>`:""}<span class="mcq">×${x.q}</span></div>`;
+  const fxAll=(Array.isArray(b.fx)?b.fx:[]).slice(0,30).map(t=>str(t,320));
+  const reg=(c,token)=>{const id="m"+(++mcSeq);mcInfo[id]={n:c.n,cat:token?"Token":c.cat,pt:c.pt,q:c.q,owner:str(b.nick||"Player",20),
+    fx:fxAll.filter(t=>t.toLowerCase().startsWith(c.n.toLowerCase()+":")).map(t=>t.slice(c.n.length+1).trim())};return id;};
+  const artOf=n=>{const d=cardCache.get(n.toLowerCase());if(d===undefined)wantArt(n);const u=imgOf(d,"art_crop");return u?`<span class="mcart" style="background-image:url('${u}')"></span>`:"";};
+  const mc=c=>`<button class="mc mc-${(c.cat||"Other").toLowerCase()}${c.tap?" tapped":""}" data-mcid="${reg(c)}" title="${esc(c.n)}" aria-label="Read ${esc(c.n)}">${artOf(c.n)}<span class="mcn">${esc(c.n)}</span><span class="mct">${label[c.cat]||"Permanent"}</span>${c.pt?`<span class="mcpt">${esc(c.pt)}</span>`:""}</button>`;
+  const tok=x=>`<button class="mc mc-token" data-mcid="${reg(x,true)}" title="${esc(x.n)} tokens" aria-label="Read ${esc(x.n)} token"><span class="mcn">${esc(x.n)}</span><span class="mct">Token</span>${x.pt?`<span class="mcpt">${esc(x.pt)}</span>`:""}<span class="mcq">×${x.q}</span></button>`;
   const row=(lbl,items,empty)=>`<div class="mrow"><span class="mlbl">${lbl}</span><div class="mcards">${items||`<span class="mempty">${empty}</span>`}</div></div>`;
-  const fx=(Array.isArray(b.fx)?b.fx:[]).slice(0,10).map(t=>str(t,110));
+  const fx=(Array.isArray(b.fx)?b.fx:[]).slice(0,30).map(t=>str(t,320));
   const mana=Array.isArray(b.mana)?b.mana.slice(0,2).map(v=>parseInt(v,10)||0):null;
   return `<section class="mat${mine?" mine":""}" style="${styleVars(colors)}">
     <div class="mathead"><div class="mwho"><span class="mname">${esc(str(b.nick||"Player",20))}${mine?" <em>you</em>":""}</span>
@@ -885,8 +1004,13 @@ function matHtml(b,mine){
       <div class="mstats"><span class="mlife" title="Life">${esc(str(b.life??"–",5))}</span><span class="mmeta">turn ${esc(str(b.turn??"–",4))}<br>${esc(str(b.power??0,5))} power</span></div></div>
     ${row("Creatures",front.map(mc).join("")+groups.filter(x=>x.q>0).map(tok).join(""),"No creatures")}
     ${row("Artifacts &amp; enchantments",back.map(mc).join(""),"Nothing out")}
+    ${(()=>{const gy=(Array.isArray(b.gy)?b.gy:[]).slice(-40).map(n=>str(n,40)),ex=(Array.isArray(b.ex)?b.ex:[]).slice(-40).map(n=>str(n,40));
+      const key=str(b.nick,20)+"|"+(mine?"me":"x"),open=zonesOpen[key]||"";
+      const pill=(z,lbl,arr)=>`<button class="mpill zpill${open===z?" on":""}" data-zone="${esc(key)}|${z}" aria-pressed="${open===z}">${lbl} ${arr.length}</button>`;
+      const list=open==="gy"?gy:open==="ex"?ex:null;
+      return `<div class="mzones">${pill("gy","Graveyard",gy)}${pill("ex","Exile",ex)}</div>${list?row(open==="gy"?"Graveyard":"Exile",list.slice().reverse().map(n=>mc({n,cat:"Other"})).join(""),"Empty"):""}`;})()}
     <div class="mfoot">${mana?`<span class="mpill">Mana ${mana[0]} of ${mana[1]} open</span>`:""}${b.cmdr&&b.cmdrOn===false?`<span class="mpill">Commander in command zone</span>`:""}</div>
-    ${fx.length?`<div class="mfx">${fx.map(t=>`<p>${gl(t)}</p>`).join("")}</div>`:""}
+    ${fx.length?`<div class="mfx"><span class="mlbl">Effects (${fx.length})</span>${fx.map(t=>{const m=t.match(/^([^:]{2,40}): (.+)$/);return m?`<p><b>${esc(m[1])}</b> ${gl(m[2])}</p>`:`<p>${gl(t)}</p>`;}).join("")}</div>`:""}
   </section>`;
 }
 function renderHud(){
@@ -897,7 +1021,7 @@ function renderHud(){
   const d=g.deck;
   if(fresh&&fresh.groups){g.groups=g.groups||[];fresh.groups.forEach(fg=>{if(!g.groups.some(x=>x.name===fg.name))g.groups.push({name:fg.name,p:fg.p,t:fg.t,n:0,c:0});});}
   g.inplay=g.inplay||[];g.cardUsed=g.cardUsed||{};
-  g.cmdr=g.cmdr||{on:false,casts:0};
+  g.cmdr=g.cmdr||{on:false,casts:0};g.gy=g.gy||[];g.ex=g.ex||[];
   if(g.inplay.some(n=>isCmdr(d,n))){g.inplay=g.inplay.filter(n=>!isCmdr(d,n));g.cmdr.on=true;g.cmdr.casts=Math.max(1,g.cmdr.casts);save();}
   const inCards=g.inplay.map(n=>cardInfo(d,n));
   const cbP=inCards.reduce((a,c)=>a+(c.buff?c.buff.p:0),0),cbT=inCards.reduce((a,c)=>a+(c.buff?c.buff.t:0),0);
@@ -929,6 +1053,12 @@ function renderHud(){
   const watchHtml=`<section class="panel watch notes"><div class="spread"><span class="eyebrow">Table notes</span><button class="link" data-addopen="watch">+ Add</button></div>
     ${g.watch.length?g.watch.map((w,i)=>`<div class="line"><span>${gl(w)}</span><button class="x" data-delwatch="${i}" aria-label="Remove">×</button></div>`).join(""):`<p class="none">Reminders about other players' cards, e.g. "Sam's commander draws when I cast a spell."</p>`}
     ${addForm("watch","Whose card, and what sets it off")}</section>`;
+  const zoneList=(z,label)=>{const arr=g[z];return `<div class="gyz"><span class="gylbl">${label} <b>${arr.length}</b></span>
+      <div class="gychips">${arr.length?arr.map((n,i)=>{const sel=gySel&&gySel.z===z&&gySel.i===i;return `<button class="tog gychip${sel?" on":""}" data-gysel="${z}:${i}" aria-pressed="${sel}">${esc(n)}</button>`;}).join(""):`<span class="none">Empty</span>`}</div>
+      ${gySel&&gySel.z===z&&arr[gySel.i]!=null?`<div class="gyact"><span>${esc(arr[gySel.i])}</span><button class="btn primary" data-gyact="play">Return to battlefield</button><button class="btn" data-gyact="move">Move to ${z==="gy"?"exile":"graveyard"}</button><button class="btn ghost" data-gyact="del">Remove</button></div>`:""}</div>`;};
+  const gyHtml=`<section class="panel gypanel"><div class="spread"><span class="eyebrow">Graveyard &amp; exile</span><button class="link" data-addopen="gy">+ Add card</button></div>
+    ${addOpen==="gy"?`<div class="addrow"><input type="text" id="add-gy" placeholder="Search for a card, e.g. milled or discarded" autocomplete="off" role="combobox" aria-controls="sugg-add-gy" aria-autocomplete="list"><select id="add-gy-z" aria-label="Zone"><option value="gy">Graveyard</option><option value="ex">Exile</option></select><button class="btn primary" data-addgo="gy">Add</button><button class="btn ghost" data-addcancel="1">Cancel</button><div class="sugg" id="sugg-add-gy" role="listbox"></div></div>`:""}
+    ${zoneList("gy","Graveyard")}${zoneList("ex","Exile")}</section>`;
   const fxHtml=`<section class="panel fx"><div class="spread"><span class="eyebrow">Effects in play</span><button class="link" data-addopen="fx">+ Add</button></div>
     ${inCards.filter(c=>c.fx).map(c=>`<div class="line"><span><b>${esc(c.name)}</b> ${gl(c.equip&&g.attach[c.name]?c.fx.replace(/^Equipped creature/,g.attach[c.name]):c.fx)}${c.plating&&g.attach[c.name]?` <em>about +${artifacts}/+0 now</em>`:""}</span><span></span></div>`).join("")}
     ${g.effects.map((f,i)=>`<div class="line"><span>${gl(f.text)} <em>${f.dur==="turn"?"this turn":"ongoing"}</em></span><button class="x" data-delfx="${i}" aria-label="Remove">×</button></div>`).join("")}
@@ -959,9 +1089,10 @@ function renderHud(){
   curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
     life:g.vals.life??null,turn:g.turn,power:pow,cnt,mana:[avail,total],
     groups:g.groups.filter(x=>x.n>0).slice(0,8).map(x=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`]),
+    gy:g.gy.slice(-40).map(n=>String(n).slice(0,40)),ex:g.ex.slice(-40).map(n=>String(n).slice(0,40)),
     cmdrOn:!!(d.cmdr&&g.cmdr.on),cmdrPt:String((cardInfo(d,d.cmdr)||{}).pt||"").slice(0,7),colors:(d.colors||[]).slice(0,5),
     cards:g.inplay.slice(0,40).map(n=>{const c=cardInfo(d,n);return [String(n).slice(0,40),String(c.cat||"Other").slice(0,14),String(c.pt||"").slice(0,7),!!(c.mana&&g.cardUsed[n])];}),
-    fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,10).map(t=>String(t).slice(0,110))};
+    fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,30).map(t=>String(t).slice(0,320))};
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
     <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
@@ -979,17 +1110,20 @@ function renderHud(){
       <span class="stp"><button data-act="cmdrdown" aria-label="One fewer cast">−</button><b>${g.cmdr.casts}</b><button data-act="cmdrup" aria-label="One more cast">+</button></span><span class="status">casts</span></div>
     <p class="status">Tax goes up {2} for every time you've already cast it from the command zone.</p></section>`;})():""}
   ${`<section class="panel cardspanel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
+    ${pickOpen?(()=>{const out=cards.filter(c=>!g.inplay.includes(c));const catOf=c=>cardInfo(d,c).cat||"Other";
+      const cats=out.length?["All",...CAT_ORDER.filter(k=>out.some(c=>catOf(c)===k))]:[];const cur=cats.includes(pickCat)?pickCat:"All";const inCat=(c,k)=>k==="All"||catOf(c)===k;
+      const addRow=`<div class="addrow addcard"><input type="text" id="add-card" placeholder="Search for a card, e.g. Sol Ring" autocomplete="off" role="combobox" aria-controls="sugg-add-card" aria-autocomplete="list"><button class="btn primary" data-act="addcard">Add</button><div class="sugg" id="sugg-add-card" role="listbox"></div></div>${addStatus?`<p class="status">${esc(addStatus)}</p>`:""}`;
+      if(!cats.length)return addRow;
+      return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>inCat(c,k)).length}</span></button>`).join("")}</div>
+      <div class="picks" data-cur="${esc(cur)}">${out.map(c=>`<button class="tog" data-card="${cards.indexOf(c)}" data-pcat="${esc(catOf(c))}" data-pname="${esc(c.toLowerCase())}"${inCat(c,cur)?"":" hidden"}>${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}
+    ${pickOpen&&inCards.length?`<span class="inplaylbl">In play (${inCards.length})</span>`:""}
     ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${gl(c.equip?equipLine(c):cardSummary(c))}</span>
         ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
       ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
-      <button class="x" data-card="${cards.indexOf(c.name)}" aria-label="${esc(c.name)} left play">×</button></div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.${cards.length?"":" This deck has no card list, so add cards by name."}</p>`)}
-    ${pickOpen?(()=>{const out=cards.filter(c=>!g.inplay.includes(c));const catOf=c=>cardInfo(d,c).cat||"Other";
-      const cats=CAT_ORDER.filter(k=>out.some(c=>catOf(c)===k));const cur=cats.includes(pickCat)?pickCat:cats[0];
-      const addRow=`<div class="addrow addcard"><input type="text" id="add-card" placeholder="Card name, e.g. Sol Ring" autocomplete="off"><button class="btn primary" data-act="addcard">Add</button></div>${addStatus?`<p class="status">${esc(addStatus)}</p>`:""}`;
-      if(!cats.length)return addRow;
-      return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>catOf(c)===k).length}</span></button>`).join("")}</div>
-      <div class="picks">${out.filter(c=>catOf(c)===cur).map(c=>`<button class="tog" data-card="${cards.indexOf(c)}">${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}</section>`}
+      <button class="x" data-leave="${esc(c.name)}" aria-label="${esc(c.name)} left play">×</button>
+      ${leaveOpen===c.name?`<div class="leave"><span>Where did it go?</span><button class="btn" data-leaveto="gy">Graveyard</button><button class="btn" data-leaveto="ex">Exile</button><button class="btn" data-leaveto="hand">Hand or library</button><button class="btn ghost" data-leaveto="cancel">Cancel</button></div>`:""}</div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.${cards.length?"":" This deck has no card list, so add cards by name."}</p>`)}</section>`}
   ${fxHtml}
+  ${gyHtml}
   ${boardHtml}
   ${buffHtml}
   ${togs?`<div class="toggles wide">${togs}</div>`:""}
@@ -1227,12 +1361,17 @@ async function suggest(){
 }
 
 app.addEventListener("click",e=>{
+  const sg=e.target.closest("[data-sugg]");if(sg){const inp=document.getElementById(sg.dataset.for);if(inp){inp.value=sg.dataset.sugg;showSugg(inp.id,[]);
+      if(inp.id==="add-card")addCard();else inp.focus();}return;}
+  const mcb=e.target.closest("[data-mcid]");if(mcb){openCard(mcb.dataset.mcid);return;}
   const term=e.target.closest(".term");if(term){e.stopPropagation();termOpen=term.dataset.term;return render();}
   const b=e.target.closest("button")||e.target.closest("[data-done],[data-act]");if(!b)return;
   const g=S.game,ds=b.dataset;
   if(ds.precon){catErr="";importPrecon(ds.precon);return;}
   if(ds.start){const d=allDecks().find(x=>x.id===ds.start);if(d)startGame(d);return;}
   if(ds.edit){const d=S.decks.find(x=>x.id===ds.edit);draft={...JSON.parse(JSON.stringify(d)),existing:true};aiStatus="";view="setup";return render();}
+  if(ds.zone){const i=ds.zone.lastIndexOf("|"),k=ds.zone.slice(0,i),z=ds.zone.slice(i+1);zonesOpen[k]=zonesOpen[k]===z?"":z;return refreshTable();}
+  if(ds.fpeer){focusPeer=ds.fpeer==="all"?null:ds.fpeer;refreshTable();const f=document.getElementById("fields");if(f&&focusPeer)f.scrollIntoView({block:"start",behavior:"smooth"});return;}
   if(ds.peer){openPeers.has(ds.peer)?openPeers.delete(ds.peer):openPeers.add(ds.peer);return refreshTable();}
   if(ds.mode&&g){g.dmgMode=ds.mode;save();return render();}
   if(ds.opp!=null&&g){const o=g.opps[ds.opp],n=Number(ds.amt);g.last={i:Number(ds.opp),life:o.life,cd:o.cd};
@@ -1250,6 +1389,7 @@ app.addEventListener("click",e=>{
     if(t){if(k==="src")g.sources.push({name:t,amt:Number(document.getElementById("add-src-amt").value),n:1,used:0});
       if(k==="fx")g.effects.push({text:t,dur:document.getElementById("add-fx-dur").value==="turn"?"turn":"on"});
       if(k==="watch")g.watch.push(t);
+      if(k==="gy"){const z=document.getElementById("add-gy-z").value==="ex"?"ex":"gy";g[z].push(t);}
       if(k==="grp")g.groups.push({name:t,p:Number(document.getElementById("add-grp-p").value),t:Number(document.getElementById("add-grp-t").value),n:1,c:0});
       keepCarry();save();}
     addOpen=null;return render();}
@@ -1259,10 +1399,19 @@ app.addEventListener("click",e=>{
   if(ds.delgrp!=null&&g){g.groups.splice(Number(ds.delgrp),1);save();return render();}
   if(ds.addcancel&&g){addOpen=null;return render();}
   if(ds.delsrc!=null&&g){g.sources.splice(Number(ds.delsrc),1);keepCarry();save();return render();}
-  if(ds.card!=null&&g){const c=cardList(g.deck)[Number(ds.card)];if(c){g.inplay=g.inplay||[];g.inplay=g.inplay.includes(c)?g.inplay.filter(x=>x!==c):[...g.inplay,c];save();}return render();}
+  if(ds.card!=null&&g){const c=cardList(g.deck)[Number(ds.card)];if(c){g.inplay=g.inplay||[];g.inplay=g.inplay.includes(c)?g.inplay.filter(x=>x!==c):[...g.inplay,c];save();}
+    const before=(document.querySelector(".cardspanel")||{getBoundingClientRect:()=>({top:0})}).getBoundingClientRect().top;render();
+    const p2=document.querySelector(".cardspanel");if(p2){const d=p2.getBoundingClientRect().top-before;if(Math.abs(d)>1)window.scrollBy(0,d);}return;}
   if(ds.cat&&g){pickCat=ds.cat;return render();}
   if(ds.ctap&&g){g.cardUsed=g.cardUsed||{};g.cardUsed[ds.ctap]=!g.cardUsed[ds.ctap];save();return render();}
   if(ds.make&&g){const c=cardInfo(g.deck,ds.make);const grp=(g.groups||[]).find(x=>x.name===c.makeGroup)||(g.groups||[])[0];if(c.make&&grp){grp.n+=c.make;save();}return render();}
+  if(ds.leave&&g){leaveOpen=leaveOpen===ds.leave?null:ds.leave;return render();}
+  if(ds.leaveto&&g){const n=leaveOpen;leaveOpen=null;if(n&&ds.leaveto!=="cancel"){g.inplay=g.inplay.filter(x=>x!==n);if(g.attach)delete g.attach[n];if(g.cardUsed)delete g.cardUsed[n];
+      if(ds.leaveto==="gy"||ds.leaveto==="ex"){g[ds.leaveto].push(n);if(g[ds.leaveto].length>200)g[ds.leaveto].shift();}save();}return render();}
+  if(ds.gysel&&g){const [z,i]=ds.gysel.split(":");gySel=gySel&&gySel.z===z&&gySel.i===+i?null:{z,i:+i};return render();}
+  if(ds.gyact&&g&&gySel){const arr=g[gySel.z],n=arr[gySel.i];if(n!=null){arr.splice(gySel.i,1);
+      if(ds.gyact==="play"){const known=cardList(g.deck).includes(n);if(!known){g.deck.cards=g.deck.cards||[];if(!g.deck.cards.some(c=>c.name===n))g.deck.cards.push({name:n,cat:"Other",added:true});}if(!g.inplay.includes(n))g.inplay.push(n);}
+      if(ds.gyact==="move")g[gySel.z==="gy"?"ex":"gy"].push(n);save();}gySel=null;return render();}
   if(ds.done!=null&&g){const n=Number(ds.done);g.done=g.done.includes(n)?g.done.filter(x=>x!==n):[...g.done,n];save();return render();}
   if(ds.delfx!=null&&g){g.effects.splice(Number(ds.delfx),1);save();return render();}
   if(ds.delwatch!=null&&g){g.watch.splice(Number(ds.delwatch),1);keepCarry();save();return render();}
@@ -1290,6 +1439,7 @@ app.addEventListener("click",e=>{
     case "addopp":g.opps.push({name:"Opponent",life:40,cd:0});renumberOpps(g);save();break;
     case "undoopp":if(g.last&&g.opps[g.last.i]){g.opps[g.last.i].life=g.last.life;g.opps[g.last.i].cd=g.last.cd;}g.last=null;save();break;
     case "closeterm":termOpen=null;break;
+    case "closecard":cardOpen=null;break;
     case "glossary":glossBack=view==="glossary"?glossBack:view;termOpen=null;view="glossary";window.scrollTo({top:0});break;
     case "glossback":view=glossBack==="glossary"?"home":glossBack;break;
     case "reset":confirmReset=true;break;
@@ -1305,8 +1455,10 @@ app.addEventListener("click",e=>{
   }
   render();
 });
+app.addEventListener("input",e=>{if(e.target.id==="add-card"||e.target.id==="add-gy")onCardSearch(e.target);});
 app.addEventListener("input",e=>{if(e.target.id==="cat-q"){catQuery=e.target.value;const el=document.getElementById("catalog");
   if(el){const pos=e.target.selectionStart;el.innerHTML=catalogHtml();const i=document.getElementById("cat-q");i.focus();try{i.setSelectionRange(pos,pos);}catch(_){}}}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&(cardOpen||termOpen)){cardOpen=null;termOpen=null;render();}});
 app.addEventListener("keydown",e=>{if(e.target.id==="add-card"&&e.key==="Enter"){e.preventDefault();addCard();}});
 app.addEventListener("change",e=>{if(e.target.matches("[data-mod]"))syncDraft();
   if(e.target.matches("[data-oppname]")&&S.game&&S.game.opps){S.game.opps[e.target.dataset.oppname].name=e.target.value.trim().slice(0,24)||"Opponent";save();}
