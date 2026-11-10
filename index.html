@@ -380,6 +380,10 @@ html{-webkit-text-size-adjust:100%}
   .v-hud{columns:3}
 }
 @media (hover:hover){.catrow:hover,.decks .deck:hover{filter:brightness(1.05)}}
+.cmdrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding-top:6px}
+.tax{font-family:var(--display);font-weight:800;font-size:1.6rem;font-variant-numeric:tabular-nums;padding:2px 12px;border:2px solid #2a221b;border-radius:8px;background:linear-gradient(180deg,#f8eed6,#d2bd8f);color:#24190f}
+.panel.cmdr .row{gap:10px}
+.addcard{grid-template-columns:1fr auto!important;border-top:1px solid var(--line);padding-top:10px}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -533,7 +537,7 @@ function deckReminders(d){
   const out=[];
   d.mods.forEach(m=>(MODS[m]&&MODS[m].rem||[]).forEach(([p,t])=>out.push({p,t,src:MODS[m].label,card:null})));
   // A reminder from a card other than the commander only shows while that card is marked in play.
-  (d.rem||[]).forEach(([p,t,src])=>out.push({p,t,src:src||d.cmdr||d.name,card:src&&src!==d.cmdr?src:null}));
+  (d.rem||[]).forEach(([p,t,src])=>out.push({p,t,src:src||d.cmdr||d.name,card:src&&src!==d.cmdr?src:null,isCmdr:!!d.cmdr&&(!src||src===d.cmdr)}));
   (d.cards||[]).forEach(c=>(c.rem||[]).forEach(([p,t])=>out.push({p,t,src:c.name,card:c.name})));
   return out;
 }
@@ -719,27 +723,47 @@ function tableInner(){
   try{firebase.initializeApp(cfg);const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;fbDb=firebase.database();}
   catch(e){roomState="error";fbErr=(e&&(e.code||e.message))||"unknown";console.error("Firebase:",e);refreshTable();return;}
   roomState="ready";if(S.table&&S.table.code)joinTable(S.table.code);else refreshTable();})();
+// Put any card into play by name, even if it isn't in the deck's list.
+let addStatus="";
+async function addCard(){
+  const g=S.game,inp=document.getElementById("add-card");if(!g||!inp)return;
+  const name=inp.value.trim().slice(0,60);if(!name)return inp.focus();
+  addStatus="Adding…";render();
+  let entry=null;
+    try{const r=await fetch("https://api.scryfall.com/cards/named?fuzzy="+encodeURIComponent(name));
+      if(r.ok){const c=await r.json();const a=analyzeCard(c);entry=a.card||{name:c.name.split(" // ")[0],cat:/creature/i.test(c.type_line||"")?"Creatures":/artifact/i.test(c.type_line||"")?"Artifacts":/enchantment/i.test(c.type_line||"")?"Enchantments":"Other"};
+        if(a.group&&!(g.groups||[]).some(x=>x.name===a.group.name)){g.groups=g.groups||[];g.groups.push({...a.group,n:0,c:0});}}
+      else addStatus="Couldn't find that card on Scryfall, so it was added by name only.";
+    }catch(e){addStatus="Couldn't reach Scryfall, so it was added by name only.";}
+  if(!entry){entry={name,cat:"Other"};if(!addStatus||addStatus==="Adding…")addStatus="";}else if(addStatus==="Adding…")addStatus="";
+  entry={...entry,added:true};
+  g.deck.cards=(g.deck.cards||[]).filter(c=>c.name!==entry.name);g.deck.cards.push(entry);
+  if(!g.inplay.includes(entry.name))g.inplay.push(entry.name);
+  const saved=S.decks.find(x=>x.id===g.deck.id);if(saved){saved.cards=(saved.cards||[]).filter(c=>c.name!==entry.name);saved.cards.push(entry);}
+  save();render();const i=document.getElementById("add-card");if(i)i.focus();
+}
 function renderHud(){
   const g=S.game;
   // Games started on an older version keep a stale copy of the precon; refresh it so trackers match the current preset.
   const fresh=PRECONS.find(p=>p.id===g.deck.id);
-  if(fresh){g.deck={...g.deck,mods:fresh.mods,custom:fresh.custom,rem:fresh.rem,groups:fresh.groups,cards:fresh.cards,colors:fresh.colors};}
+  if(fresh){g.deck={...g.deck,mods:fresh.mods,custom:fresh.custom,rem:fresh.rem,groups:fresh.groups,cards:[...(fresh.cards||[]),...(g.deck.cards||[]).filter(c=>c.added&&!(fresh.cards||[]).some(f=>f.name===c.name))],colors:fresh.colors};}
   const d=g.deck;
   g.inplay=g.inplay||[];g.cardUsed=g.cardUsed||{};
+  g.cmdr=g.cmdr||{on:false,casts:0};
   const inCards=g.inplay.map(n=>cardInfo(d,n));
   const cbP=inCards.reduce((a,c)=>a+(c.buff?c.buff.p:0),0),cbT=inCards.reduce((a,c)=>a+(c.buff?c.buff.t:0),0);
   const landBonus=inCards.reduce((a,c)=>a+(c.land||0),0);
   const cardMana=inCards.filter(c=>c.mana);
   g.attach=g.attach||{};
   // Things equipment can be attached to: your commander, creature/vehicle cards in play, and your token groups.
-  const hosts=[...(d.cmdr?[d.cmdr]:[]),...inCards.filter(c=>c.cat==="Creatures"||c.cat==="Vehicles").map(c=>c.name),...(g.groups||[]).filter(x=>x.n>0).map(x=>"A "+x.name.replace(/ tokens?$/i,"").replace(/s$/,""))];
+  const hosts=[...(d.cmdr&&g.cmdr.on?[d.cmdr]:[]),...inCards.filter(c=>c.cat==="Creatures"||c.cat==="Vehicles").map(c=>c.name),...(g.groups||[]).filter(x=>x.n>0).map(x=>"A "+x.name.replace(/ tokens?$/i,"").replace(/s$/,""))];
   Object.keys(g.attach).forEach(k=>{if(!g.inplay.includes(k)||!hosts.includes(g.attach[k]))delete g.attach[k];});
-  const artifacts=(d.cmdr?1:0)+inCards.filter(c=>!["Enchantments"].includes(c.cat)).length+(g.groups||[]).reduce((a,x)=>a+x.n,0);
+  const artifacts=(d.cmdr&&g.cmdr.on?1:0)+inCards.filter(c=>!["Enchantments"].includes(c.cat)).length+(g.groups||[]).reduce((a,x)=>a+x.n,0);
   const equipLine=c=>{const on=g.attach[c.name];if(!on)return "Not attached";return "On "+on+(c.plating?` · about +${artifacts}/+0 (${artifacts} artifacts)`:"");};
   const ORDER=["up","draw","m1","combat","m2","end"],WHEN={up:"Start",draw:"Start",m1:"Main",combat:"Combat",m2:"Main",end:"End"};
   g.done=g.done||[];g.inplay=g.inplay||[];
   const cards=cardList(d);
-  const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>!r.card||g.inplay.includes(r.card)).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
+  const rems=deckReminders(d).map((r,i)=>({...r,i})).filter(r=>r.isCmdr?g.cmdr.on:(!r.card||g.inplay.includes(r.card))).sort((a,b)=>ORDER.indexOf(a.p)-ORDER.indexOf(b.p));
   const left=rems.filter(r=>!g.done.includes(r.i)).length;
   let tiles="",togs="",hasOpps=false;
   d.mods.forEach(m=>{const M=MODS[m];if(!M)return;
@@ -785,20 +809,30 @@ function renderHud(){
   curBoard={nick:(S.table&&S.table.nick)||"Player",deck:String(d.name).slice(0,60),cmdr:String(d.cmdr||"").slice(0,60),
     life:g.vals.life??null,turn:g.turn,power:pow,cnt,mana:[avail,total],
     groups:g.groups.filter(x=>x.n>0).slice(0,8).map(x=>[String(x.name).slice(0,40),x.n,`${Math.max(0,x.p+x.c+bp)}/${x.t+x.c+bt}`]),
-    cards:g.inplay.slice(0,24).map(n=>String(n).slice(0,40)),
+    cards:[...(d.cmdr&&g.cmdr.on?[d.cmdr+" (commander)"]:[]),...g.inplay].slice(0,24).map(n=>String(n).slice(0,40)),
     fx:[...inCards.filter(c=>c.fx).map(c=>c.name+": "+c.fx),...g.effects.map(f=>f.text)].slice(0,10).map(t=>String(t).slice(0,110))};
   app.innerHTML=`
   <div class="hudhead"><div class="field" style="gap:2px;min-width:0"><span class="eyebrow">${esc(d.cmdr||"Custom deck")}</span><h2>${esc(d.name)}</h2></div>
     <div class="turnbox"><div><span class="eyebrow">Turn</span><div class="turn">${g.turn}</div></div><button class="btn primary" data-act="next">Pass turn</button></div></div>
-  ${cards.length?`<section class="panel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
+  ${d.cmdr?(()=>{const tax=2*g.cmdr.casts;return `<section class="panel cmdr"><div class="spread"><span class="eyebrow">Commander</span><span class="mana">${g.cmdr.on?"On the battlefield":"In the command zone"}</span></div>
+    <div class="cmdrow"><div class="cmain"><span class="cname">${esc(d.cmdr)}</span>
+      <span class="csum">${g.cmdr.on?`Cast ${g.cmdr.casts} time${g.cmdr.casts===1?"":"s"}. Next cast from the command zone costs {${tax+2}} more.`:(g.cmdr.casts?`Commander tax: costs {${tax}} more to cast now.`:"No commander tax yet.")}</span></div>
+      <span class="tax" aria-label="Commander tax">+${g.cmdr.on?tax+2:tax}</span></div>
+    <div class="row">${g.cmdr.on?`<button class="btn" data-act="cmdrback">Died or exiled: back to command zone</button>`
+      :`<button class="btn primary" data-act="cmdrcast">Cast${tax?` (+${tax} tax)`:""}</button>`}
+      <span class="stp"><button data-act="cmdrdown" aria-label="One fewer cast">−</button><b>${g.cmdr.casts}</b><button data-act="cmdrup" aria-label="One more cast">+</button></span><span class="status">casts</span></div>
+    <p class="status">Tax goes up {2} for every time you've already cast it from the command zone.</p></section>`;})():""}
+  ${`<section class="panel"><div class="spread"><span class="eyebrow">Cards in play</span><button class="link" data-act="pick">${pickOpen?"Done":"+ Put into play"}</button></div>
     ${inCards.map(c=>`<div class="card"><div class="cmain"><span class="cname">${esc(c.name)}</span><span class="csum">${gl(c.equip?equipLine(c):cardSummary(c))}</span>
         ${c.equip?`<select class="attach" data-attach="${esc(c.name)}" id="att-${cards.indexOf(c.name)}" aria-label="Attach ${esc(c.name)} to"><option value="">Attach to…</option>${hosts.map(h=>`<option${g.attach[c.name]===h?" selected":""}>${esc(h)}</option>`).join("")}</select>`:""}</div>
       ${(()=>{const grp=c.make&&g.groups&&(g.groups.find(x=>x.name===c.makeGroup)||g.groups[0]);return grp?`<button class="btn make" data-make="${esc(c.name)}">+${c.make} ${esc(grp.name.replace(/ tokens?$/i,""))}</button>`:"";})()}
-      <button class="x" data-card="${cards.indexOf(c.name)}" aria-label="${esc(c.name)} left play">×</button></div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.</p>`)}
+      <button class="x" data-card="${cards.indexOf(c.name)}" aria-label="${esc(c.name)} left play">×</button></div>`).join("")||(pickOpen?"":`<p class="none">Nothing out yet. Tap "Put into play" when a card lands, and its effects, mana and reminders turn on.${cards.length?"":" This deck has no card list, so add cards by name."}</p>`)}
     ${pickOpen?(()=>{const out=cards.filter(c=>!g.inplay.includes(c));const catOf=c=>cardInfo(d,c).cat||"Other";
       const cats=CAT_ORDER.filter(k=>out.some(c=>catOf(c)===k));const cur=cats.includes(pickCat)?pickCat:cats[0];
-      return `<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>catOf(c)===k).length}</span></button>`).join("")}</div>
-      <div class="picks">${out.filter(c=>catOf(c)===cur).map(c=>`<button class="tog" data-card="${cards.indexOf(c)}">${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}</section>`:""}
+      const addRow=`<div class="addrow addcard"><input type="text" id="add-card" placeholder="Card name, e.g. Sol Ring" autocomplete="off"><button class="btn primary" data-act="addcard">Add</button></div>${addStatus?`<p class="status">${esc(addStatus)}</p>`:""}`;
+      if(!cats.length)return addRow;
+      return addRow+`<div class="cats" role="tablist">${cats.map(k=>`<button class="cat${k===cur?" on":""}" data-cat="${k}" role="tab" aria-selected="${k===cur}">${k} <span>${out.filter(c=>catOf(c)===k).length}</span></button>`).join("")}</div>
+      <div class="picks">${out.filter(c=>catOf(c)===cur).map(c=>`<button class="tog" data-card="${cards.indexOf(c)}">${esc(c)}</button>`).join("")||`<p class="none">Everything here is already in play.</p>`}</div>`;})():""}</section>`}
   ${rems.length?`<section class="panel"><div class="spread"><span class="eyebrow">This turn</span><span class="mana">${left?left+" to check":"All handled"}</span></div>
     ${rems.map(r=>{const on=g.done.includes(r.i);return `<div class="chk${on?" done":""}" data-done="${r.i}"><span class="when w-${r.p}">${WHEN[r.p]}</span><span class="ctext"><b>${esc(r.src)}</b> ${gl(r.t)}</span><button class="box" data-done="${r.i}" aria-pressed="${on}" aria-label="Mark handled">${on?"✓":""}</button></div>`}).join("")}</section>`:""}
   <div class="grid">${tiles}</div>
@@ -1050,7 +1084,12 @@ app.addEventListener("click",e=>{
     case "back":view="home";confirmReset=false;break;
     case "next":{g.turn++;untap(g);g.done=[];Object.keys(MODS).forEach(m=>{if(MODS[m].perTurn&&m in g.vals)g.vals[m]=0;});save();window.scrollTo({top:0});break;}
     case "untapall":g.sources.forEach(s=>s.used=0);g.cardUsed={};save();break;
-    case "pick":pickOpen=!pickOpen;break;
+    case "pick":pickOpen=!pickOpen;addStatus="";break;
+    case "addcard":addCard();return;
+    case "cmdrcast":g.cmdr.on=true;g.cmdr.casts++;save();break;
+    case "cmdrback":g.cmdr.on=false;save();break;
+    case "cmdrup":g.cmdr.casts++;save();break;
+    case "cmdrdown":g.cmdr.casts=Math.max(0,g.cmdr.casts-1);save();break;
     case "browse":catErr="";loadCatalog();return;
     case "newtable":{const el=document.getElementById("tbl-code");if(el){const a="abcdefghjkmnpqrstuvwxyz23456789";el.value=Array.from({length:4},()=>a[Math.floor(Math.random()*a.length)]).join("");}return;}
     case "jointable":{const nick=(document.getElementById("tbl-nick").value||"").trim().slice(0,20);const code=(document.getElementById("tbl-code").value||"").trim().toLowerCase();
@@ -1077,6 +1116,7 @@ app.addEventListener("click",e=>{
 });
 app.addEventListener("input",e=>{if(e.target.id==="cat-q"){catQuery=e.target.value;const el=document.getElementById("catalog");
   if(el){const pos=e.target.selectionStart;el.innerHTML=catalogHtml();const i=document.getElementById("cat-q");i.focus();try{i.setSelectionRange(pos,pos);}catch(_){}}}});
+app.addEventListener("keydown",e=>{if(e.target.id==="add-card"&&e.key==="Enter"){e.preventDefault();addCard();}});
 app.addEventListener("change",e=>{if(e.target.matches("[data-mod]"))syncDraft();
   if(e.target.matches("[data-oppname]")&&S.game&&S.game.opps){S.game.opps[e.target.dataset.oppname].name=e.target.value.trim().slice(0,24)||"Opponent";save();}
   if(e.target.matches("[data-attach]")&&S.game){S.game.attach=S.game.attach||{};const v=e.target.value;if(v)S.game.attach[e.target.dataset.attach]=v;else delete S.game.attach[e.target.dataset.attach];save();render();}});
